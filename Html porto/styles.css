@@ -1,0 +1,167 @@
+/* Resetting default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    color: #333;
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Header Styling */
+header {
+    background-color: #fff;
+    padding: 50px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+header .title {
+    font-size: 3em;
+    color: #333;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    font-size: 1.2em;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ff6347;
+}
+
+/* Section Styling */
+.section {
+    padding: 80px 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.section h2 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.section p {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+ul li {
+    font-size: 1.2em;
+    padding: 12px 25px;
+    background-color: #f1f1f1;
+    border-radius: 50px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+ul li:hover {
+    transform: translateY(-5px);
+    background-color: #ff6347;
+    color: white;
+}
+
+.profile-img {
+    display: block;
+    margin: 30px auto;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.1);
+}
+
+/* Back to Top Button */
+.back-to-home {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #ff6347;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    border-radius: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-home:hover {
+    background-color: #e53e2f;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    ul {
+        flex-direction: column;
+    }
+
+    .profile-img {
+        width: 120px;
+        height: 120px;
+    }
+}
