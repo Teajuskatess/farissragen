@@ -202,11 +202,11 @@ main {
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.336);
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 #beranda {
