@@ -100,3 +100,38 @@ window.onload = function() {
     document.querySelector('.container').style.display = 'block';
 };
 
+// Mendapatkan elemen body dan tombol toggle mode
+const body = document.body;
+const modeToggleButton = document.getElementById("modeToggle");
+
+// Mengecek mode yang dipilih dan menambahkannya ke body
+if(localStorage.getItem("theme") === "dark") {
+    body.classList.add("dark-mode");
+} else {
+    body.classList.add("light-mode");
+}
+
+// Fungsi untuk toggle mode
+function toggleMode() {
+    body.classList.toggle("dark-mode");
+    body.classList.toggle("light-mode");
+
+    // Simpan preferensi mode di localStorage
+    if (body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+
+// Menambahkan event listener ke tombol untuk mengganti mode
+modeToggleButton.addEventListener("click", toggleMode);
+
+// Menambahkan event listener untuk tombol toggle mode
+const themeToggleButton = document.getElementById('theme-toggle');
+
+themeToggleButton.addEventListener('click', () => {
+    // Toggle mode gelap dan terang pada body
+    document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('light-mode');
+});

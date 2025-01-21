@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Quiz</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .answers button {
+            background: #4facfe;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 10px;
+        }
+        .answers button:hover {
+            background: #00c6ff;
+        }
+        #timer {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
+        .cert-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .cert-container div {
+            border: 2px solid #4facfe;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            background: #e8f7ff;
+        }
+        .cert-container h2 {
+            margin: 0;
+            color: #333;
+        }
+        #login-container {
+            margin-bottom: 20px;
+        }
+        #login-container input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #login-container button {
+            background: #4facfe;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #download-button {
+    background: linear-gradient(to bottom, #4facfe, #00f2fe);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px auto;
+    display: block;
+    text-transform: uppercase;
+    font-weight: bold;
+    max-width: 250px;
+}
+
+#download-button:hover {
+    background: linear-gradient(to bottom, #00c6ff, #007bff);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+#download-button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Islamic Quiz</h1>
+        <div id="login-container">
+            <input type="text" id="username" placeholder="Enter your name">
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+        <div id="quiz-container" class="hidden">
+            <div id="question-container" class="question"></div>
+            <div class="answers" id="answers-container"></div>
+            <p id="timer">Time left: <span id="time-left">120</span> seconds</p>
+        </div>
+        <div id="result-container" class="hidden">
+            <h2>Quiz Finished!</h2>
+            <p>Your score: <span id="final-score"></span></p>
+                <button onclick="downloadCertificate()">Download Certificate as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the first pillar of Islam?", answers: ["Shahada", "Salah", "Zakat", "Hajj"], correct: 0 },
+            { question: "How many times a day do Muslims pray?", answers: ["3", "5", "7", "10"], correct: 1 },
+            // Add 48 more questions here
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let userName = "";
+
+        const questionContainer = document.getElementById("question-container");
+        const answersContainer = document.getElementById("answers-container");
+        const timerElement = document.getElementById("time-left");
+        const userNameElement = document.getElementById("user-name");
+
+        function startQuiz() {
+            const usernameInput = document.getElementById("username").value.trim();
+            if (usernameInput === "") {
+                alert("Please enter your name to start the quiz.");
+                return;
+            }
+            userName = usernameInput;
+            document.getElementById("login-container").classList.add("hidden");
+            document.getElementById("quiz-container").classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function startTimer() {
+            let timeLeft = 120;
+            timerElement.textContent = timeLeft;
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    nextQuestion(false);
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                finishQuiz();
+                return;
+            }
+
+            const currentQuestion = questions[currentQuestionIndex];
+            questionContainer.textContent = currentQuestion.question;
+            answersContainer.innerHTML = "";
+
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = document.createElement("button");
+                button.textContent = answer;
+                button.onclick = () => nextQuestion(index === currentQuestion.correct);
+                answersContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function nextQuestion(isCorrect) {
+            clearInterval(timer);
+            if (isCorrect) score += 5;
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function finishQuiz() {
+            document.getElementById("quiz-container").classList.add("hidden");
+            document.getElementById("result-container").classList.remove("hidden");
+            document.getElementById("final-score").textContent = score;
+            userNameElement.textContent = userName;
+
+            if (score > 0) {
+                document.getElementById("cert-container").style.display = "block";
+            }
+        }
+
+        function downloadCertificate() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    // Background color
+    doc.setFillColor(240, 240, 240);
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // Gold border
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(5);
+    doc.rect(10, 10, 190, 277);
+
+    // Logo placeholder
+    doc.setFillColor(212, 175, 55);
+    doc.circle(105, 30, 15, 'F');
+    doc.setFillColor(255, 255, 255);
+    doc.circle(105, 30, 12, 'F');
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text("LOGO", 105, 34, { align: "center" });
+
+    // Title
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(212, 175, 55);
+    doc.text("Certificate of Completion", 105, 60, { align: "center" });
+
+    // Decorative line
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(1);
+    doc.line(30, 65, 180, 65);
+
+    // Presented to
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Presented to", 105, 90, { align: "center" });
+
+    // User name
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(27);
+    doc.text(userName, 105, 110, { align: "center" });
+
+    // Completion text
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(14);
+    doc.text("For successfully completing the Islamic Quiz", 105, 130, { align: "center" });
+
+    // Score
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(14);
+    doc.text(`Score: ${score}`, 105, 150, { align: "center" });
+
+    // Signature placeholder
+    doc.setFontSize(10);
+    doc.text("Authorized Signature", 105, 270, { align: "center" });
+    doc.line(80, 265, 130, 265); // Signature line
+
+    // Save the PDF
+    doc.save(`${userName}_Certificate.pdf`);
+}
+
+    </script>
+</body>
+</html>
