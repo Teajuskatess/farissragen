@@ -263,6 +263,7 @@ h1 {
             <h2>Quiz Finished!</h2>
             <p>Your score: <span id="final-score"></span></p>
                 <button onclick="downloadCertificate()">Download Certificate as PDF</button>
+                <button onclick="backToHome()">Back to Home</button>
             </div>
         </div>
     </div>
@@ -410,6 +411,11 @@ h1 {
 
     // Save the PDF
     doc.save(`${userName}_Certificate.pdf`);
+}
+
+function backToHome() {
+    // Option 2: Redirect to a specific homepage (if you have a URL)
+    // window.location.href = 'https://teajuskatess.github.io/farissragen/'; // Replace with your homepage URL
 }
 
     </script>
