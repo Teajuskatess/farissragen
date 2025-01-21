@@ -4,92 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Islamic Quiz</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            color: #333;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .question {
-            font-size: 1.2rem;
-            margin: 20px 0;
-        }
-        .answers button {
-            background: #4facfe;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin: 10px;
-        }
-        .answers button:hover {
-            background: #00c6ff;
-        }
-        #timer {
-            margin-top: 20px;
-            font-size: 1rem;
-            color: #666;
-        }
-        .hidden {
-            display: none;
-        }
-        .cert-container {
-            display: none;
-            margin-top: 20px;
-        }
-        .cert-container div {
-            border: 2px solid #4facfe;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-            background: #e8f7ff;
-        }
-        .cert-container h2 {
-            margin: 0;
-            color: #333;
-        }
-        #login-container {
-            margin-bottom: 20px;
-        }
-        #login-container input {
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        #login-container button {
-            background: #4facfe;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    <link rel="icon" type="image/x-icon" href="Aseet/logo.png".png">
+   <style>
+    /* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #333;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    padding: 10px; /* Added padding for smaller screens */
+    box-sizing: border-box;
+}
 
-        #download-button {
+.container {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    line-height: 1.3;
+}
+
+.question {
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+.answers button {
+    background: #4facfe;
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin: 10px 0;
+    width: 100%; /* Make buttons full width */
+    box-sizing: border-box;
+}
+
+.answers button:hover {
+    background: #00c6ff;
+}
+
+#timer {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #666;
+}
+
+.hidden {
+    display: none;
+}
+
+.cert-container {
+    display: none;
+    margin-top: 20px;
+}
+
+.cert-container div {
+    border: 2px solid #4facfe;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    background: #e8f7ff;
+}
+
+.cert-container h2 {
+    margin: 0;
+    color: #333;
+}
+
+#login-container {
+    margin-bottom: 20px;
+}
+
+#login-container input {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+#login-container button {
+    background: #4facfe;
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+#download-button {
     background: linear-gradient(to bottom, #4facfe, #00f2fe);
     border: none;
     color: white;
@@ -102,18 +129,120 @@
     display: block;
     text-transform: uppercase;
     font-weight: bold;
+    width: 100%;
     max-width: 250px;
+    box-sizing: border-box;
 }
 
 #download-button:hover {
     background: linear-gradient(to bottom, #00c6ff, #007bff);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #download-button:active {
     transform: translateY(2px);
     box-shadow: none;
 }
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 90%; /* Slightly reduce width for tablets */
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .question {
+        font-size: 1rem;
+    }
+
+    .answers button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    #timer {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .question {
+        font-size: 1rem;
+    }
+
+    .answers button {
+        font-size: 0.9rem;
+        padding: 12px;
+        width: 100%;
+    }
+
+    #login-container input,
+    #login-container button {
+        font-size: 1rem;
+    }
+
+    #download-button {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    .question {
+        font-size: 1rem;
+    }
+
+    .answers button {
+        font-size: 0.9rem;
+        padding: 12px;
+        width: 100%;
+    }
+
+    #timer {
+        font-size: 0.9rem;
+    }
+
+    #login-container input,
+    #login-container button {
+        font-size: 1rem;
+    }
+
+    #download-button {
+        max-width: 90%;
+    }
+}
+
 
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
