@@ -559,7 +559,7 @@ function playIncorrectSound() {
 function nextQuestion(isCorrect) {
     clearInterval(timer);
     if (isCorrect) {
-        score += 5;
+        score += 10;
         playCorrectSound(); // Mainkan suara benar
     } else {
         playIncorrectSound(); // Mainkan suara salah
