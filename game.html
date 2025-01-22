@@ -135,7 +135,7 @@ h1 {
 }
 
 #download-button:hover {
-    background: linear-gradient(to bottom, #00c6ff, #007bff);
+    background: linear-gradient(to bottom, #4facfe, #00f2fe);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -143,6 +143,26 @@ h1 {
     transform: translateY(2px);
     box-shadow: none;
 }
+
+/* Star Rating Styles */
+#star-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.star {
+    font-size: 2rem;  /* Adjust the size of stars */
+    color: #f39c12;  /* Gold color for the stars */
+    margin: 0 5px;  /* Space between stars */
+    transition: transform 0.2s ease;  /* Smooth scale transition */
+}
+
+.star:hover {
+    transform: scale(1.2);  /* Slightly scale up when hovered */
+}
+
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
@@ -202,7 +222,7 @@ h1 {
     }
 
     #download-button {
-        max-width: 90%;
+        max-width: 50%;
     }
 }
 
@@ -244,6 +264,67 @@ h1 {
 }
 
 
+#level-selection button {
+    margin: 10px 0;
+}
+
+#result-container button {
+    margin: 10px;
+}
+
+#download-button {
+    background: #4facfe;
+    padding: 12px 24px;
+    border-radius: 8px;
+    width: auto;
+    max-width: 250px;
+}
+
+#download-button:hover {
+    background: #00c6ff;
+}
+
+#back-button {
+    background: #f44336;
+    padding: 12px 24px;
+    border-radius: 8px;
+    width: auto;
+    max-width: 250px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#back-button:hover {
+    background: #e57373;
+}
+
+button {
+    background: #4facfe;
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin: 10px 0;
+    width: 100%; /* Make buttons full width */
+    box-sizing: border-box;
+}
+
+button:hover {
+    background: #00c6ff;
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+#level-selection button {
+    margin: 10px 0;
+}
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
@@ -262,181 +343,320 @@ h1 {
         <div id="result-container" class="hidden">
             <h2>Quiz Finished!</h2>
             <p>Your score: <span id="final-score"></span></p>
-                <button onclick="downloadCertificate()">Download Certificate as PDF</button>
-                <button onclick="backToHome()">Back to Home</button>
+            <button id="download-button" onclick="downloadCertificate()">Download Certificate as PDF</button>
+                <button id="back-button" onclick="backToHome()">Back to Home</button>
             </div>
+
+            <div id="star-container"></div> <!-- Star Rating Section -->
+            <div id="cert-container">
+
+            <div id="level-selection" class="hidden">
+                <h2>Select Level</h2>
+                <button onclick="selectLevel(1)">Level 1</button>
+                <button onclick="selectLevel(2)">Level 2</button>
+                <button onclick="selectLevel(3)">Level 3</button>
+                <button onclick="selectLevel(4)">Level 4</button>
+                <button onclick="selectLevel(5)">Level 5</button>
+            </div>
+            <audio id="background-music" loop>
+                <source src="Aseet/the-boys-beats-walking-in-the-park-funny-happy-instrumental-278239.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <audio id="correct-sound">
+                <source src="Aseet/correct.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <audio id="incorrect-sound">
+                <source src="Aseet/incorrect.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            
+            
         </div>
     </div>
-
-    <script>
-       const questions = [
-    { question: "Apa yang dimaksud dengan rukun Islam?", answers: ["Kepercayaan kepada Allah", "Ajaran tentang iman", "Prinsip dasar ajaran Islam", "Hukum dalam Islam"], correct: 2 },
-    { question: "Siapa nabi terakhir dalam Islam?", answers: ["Nabi Muhammad", "Nabi Isa", "Nabi Musa", "Nabi Ibrahim"], correct: 0 },
-    { question: "Berapa jumlah rakaat dalam shalat fardhu Subuh?", answers: ["1", "2", "3", "4"], correct: 1 },
-    { question: "Apa yang dimaksud dengan zakat?", answers: ["Pemberian harta untuk orang miskin", "Puasa di bulan Ramadhan", "Perjalanan ke Mekkah", "Shalat sunnah"], correct: 0 },
-    { question: "Apa yang menjadi kitab suci umat Islam?", answers: ["Al-Qur'an", "Injil", "Torah", "Psalms"], correct: 0 },
-    { question: "Apa yang dimaksud dengan puasa?", answers: ["Menahan lapar dan haus dari fajar hingga maghrib", "Membaca Al-Qur'an", "Berdoa sepanjang hari", "Ibadah malam"], correct: 0 },
-    { question: "Berapa kali sehari umat Islam wajib shalat?", answers: ["1", "2", "5", "7"], correct: 2 },
-    { question: "Siapa yang pertama kali masuk Islam?", answers: ["Ali bin Abi Talib", "Khadijah", "Abu Bakar", "Umar bin Khattab"], correct: 1 },
-    { question: "Apa nama bulan puasa dalam Islam?", answers: ["Ramadhan", "Syawal", "Dzulhijah", "Muharram"], correct: 0 },
-    { question: "Apa yang dimaksud dengan syahadat?", answers: ["Pernyataan iman kepada Allah", "Ibadah puasa", "Doa sebelum tidur", "Shalat berjamaah"], correct: 0 },
-    { question: "Siapa yang disebut dengan Khulafaur Rasyidin?", answers: ["Abu Bakar, Umar, Utsman, Ali", "Umar bin Khattab, Ali bin Abi Talib", "Abu Bakar, Hamzah, Ali", "Ali, Utsman, Zaid"], correct: 0 },
-    { question: "Berapa jumlah surah dalam Al-Qur'an?", answers: ["113", "114", "115", "120"], correct: 1 },
-    { question: "Apa yang dimaksud dengan 'Haji'?", answers: ["Perjalanan ibadah ke Mekkah", "Bersedekah", "Membaca Al-Qur'an", "Berpuasa"], correct: 0 },
-    { question: "Apa yang dimaksud dengan 'Malaikat Jibril'?", answers: ["Malaikat penyampai wahyu", "Malaikat penjaga neraka", "Malaikat yang mencatat amal", "Malaikat yang menjaga surga"], correct: 0 },
-    { question: "Apa yang dimaksud dengan 'Halal' dalam Islam?", answers: ["Yang diperbolehkan menurut hukum Islam", "Yang dilarang dalam Islam", "Perayaan dalam Islam", "Ajaran tentang kehidupan"], correct: 0 },
-    { question: "Siapa yang menulis wahyu yang diterima oleh Nabi Muhammad?", answers: ["Zayd bin Tsabit", "Ali bin Abi Talib", "Abu Bakar", "Umar bin Khattab"], correct: 0 },
-    { question: "Apa yang dimaksud dengan 'mukjizat'?", answers: ["Keajaiban yang diberikan kepada nabi", "Ibadah yang diperintahkan kepada umat Islam", "Kitab-kitab yang diturunkan kepada nabi", "Doa dalam kesulitan"], correct: 0 },
-    { question: "Berapa rakaat shalat tarawih yang dilakukan pada bulan Ramadhan?", answers: ["8", "10", "12", "20"], correct: 3 },
-    { question: "Apa nama surah yang paling pendek dalam Al-Qur'an?", answers: ["Al-Fatihah", "Al-Ikhlas", "An-Nas", "Al-Kafirun"], correct: 1 },
-    { question: "Siapa yang dikenal sebagai sahabat yang banyak meriwayatkan hadits?", answers: ["Abu Hurairah", "Ali bin Abi Talib", "Umar bin Khattab", "Abu Bakar"], correct: 0 },
-    { question: "Apa yang dimaksud dengan 'Shalawat'?", answers: ["Doa dan pujian untuk Nabi Muhammad", "Perjalanan suci ke Mekkah", "Puasa di bulan Ramadhan", "Baca Al-Qur'an bersama-sama"], correct: 0 }
-];
-
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let timer;
-        let userName = "";
-
-        const questionContainer = document.getElementById("question-container");
-        const answersContainer = document.getElementById("answers-container");
-        const timerElement = document.getElementById("time-left");
-        const userNameElement = document.getElementById("user-name");
-
-        function startQuiz() {
-            const usernameInput = document.getElementById("username").value.trim();
-            if (usernameInput === "") {
-                alert("Please enter your name to start the quiz.");
-                return;
-            }
-            userName = usernameInput;
-            document.getElementById("login-container").classList.add("hidden");
-            document.getElementById("quiz-container").classList.remove("hidden");
-            loadQuestion();
+<script>
+   const levels = {
+    1: [
+        { question: "Apa yang dimaksud dengan rukun Islam?", answers: ["Kepercayaan kepada Allah", "Ajaran tentang iman", "Prinsip dasar ajaran Islam", "Hukum dalam Islam"], correct: 2 },
+        { question: "Siapakah nabi terakhir dalam Islam?", answers: ["Nabi Isa", "Nabi Musa", "Nabi Muhammad", "Nabi Daud"], correct: 2 },
+        { question: "Apa yang menjadi kitab suci umat Islam?", answers: ["Al-Qur'an", "Injil", "Torah", "Psalms"], correct: 0 },
+        { question: "Berapa jumlah rakaat dalam salat subuh?", answers: ["2 rakaat", "4 rakaat", "3 rakaat", "5 rakaat"], correct: 0 },
+        { question: "Apa nama tempat ibadah umat Islam?", answers: ["Gereja", "Kuil", "Masjid", "Sinagoga"], correct: 2 },
+        { question: "Siapakah malaikat yang bertugas menyampaikan wahyu?", answers: ["Mikail", "Izrail", "Jibril", "Israfil"], correct: 2 },
+        { question: "Apa nama bulan suci dalam Islam?", answers: ["Syawal", "Ramadan", "Rabiul Awal", "Muharram"], correct: 1 },
+        { question: "Berapa kali umat Islam diwajibkan salat dalam sehari?", answers: ["3 kali", "5 kali", "4 kali", "2 kali"], correct: 1 },
+        { question: "Apa arti dari 'Bismillah'?", answers: ["Dengan nama Allah", "Salam sejahtera", "Allah Maha Besar", "Puji bagi Allah"], correct: 0 },
+        { question: "Apa nama hari raya yang dirayakan setelah bulan Ramadan?", answers: ["Idul Adha", "Idul Fitri", "Maulid Nabi", "Isra Mi'raj"], correct: 1 },
+        // Tambahkan 10 soal lainnya untuk level 1
+    ],
+    2: [
+        { question: "Apa yang menjadi kitab suci umat Islam?", answers: ["Al-Qur'an", "Injil", "Torah", "Psalms"], correct: 0 },
+        { question: "Berapa jumlah malaikat yang wajib diketahui dalam Islam?", answers: ["4", "10", "12", "7"], correct: 1 },
+        { question: "Apa nama perang pertama yang dipimpin oleh Nabi Muhammad?", answers: ["Perang Badar", "Perang Uhud", "Perang Khandak", "Perang Tabuk"], correct: 0 },
+        { question: "Apa yang dimaksud dengan qada?", answers: ["Kehendak Allah", "Hukum Allah", "Takdir yang bisa diubah", "Takdir yang tidak bisa diubah"], correct: 3 },
+        { question: "Siapakah ayah dari Nabi Yusuf?", answers: ["Nabi Ibrahim", "Nabi Yakub", "Nabi Ishak", "Nabi Ismail"], correct: 1 },
+        { question: "Apa arti dari 'Lailatul Qadar'?", answers: ["Malam takdir", "Malam cahaya", "Malam kemuliaan", "Malam keajaiban"], correct: 2 },
+        { question: "Siapakah sahabat Nabi yang dijuluki 'Pedang Allah'?", answers: ["Abu Bakar", "Umar bin Khattab", "Khalid bin Walid", "Ali bin Abi Thalib"], correct: 2 },
+        { question: "Apa arti dari kata 'Islam'?", answers: ["Kepatuhan", "Kedamaian", "Kebebasan", "Keimanan"], correct: 1 },
+        { question: "Apa yang dimaksud dengan muamalah?", answers: ["Hubungan ibadah", "Hubungan sosial", "Hubungan spiritual", "Hubungan pribadi"], correct: 1 },
+        { question: "Apa nama suku Nabi Muhammad?", answers: ["Quraish", "Yahudi", "Nasrani", "Ansar"], correct: 0 },
+        // Tambahkan 10 soal lainnya untuk level 2
+    ],
+    3: [
+        { question: "Apa yang dimaksud dengan rukun iman yang pertama?", answers: ["Iman kepada Allah", "Iman kepada malaikat", "Iman kepada kitab-kitab", "Iman kepada rasul"], correct: 0 },
+        { question: "Apa nama kota suci yang menjadi kiblat umat Islam?", answers: ["Madinah", "Jerusalem", "Mekkah", "Baghdad"], correct: 2 },
+        { question: "Apa arti dari 'Syahadat'?", answers: ["Pernyataan iman", "Kewajiban ibadah", "Pelaksanaan zakat", "Kisah para nabi"], correct: 0 },
+        { question: "Siapakah istri pertama Nabi Muhammad?", answers: ["Aisyah", "Khadijah", "Hafsah", "Zainab"], correct: 1 },
+        { question: "Apa nama malam yang lebih baik dari seribu bulan?", answers: ["Malam Isra' Mi'raj", "Malam Nisfu Sya'ban", "Lailatul Qadar", "Malam Idul Fitri"], correct: 2 },
+        { question: "Apa yang dimaksud dengan 'Zakat Fitrah'?", answers: ["Zakat untuk fakir miskin", "Zakat yang dikeluarkan saat Idul Fitri", "Zakat hasil panen", "Zakat emas dan perak"], correct: 1 },
+        { question: "Siapakah malaikat yang bertugas mencatat amal perbuatan manusia?", answers: ["Mikail", "Jibril", "Israfil", "Raqib dan Atid"], correct: 3 },
+        { question: "Apa nama anak Nabi Muhammad yang menjadi cucu pertama?", answers: ["Hasan", "Husain", "Zainab", "Fatimah"], correct: 0 },
+        { question: "Apa nama surah pertama dalam Al-Qur'an?", answers: ["Al-Baqarah", "An-Nas", "Al-Fatihah", "Al-Ikhlas"], correct: 2 },
+        { question: "Apa hukum berpuasa di bulan Ramadan bagi umat Islam?", answers: ["Sunnah", "Wajib", "Makruh", "Mubah"], correct: 1 },
+        // Tambahkan 10 soal lainnya untuk level 3
+    ],
+    4: [
+        { question: "Apa yang dimaksud dengan 'Khilafah' dalam Islam?", answers: ["Sistem pemerintahan Islam", "Sistem pendidikan Islam", "Sistem peradilan Islam", "Sistem perdagangan Islam"], correct: 0 },
+        { question: "Siapakah khalifah pertama setelah wafatnya Nabi Muhammad?", answers: ["Umar bin Khattab", "Ali bin Abi Thalib", "Utsman bin Affan", "Abu Bakar As-Siddiq"], correct: 3 },
+        { question: "Apa yang dimaksud dengan 'Ijtihad'?", answers: ["Pendapat ulama", "Penafsiran hukum Islam", "Perintah Allah", "Kisah-kisah nabi"], correct: 1 },
+        { question: "Apa nama perjanjian yang dilakukan antara Nabi Muhammad dan kaum Quraisy?", answers: ["Perjanjian Hudaibiyah", "Perjanjian Madinah", "Perjanjian Ta'if", "Perjanjian Khandaq"], correct: 0 },
+        { question: "Apa yang dimaksud dengan 'Jihad' dalam Islam?", answers: ["Perjuangan di jalan Allah", "Penyebaran agama Islam", "Pelaksanaan haji", "Mendirikan shalat"], correct: 0 },
+        { question: "Siapakah nabi yang diberi mukjizat berupa tongkat yang bisa berubah menjadi ular?", answers: ["Nabi Musa", "Nabi Isa", "Nabi Nuh", "Nabi Ibrahim"], correct: 0 },
+        { question: "Apa nama surah dalam Al-Qur'an yang berisi kisah tentang Maryam?", answers: ["Al-Mu'minun", "An-Nisa", "Maryam", "Al-Kahf"], correct: 2 },
+        { question: "Apa nama ibadah yang dilakukan pada bulan Dzulhijjah?", answers: ["Haji", "Umrah", "Tawaf", "Sa'i"], correct: 0 },
+        { question: "Siapakah khalifah Islam yang pertama kali membangun masjid di Kairo?", answers: ["Muawiyah bin Abu Sufyan", "Umar bin Khattab", "Amr bin Ash", "Abdurrahman bin Auf"], correct: 2 },
+        { question: "Apa arti dari 'Tauhid'?", answers: ["Mengesakan Allah", "Beribadah kepada Allah", "Mencintai Allah", "Menghormati Allah"], correct: 0 },
+        // Tambahkan 10 soal lainnya untuk level 4
+    ],
+    5: [
+        { question: "Apa yang dimaksud dengan 'Qiyas' dalam hukum Islam?", answers: ["Analog hukum Islam", "Penafsiran langsung dari Al-Qur'an", "Konsensus ulama", "Hukum tradisional"], correct: 0 },
+        { question: "Siapakah pendiri Dinasti Umayyah?", answers: ["Abu Bakar As-Siddiq", "Umar bin Khattab", "Utsman bin Affan", "Muawiyah bin Abu Sufyan"], correct: 3 },
+        { question: "Apa nama nabi yang disebut sebagai 'Khalilullah'?", answers: ["Nabi Ibrahim", "Nabi Musa", "Nabi Isa", "Nabi Muhammad"], correct: 0 },
+        { question: "Apa nama surah dalam Al-Qur'an yang berbicara tentang perlindungan dari kejahatan makhluk?", answers: ["Al-Falaq", "An-Nas", "Al-Kafirun", "Al-Masad"], correct: 0 },
+        { question: "Apa yang dimaksud dengan 'Fardhu Kifayah'?", answers: ["Kewajiban individu", "Kewajiban kolektif", "Kewajiban sunnah", "Kewajiban yang boleh ditinggalkan"], correct: 1 },
+        { question: "Siapakah nabi yang dikenal dengan kesabaran luar biasa saat diuji oleh Allah?", answers: ["Nabi Ayub", "Nabi Yunus", "Nabi Yusuf", "Nabi Hud"], correct: 0 },
+        { question: "Apa nama peristiwa di mana Nabi Muhammad diangkat ke langit?", answers: ["Isra' Mi'raj", "Hijrah", "Fathul Makkah", "Perjanjian Hudaibiyah"], correct: 0 },
+        { question: "Siapakah penulis Hadits yang terkenal dengan kitab Sahih-nya?", answers: ["Imam Bukhari", "Imam Muslim", "Imam Tirmidzi", "Imam Ahmad"], correct: 0 },
+        { question: "Apa yang dimaksud dengan 'Muamalah' dalam Islam?", answers: ["Hubungan sosial", "Hubungan ibadah", "Hubungan keluarga", "Hubungan antar bangsa"], correct: 0 },
+        { question: "Apa yang dimaksud dengan 'Istihsan' dalam hukum Islam?", answers: ["Preferensi hukum Islam", "Penafsiran literal", "Konsensus ulama", "Hukum tradisional"], correct: 0 },
+        // Tambahkan 10 soal lainnya untuk level 5
+    ]
+};
+    
+    let currentLevel = 1;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    let userName = "";
+    
+    function selectLevel(level) {
+        currentLevel = level;
+        document.getElementById("level-selection").classList.add("hidden");
+        document.getElementById("quiz-container").classList.remove("hidden");
+        loadQuestion();
+    }
+    
+    function startQuiz() {
+        const usernameInput = document.getElementById("username").value.trim();
+        if (usernameInput === "") {
+            alert("Please enter your name to start the quiz.");
+            return;
         }
+        userName = usernameInput;
+        document.getElementById("login-container").classList.add("hidden");
+        document.getElementById("level-selection").classList.remove("hidden");
+    }
+    
+    function loadQuestion() {
+    const questions = levels[currentLevel];
+    if (currentQuestionIndex >= questions.length) {
+        finishQuiz();
+        return;
+    }
 
-        function startTimer() {
-            let timeLeft = 120;
-            timerElement.textContent = timeLeft;
+    const currentQuestion = questions[currentQuestionIndex];
+    document.getElementById("question-container").textContent = currentQuestion.question;
+    const answersContainer = document.getElementById("answers-container");
+    answersContainer.innerHTML = "";
 
-            timer = setInterval(() => {
-                timeLeft--;
-                timerElement.textContent = timeLeft;
-                if (timeLeft === 0) {
-                    clearInterval(timer);
-                    nextQuestion(false);
-                }
-            }, 1000);
-        }
+    currentQuestion.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.onclick = () => nextQuestion(index === currentQuestion.correct);
+        answersContainer.appendChild(button);
+    });
 
-        function loadQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                finishQuiz();
-                return;
-            }
+    startTimer();
+}
 
-            const currentQuestion = questions[currentQuestionIndex];
-            questionContainer.textContent = currentQuestion.question;
-            answersContainer.innerHTML = "";
+function playBackgroundMusic() {
+    const music = document.getElementById('background-music');
+    music.volume = 0.5; // Atur volume musik sesuai keinginan
+    music.play();
+}
 
-            currentQuestion.answers.forEach((answer, index) => {
-                const button = document.createElement("button");
-                button.textContent = answer;
-                button.onclick = () => nextQuestion(index === currentQuestion.correct);
-                answersContainer.appendChild(button);
-            });
+function stopBackgroundMusic() {
+    const music = document.getElementById('background-music');
+    music.pause();
+    music.currentTime = 0; // Atur kembali ke awal
+}
 
-            startTimer();
-        }
+// Panggil fungsi playBackgroundMusic() saat memulai kuis
+function startQuiz() {
+    const usernameInput = document.getElementById("username").value.trim();
+    if (usernameInput === "") {
+        alert("Please enter your name to start the quiz.");
+        return;
+    }
+    userName = usernameInput;
+    document.getElementById("login-container").classList.add("hidden");
+    document.getElementById("level-selection").classList.remove("hidden");
+    playBackgroundMusic(); // Mulai musik latar
+}
 
-        function nextQuestion(isCorrect) {
+// Panggil fungsi stopBackgroundMusic() saat kuis selesai
+function finishQuiz() {
+    document.getElementById("quiz-container").classList.add("hidden");
+    document.getElementById("result-container").classList.remove("hidden");
+    document.getElementById("final-score").textContent = score;
+    document.getElementById("user-name").textContent = userName;
+
+    if (score > 0) {
+        document.getElementById("cert-container").style.display = "block";
+    }
+    stopBackgroundMusic(); // Hentikan musik latar
+}
+
+
+function startTimer() {
+    clearInterval(timer); // Clear any existing timer
+    let timeLeft = 30;
+    document.getElementById("time-left").textContent = timeLeft;
+    
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("time-left").textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
             clearInterval(timer);
-            if (isCorrect) score += 5;
-            currentQuestionIndex++;
-            loadQuestion();
+            nextQuestion(false); // Go to next question if time is up
         }
-
-        function finishQuiz() {
-            document.getElementById("quiz-container").classList.add("hidden");
-            document.getElementById("result-container").classList.remove("hidden");
-            document.getElementById("final-score").textContent = score;
-            userNameElement.textContent = userName;
-
-            if (score > 0) {
-                document.getElementById("cert-container").style.display = "block";
-            }
-        }
-
-        function downloadCertificate() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-
-    // Background color
-    doc.setFillColor(240, 240, 240);
-    doc.rect(0, 0, 210, 297, 'F');
-
-    // Gold border
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(5);
-    doc.rect(10, 10, 190, 277);
-
-    // Logo placeholder
-    doc.setFillColor(212, 175, 55);
-    doc.circle(105, 30, 15, 'F');
-    doc.setFillColor(255, 255, 255);
-    doc.circle(105, 30, 12, 'F');
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text("LOGO", 105, 34, { align: "center" });
-
-    // Title
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(24);
-    doc.setTextColor(212, 175, 55);
-    doc.text("Certificate of Completion", 105, 60, { align: "center" });
-
-    // Decorative line
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(1);
-    doc.line(30, 65, 180, 65);
-
-    // Presented to
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Presented to", 105, 90, { align: "center" });
-
-    // User name
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(27);
-    doc.text(userName, 105, 110, { align: "center" });
-
-    // Completion text
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(14);
-    doc.text("For successfully completing the Islamic Quiz", 105, 130, { align: "center" });
-
-    // Score
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(14);
-    doc.text(`Score: ${score}`, 105, 150, { align: "center" });
-
-    // Signature placeholder
-    doc.setFontSize(10);
-    doc.text("Authorized Signature", 105, 270, { align: "center" });
-    doc.line(80, 265, 130, 265); // Signature line
-
-    // Save the PDF
-    doc.save(`${userName}_Certificate.pdf`);
+    }, 1000);
 }
 
-function backToHome() {
-    // Option 2: Redirect to a specific homepage (if you have a URL)
-    // window.location.href = 'https://teajuskatess.github.io/farissragen/'; // Replace with your homepage URL
+function playCorrectSound() {
+    const sound = document.getElementById('correct-sound');
+    sound.play();
 }
 
-    </script>
+function playIncorrectSound() {
+    const sound = document.getElementById('incorrect-sound');
+    sound.play();
+}
+
+function nextQuestion(isCorrect) {
+    clearInterval(timer);
+    if (isCorrect) {
+        score += 5;
+        playCorrectSound(); // Mainkan suara benar
+    } else {
+        playIncorrectSound(); // Mainkan suara salah
+    }
+    currentQuestionIndex++;
+    loadQuestion();
+}
+
+    
+    function finishQuiz() {
+        document.getElementById("quiz-container").classList.add("hidden");
+        document.getElementById("result-container").classList.remove("hidden");
+        document.getElementById("final-score").textContent = score;
+        document.getElementById("user-name").textContent = userName;
+    
+        // Display star rating based on score
+    let starContainer = document.getElementById("star-container");
+    starContainer.innerHTML = '';  // Clear previous stars
+
+    let stars = 0;
+    if (score >= 90) {
+        stars = 3;  // 3 stars for score 90-100
+    } else if (score >= 50) {
+        stars = 2;  // 2 stars for score 50-89
+    } else if (score >= 5) {
+        stars = 1;  // 1 star for score 5-45
+    }
+
+    // Display the stars
+    for (let i = 0; i < stars; i++) {
+        let star = document.createElement("span");
+        star.classList.add("star");
+        star.textContent = "⭐";  // Unicode star
+        starContainer.appendChild(star);
+    }
+
+    if (score > 0) {
+        document.getElementById("cert-container").style.display = "block";
+    }
+    }
+    
+    function downloadCertificate() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+    
+        doc.setFillColor(240, 240, 240);
+        doc.rect(0, 0, 210, 297, 'F');
+    
+        doc.setDrawColor(212, 175, 55);
+        doc.setLineWidth(5);
+        doc.rect(10, 10, 190, 277);
+    
+        doc.setFillColor(212, 175, 55);
+        doc.circle(105, 30, 15, 'F');
+        doc.setFillColor(255, 255, 255);
+        doc.circle(105, 30, 12, 'F');
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text("LOGO", 105, 34, { align: "center" });
+    
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(24);
+        doc.setTextColor(212, 175, 55);
+        doc.text("Certificate of Completion", 105, 60, { align: "center" });
+    
+        doc.setDrawColor(212, 175, 55);
+        doc.setLineWidth(1);
+        doc.line(30, 65, 180, 65);
+    
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Presented to", 105, 90, { align: "center" });
+    
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(27);
+        doc.text(userName, 105, 110, { align: "center" });
+    
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(14);
+        doc.text("For successfully completing the Islamic Quiz", 105, 130, { align: "center" });
+    
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(14);
+        doc.text(`Score: ${score}`, 105, 150, { align: "center" });
+    
+        doc.setFontSize(10);
+        doc.text("Authorized Signature", 105, 270, { align: "center" });
+        doc.line(80, 265, 130, 265);
+    
+        doc.save(`${userName}_Certificate.pdf`);
+    }
+    
+    function backToHome() {
+        location.reload(); // Mengatur ulang permainan
+    }
+</script>
 </body>
 </html>
