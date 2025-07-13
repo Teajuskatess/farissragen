@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jadwal Sholat</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --card: #f0f0f0;
+      --primary: #009688;
+    }
+
+    [data-theme="dark"] {
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card: #1e1e1e;
+      --primary: #4db6ac;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 1rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    #hari-tanggal {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--primary);
+    }
+
+    #lokasi {
+      font-size: 0.95rem;
+      margin: 0.3rem;
+      color: gray;
+    }
+
+    /* Perubahan untuk waktu sekarang dan countdown */
+    #waktu-sekarang, #countdown {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+      color: var(--primary);
+    }
+
+    .toggle-container {
+      text-align: center;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .toggle-icon {
+      font-size: 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .waktu-info {
+      text-align: left;
+    }
+
+    .sholat-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .waktu-detail {
+      font-size: 0.9rem;
+      color: gray;
+    }
+
+    /* ANIMASI POPUP */
+    .popup {
+      animation: popup 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes popup {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+<header>
+  <h1>Jadwal Sholat Hari Ini</h1>
+  <div id="hari-tanggal">Memuat tanggal...</div>
+  <p id="lokasi">Mengambil lokasi...</p>
+  <p id="waktu-sekarang">Waktu sekarang: --:--:--</p>
+  <p id="countdown">Menuju sholat terdekat: --</p>
+</header>
+
+<div class="toggle-container">
+  <button class="toggle-icon" id="themeBtn" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="card-container" id="jadwal">
+  <!-- Jadwal akan ditambahkan via JS -->
+</div>
+
+<script>
+  let timingsGlobal = {};
+  let sholatList = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+  let namaSholat = {
+    Fajr: "Subuh",
+    Dhuhr: "Dzuhur",
+    Asr: "Ashar",
+    Maghrib: "Maghrib",
+    Isha: "Isya"
+  };
+  let waktuTerdekat = null;
+
+  // Fungsi tampilkan hari dan tanggal dengan format bahasa Indonesia
+  function tampilkanHariTanggal() {
+    const now = new Date();
+    const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const bulanList = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    const hari = hariList[now.getDay()];
+    const tanggal = now.getDate();
+    const bulan = bulanList[now.getMonth()];
+    const tahun = now.getFullYear();
+
+    document.getElementById("hari-tanggal").textContent = `${hari}, ${tanggal} ${bulan} ${tahun}`;
+  }
+
+  // Reverse geocoding untuk konversi lat,lon jadi nama lokasi menggunakan OpenStreetMap Nominatim
+  async function getNamaLokasi(lat, lon) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
+      const res = await fetch(url, { headers: { "User-Agent": "JadwalSholatApp" } });
+      const data = await res.json();
+      if (data.address) {
+        // Pilih yang paling representatif dari address
+        return data.address.city || data.address.town || data.address.village || data.address.county || data.address.state || "Lokasi tidak diketahui";
+      } else {
+        return "Lokasi tidak diketahui";
+      }
+    } catch(e) {
+      return "Gagal mengambil lokasi";
+    }
+  }
+
+  async function fetchJadwal(lat, lon) {
+    const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`);
+    const data = await response.json();
+    return data.data.timings;
+  }
+
+  function waktuPlus(waktuStr, menitDelta) {
+    const [jam, menit] = waktuStr.split(":").map(Number);
+    const date = new Date();
+    date.setHours(jam, menit, 0, 0);
+    date.setMinutes(date.getMinutes() + menitDelta);
+    return date.toTimeString().slice(0,5);
+  }
+
+  function tampilkanJadwal(timings) {
+    timingsGlobal = timings;
+    const container = document.getElementById("jadwal");
+    container.innerHTML = "";
+
+    sholatList.forEach((key, index) => {
+      const waktuSholat = timings[key];
+      const waktuAdzan = waktuPlus(waktuSholat, -5);
+      const waktuIqamah = waktuPlus(waktuSholat, 10);
+
+      const card = document.createElement("div");
+      card.className = "card popup";
+      card.style.animationDelay = `${index * 0.1}s`;
+
+      card.innerHTML = `
+        <div class="waktu-info">
+          <div class="sholat-title">${namaSholat[key]}</div>
+          <div class="waktu-detail">Adzan: ${waktuAdzan}</div>
+          <div class="waktu-detail">Iqamah: ${waktuIqamah}</div>
+        </div>
+        <div><strong>${waktuSholat}</strong></div>
+      `;
+      container.appendChild(card);
+    });
+
+    hitungWaktuTerdekat();
+  }
+
+  async function getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const lokasiNama = await getNamaLokasi(lat, lon);
+        document.getElementById("lokasi").textContent = `Lokasi: ${lokasiNama}`;
+        const jadwal = await fetchJadwal(lat, lon);
+        tampilkanJadwal(jadwal);
+      }, () => {
+        document.getElementById("lokasi").textContent = "Gagal mendapatkan lokasi.";
+      });
+    } else {
+      document.getElementById("lokasi").textContent = "Browser tidak mendukung geolokasi.";
+    }
+  }
+
+  function toggleTheme() {
+    const body = document.body;
+    const themeBtn = document.getElementById("themeBtn");
+    const current = body.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    body.setAttribute("data-theme", next);
+    themeBtn.textContent = next === "dark" ? "🌞" : "🌙";
+  }
+
+  function format2Digit(num) {
+    return num < 10 ? "0" + num : num;
+  }
+
+  function updateWaktuSekarang() {
+    const now = new Date();
+    const jam = format2Digit(now.getHours());
+    const menit = format2Digit(now.getMinutes());
+    const detik = format2Digit(now.getSeconds());
+    document.getElementById("waktu-sekarang").textContent = `Waktu sekarang: ${jam}:${menit}:${detik}`;
+
+    if (waktuTerdekat) {
+      const selisihMs = waktuTerdekat.getTime() - now.getTime();
+      if (selisihMs <= 0) {
+        document.getElementById("countdown").textContent = "Sholat sedang berlangsung atau telah lewat.";
+        hitungWaktuTerdekat(); // update ke sholat berikutnya
+        return;
+      }
+      const s = Math.floor(selisihMs / 1000);
+      const hh = format2Digit(Math.floor(s / 3600));
+      const mm = format2Digit(Math.floor((s % 3600) / 60));
+      const ss = format2Digit(s % 60);
+      document.getElementById("countdown").textContent =
+        `Menuju sholat ${namaSholat[waktuTerdekat.nama]}: ${hh}:${mm}:${ss}`;
+    }
+  }
+
+  function hitungWaktuTerdekat() {
+    const now = new Date();
+    const sekarangMenit = now.getHours() * 60 + now.getMinutes();
+
+    let minSelisih = Infinity;
+    let targetWaktu = null;
+
+    for (const key of sholatList) {
+      const [jam, menit] = timingsGlobal[key].split(":").map(Number);
+      const totalMenit = jam * 60 + menit;
+      const selisih = totalMenit - sekarangMenit;
+
+      if (selisih >= 0 && selisih < minSelisih) {
+        minSelisih = selisih;
+        const waktu = new Date();
+        waktu.setHours(jam, menit, 0, 0);
+        waktu.nama = key;
+        targetWaktu = waktu;
+      }
+    }
+
+    waktuTerdekat = targetWaktu;
+  }
+
+  // Inisialisasi
+  tampilkanHariTanggal();
+  getUserLocation();
+  setInterval(() => {
+    tampilkanHariTanggal(); // update tanggal kalau lewat tengah malam
+    updateWaktuSekarang();
+  }, 1000);
+</script>
+
+</body>
+</html>

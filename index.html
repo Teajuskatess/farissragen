@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forum Komunikasi Rohis Sragen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="asset/logo.ico" />
+</head>
+<body>
+  <!-- Tambahkan tepat setelah <body> -->
+<body>
+  <div id="loader" style="position:fixed;z-index:2000;top:0;left:0;width:100vw;height:100vh;background:#e0e5ec;display:flex;align-items:center;justify-content:center;transition:opacity 0.4s;">
+    <div style="text-align:center;">
+      <div style="margin-top:18px;">
+        <span style="display:inline-block;width:12px;height:12px;margin:0 2px;background:#185a9d;border-radius:50%;animation:bounce 1s infinite alternate;"></span>
+        <span style="display:inline-block;width:12px;height:12px;margin:0 2px;background:#43cea2;border-radius:50%;animation:bounce 1s 0.3s infinite alternate;"></span>
+        <span style="display:inline-block;width:12px;height:12px;margin:0 2px;background:#185a9d;border-radius:50%;animation:bounce 1s 0.6s infinite alternate;"></span>
+      </div>
+      <div style="margin-top:12px;color:#185a9d;font-weight:600;font-size:1.1em;">Memuat...</div>
+    </div>
+  </div>
+  <style>
+    @keyframes bounce {
+      to { transform: translateY(-16px); opacity: 0.7; }
+    }
+    body.loaded #loader {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+  </style>
+<!-- ...existing code... -->
+
+  <!-- Overlay for blur effect -->
+  <div id="overlay" class="overlay"></div>
+
+  <header>
+    <nav class="navbar">
+     <div class="logo"><img src="asset/icon.png" alt="logo" /></div>
+      <div class="menu-btn" id="menuToggle">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#welcome">Beranda</a></li>
+        <li><a href="#struktur">Struktur</a></li>
+        <li><a href="#kegiatan">Kegiatan</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+    </nav>
+  </header>
+
+ <!-- ...existing code... -->
+<main>
+  <section id="welcome" class="section welcome">
+    <h1>Selamat Datang di Website Kami</h1>
+    <p>Forum kami adalah sebuah organisasi yang menawarkan berbagai kegiatan menarik yang bertujuan untuk meningkatkan kualitas dan semangat komunitas. Kami menciptakan berbagai program yang tidak hanya menyenangkan, tetapi juga mendidik dan memberi dampak positif bagi semua anggotanya.</p>
+    <h1>Mengapa Harus Bergabung Dengan Kami?</h1>
+    <p>Forum ini tidak hanya tentang kegiatan, tetapi juga tentang semangat kebersamaan. Dengan bergabung, Anda akan mendapat kesempatan untuk mengembangkan potensi diri, belajar hal baru, dan tentu saja membangun hubungan yang lebih erat dengan sesama anggota. Kami percaya bahwa setiap individu dapat berkontribusi dalam menciptakan lingkungan yang lebih positif dan penuh semangat!</p>
+    <a href="https://forms.gle/your-gform-link" target="_blank" class="btn" style="display:inline-block;margin-top:18px;">Daftar Sekarang</a>
+  </section>
+<!-- ...existing code... -->
+
+    <section id="struktur" class="section struktur">
+      <h2>Struktur Organisasi</h2>
+      <div class="cards">
+         <div class="card"><h3>Pembina</h3><p>Aritona Rachmawati S.E.</p></div>
+        <div class="card"><h3>Ketua</h3><p> Imtiya Ayas Rozan</p></div>
+        <div class="card"><h3>Wakil Ketua</h3><p>Ruslan Maulana</p></div>
+        <div class="card"><h3>Sekretaris</h3><p>Dinar Tariska Hakim</p></div>
+        <div class="card"><h3>Bendahara</h3><p>Bunga Cinta Lestari</p></div>
+      </div>
+    </section>
+
+ <section id="kegiatan" class="section kegiatan">
+  <h2>Kegiatan Kami</h2>
+  <div class="slideshow-container">
+    <div class="slide fade" data-caption="Festival Rohis"><img src="asset/fest.jpg" alt="Kegiatan 1" /><div class="caption-overlay">Festival Rohis</div></div>
+    <div class="slide fade" data-caption="Forum Group Study"><img src="asset/fgs.jpg" alt="Kegiatan 2" /><div class="caption-overlay">Forum Group Study</div></div>
+    <div class="slide fade" data-caption="Hammad"><img src="asset/hammad.jpg" alt="Kegiatan 3" /><div class="caption-overlay">Hammad</div></div>
+    <div class="slide fade" data-caption="Hanbon"><img src="asset/hanbon.jpg" alt="Kegiatan 4" /><div class="caption-overlay">Hanbon</div></div>
+    <div class="slide fade" data-caption="Mabit"><img src="asset/mabit.jpg" alt="Kegiatan 5" /><div class="caption-overlay">Mabit</div></div>
+  </div>
+</section>
+
+   <section id="kontak" class="section kontak">
+  <h2>Kontak Kami</h2>
+  <a href="https://wa.me/6281234567890" target="_blank" class="btn button-daftar" style="margin:8px 8px 0 0;min-width:160px;">
+    Whatsapp Forum
+  </a>
+  <a href="https://instagram.com/rohis_official" target="_blank" class="btn button-daftar" style="margin:8px 0 0 0;min-width:160px;">
+    Instagram Forum
+  </a>
+</section>
+
+   <footer>
+  <p style="margin-bottom:10px;">&copy; 2025 Forum Komunikasi Rohis Sragen. All rights reserved.</p>
+  <div style="margin-bottom:6px;">
+    <a href="https://wa.me/6281234567890" target="_blank" style="display:inline-block;margin:0 8px;vertical-align:middle;">
+      <img src="asset/wa.svg" alt="WhatsApp" style="height:20px;width:28px;">
+    </a>
+    <a href="https://instagram.com/rohis_official" target="_blank" style="display:inline-block;margin:0 8px;vertical-align:middle;">
+      <img src="asset/ig.svg" alt="Instagram" style="height:20px;width:28px;">
+    </a>
+     <a href="https://instagram.com/rohis_official" target="_blank" style="display:inline-block;margin:0 8px;vertical-align:middle;">
+      <img src="asset/tt.svg" alt="Instagram" style="height:20px;width:28px;">
+    </a>
+     <a href="https://instagram.com/rohis_official" target="_blank" style="display:inline-block;margin:0 8px;vertical-align:middle;">
+      <img src="asset/yt.svg" alt="Instagram" style="height:20px;width:28px;">
+    </a>
+  </div>
+</footer>
+  </main>
+
+ </body>
+<script>
+  // Smooth scroll for menu links
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+        // Jika menu mobile, tutup menu setelah klik
+        document.getElementById('navLinks').classList.remove('show');
+        document.getElementById('overlay').classList.remove('show');
+        document.getElementById('menuToggle').classList.remove('open');
+      }
+    });
+  });
+</script>
+
+  <script src="script.js"></script>
+</body>
+</html>

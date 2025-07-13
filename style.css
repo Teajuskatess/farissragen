@@ -1,0 +1,299 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #e0e5ec;
+  color: #333;
+  scroll-behavior: smooth;
+}
+
+/* OVERLAY for background blur */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(224, 229, 236, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 500;
+  display: none;
+}
+.overlay.show {
+  display: block;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e0e5ec;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 12px;
+  box-shadow: inset 8px 8px 16px #bec4c9,
+              inset -8px -8px 16px #ffffff;
+  position: relative;
+}
+.logo {
+  font-weight: bold;
+  font-size: 1.4em;
+  color: #2c3e50;
+}
+
+/* Hamburger menu */
+.menu-btn {
+  width: 30px;
+  height: 25px;
+  position: relative;
+  cursor: pointer;
+  z-index: 1000;
+}
+.menu-btn div {
+  background-color: #2c3e50;
+  height: 4px;
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: 0.4s;
+}
+.menu-btn.open .bar1 {
+  transform: rotate(-45deg) translate(-6px, 6px);
+}
+.menu-btn.open .bar2 {
+  opacity: 0;
+}
+.menu-btn.open .bar3 {
+  transform: rotate(45deg) translate(-6px, -6px);
+}
+
+/* Dropdown menu */
+.nav-links {
+  list-style: none;
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 2em;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  text-align: center;
+  width: 80%;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+.nav-links.show {
+  display: flex;
+}
+.nav-links a {
+  color: #2c3e50;
+  text-decoration: none;
+  padding: 1em 0;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.logo img {
+  height: 110px;
+  width: auto;
+  vertical-align: middle;
+  border-radius: 2px;
+  padding: 2px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.logo img:hover {
+  transform: scale(1.07) rotate(-2deg);
+}
+
+/* SECTIONS */
+.section {
+  padding: 2em 1em;
+  margin: 1em;
+  background: #e0e5ec;
+  border-radius: 20px;
+  box-shadow: 8px 8px 16px #bec4c9,
+              -8px -8px 16px #ffffff;
+  text-align: center;
+}
+.section h1, .section h2 {
+  margin-bottom: 0.5em;
+  color: #1e2a38;
+}
+
+/* Rata kiri hanya pada section welcome */
+.section.welcome {
+  text-align: left !important;
+}
+
+/* Tambahkan/ubah style khusus untuk section welcome agar ada jarak antar elemen */
+.section.welcome h1,
+.section.welcome p,
+.section.welcome .btn {
+  margin-bottom: 1.2em;
+}
+
+.section.welcome h1 {
+  margin-top: 0.5em;
+}
+
+.section.welcome .btn {
+  margin-top: 1.5em;
+  margin-bottom: 0;
+}
+
+/* Rata kiri hanya pada section welcome */
+.section.kontak {
+  text-align: left !important;
+}
+
+
+.btn, .button-daftar {
+  display: inline-block;
+  background: #e0e5ec; /* sama seperti .card */
+  color: #185a9d;
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 0.8em 2.2em;
+  border: none;
+  border-radius: 24px;
+  box-shadow: 8px 8px 16px #bec4c9,
+              -8px -8px 16px #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s, color 0.2s;
+  margin-top: 18px;
+}
+.btn:hover, .button-daftar:hover {
+  background: #185a9d;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(67, 206, 162, 0.18);
+  transform: translateY(-2px) scale(1.04);
+}
+
+
+/* CARDS */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em;
+}
+.card {
+  background: #e0e5ec;
+  padding: 1em;
+  border-radius: 16px;
+  box-shadow: 8px 8px 16px #bec4c9,
+              -8px -8px 16px #ffffff;
+  width: 160px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 8px 8px 20px #bec4c9,
+              -8px -8px 20px #ffffff;
+}
+
+/* SLIDESHOW */
+.slideshow-container {
+  max-width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 8px 8px 16px #bec4c9,
+              -8px -8px 16px #ffffff;
+}
+.slide {
+  display: none;
+}
+.slide img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+/* Efek gradient hitam & nama kegiatan saat gambar kegiatan di klik */
+.slide {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Efek gradient hitam halus & nama kegiatan saat gambar kegiatan di klik */
+.slide .caption-overlay {
+  display: none;
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  padding: 18px 16px 12px 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.442) 60%, rgba(0,0,0,0.25) 90%, rgba(0,0,0,0.0) 100%);
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 0 0 20px 20px;
+  z-index: 2;
+  transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slide.active .caption-overlay {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* KONTAK */
+.kontak p {
+  margin: 0.5em 0;
+  font-weight: 500;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  background: #e0e5ec;
+  padding: 1em;
+  margin: 2em 1em 1em;
+  border-radius: 16px;
+  box-shadow: inset 8px 8px 16px #bec4c9,
+              inset -8px -8px 16px #ffffff;
+  color: #34495e;
+}
+
+/* RESPONSIVE DESKTOP */
+@media (min-width: 768px) {
+  .nav-links {
+    list-style: none;
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    padding: 0;
+    transform: none;
+    width: auto;
+  }
+  .nav-links a {
+    margin-left: 1em;
+    font-size: 1em;
+    padding: 0;
+  }
+  .menu-btn {
+    display: none;
+  }
+}
+
+
