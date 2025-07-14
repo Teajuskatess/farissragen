@@ -156,6 +156,143 @@ body {
   text-align: left !important;
 }
 
+/* ...existing code... */
+.section.sponsor {
+  text-align: center;
+  padding: 32px 0;
+}
+/* ...existing code... */
+.sponsor-marquee {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  margin-top: 18px;
+  background: transparent;
+}
+
+.sponsor-track {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  /* width: max-content; */
+  animation: marquee-left 22s linear infinite;
+}
+
+.sponsor-track a {
+  display: inline-block;
+}
+
+.sponsor-track img {
+  height: 60px;
+  max-width: 120px;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+
+.sponsor-track a:hover img {
+  transform: scale(1.08);
+}
+
+/* Animasi berjalan mulus tanpa putus */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+/* ...existing code... */
+
+
+/* ...existing code... */
+.section.info-sholat {
+  background: #e0e5ec;
+  color: #000000;
+  padding: 0.5em 0.5em;    /* lebih kecil */
+  margin: 0.5em auto;    /* lebih kecil dan tengah */
+  border-radius: 16px;   /* lebih kecil */
+  box-shadow: 4px 4px 12px #bec4c9,
+              -4px -4px 12px #ffffff;
+  text-align: center;
+}
+
+.info-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 32px;
+  flex-wrap: wrap;
+  min-height: 120px;
+  transition: all 0.3s;
+}
+
+.info-container.all-show {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.info-container.all-show .flip-card {
+  flex: 1 1 0;
+  margin: 0;
+  position: relative;
+}
+
+/* Pembatas vertikal antar flip-card */
+.info-container.all-show .flip-card:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  right: 0;
+  width: 2px;
+  height: 64%;
+  background: #bec4c9;
+  border-radius: 2px;
+  opacity: 0.7;
+  z-index: 1;
+}
+
+/* Responsive mobile: tetap stack ke bawah */
+@media (max-width: 600px) {
+  .info-container.all-show {
+    flex-direction: column;
+    gap: 8px;
+    max-width: 98vw;
+  }
+  /* TETAP tampilkan garis pembatas di mobile */
+  .info-container.all-show .flip-card:not(:last-child)::after {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 90%;
+    width: 64%;
+    height: 2px;
+    background: #bec4c9;
+    border-radius: 2px;
+    opacity: 0.7;
+    z-index: 1;
+    transform: translateX(-50%);
+    /* Garis horizontal di bawah setiap flip-card kecuali terakhir */
+  }
+}
+
+/* Saat hanya satu info muncul, flip-card di tengah */
+.info-container:not(.all-show) {
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+.info-container:not(.all-show) .flip-card {
+  margin: 0 auto;
+}
+/* ...existing code... */
+
 
 .btn, .button-daftar {
   display: inline-block;
