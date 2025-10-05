@@ -1,209 +1,245 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Daily Rutin Rohis - Mobile</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root{
-      --brand-500: #1e40af;
-      --brand-300: #60a5fa;
-    }
-    .fade-hidden{opacity:0;transform:translateY(6px);height:0;overflow:hidden;transition:all .32s ease}
-    .fade-show{opacity:1;transform:translateY(0);height:auto;padding-top:0.5rem}
-    .pill{@apply inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-medium;}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.9),white);box-shadow:0 6px 18px rgba(2,6,23,0.06);border-radius:14px}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Form Rutinan Faris</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-800 font-sans">
-  <div id="app" class="p-4 max-w-md mx-auto"><!-- LOGIN PAGE -->
-<main id="page-login" class="card p-5 mt-8">
-  <h1 class="text-2xl font-semibold text-[var(--brand-500)]">Login Rohis Daily</h1>
-  <p class="text-sm text-slate-600 mt-1">Masuk dengan format nama khusus. contoh: <span class="font-medium">faris@yusuf</span></p>
-  <label class="block mt-5 text-sm">Username</label>
-  <input id="login-username" type="text" placeholder="contoh: faris@yusuf" class="mt-2 w-full rounded-lg border px-3 py-2 outline-none" />
-  <label class="block mt-4 text-sm">Nama Lengkap</label>
-  <input id="login-fullname" type="text" placeholder="Yusuf Ramadhan" class="mt-2 w-full rounded-lg border px-3 py-2 outline-none" />
-  <button id="btn-login" class="mt-5 w-full bg-[var(--brand-500)] text-white rounded-lg py-2 font-semibold">Masuk</button>
-  <p id="login-note" class="text-xs text-slate-500 mt-3">Catatan: ini demo login sisi-klien.</p>
-</main>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center">
 
-<!-- FORM PAGE -->
-<section id="page-form" class="hidden">
-  <header class="flex items-center justify-between mt-4 mb-4">
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="w-full max-w-sm bg-white p-6 rounded-2xl shadow-md">
+  <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">Login Disini</h2>
+  <input id="loginName" type="text" placeholder="Masukkan Nama Lengkap" class="w-full p-2 border rounded mb-3 focus:outline-blue-500">
+  <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Masuk</button>
+</div>
+
+<!-- MAIN FORM PAGE -->
+<div id="mainPage" class="hidden w-full max-w-md bg-white p-6 rounded-2xl shadow-lg relative">
+  <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">Daily Routine Faris</h2>
+  
+  <!-- GREETING -->
+  <div class="mb-4 text-left">
+    <p id="greeting" class="text-lg font-semibold text-gray-700"></p>
+    <p class="text-sm text-gray-500">Harap isi sesuai dengan yang kamu lakukan hari ini.</p>
+  </div>
+
+  <div class="mb-3 flex items-center justify-between">
+    <div class="flex-1 mr-2">
+      <label class="block text-sm font-semibold">Nama Lengkap:</label>
+      <input id="userName" readonly class="w-full p-2 border rounded bg-gray-100">
+    </div>
+    <button id="logoutBtn" onclick="confirmLogout()" class="mt-5 p-2 rounded hover:bg-gray-200 text-gray-500" title="Logout">
+      <i data-lucide="log-out" class="w-5 h-5"></i>
+    </button>
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-sm font-semibold mb-1">Sholat Wajib Yang Kamu Lakukan:</label>
+    <div id="sholatButtons" class="grid grid-cols-3 gap-2">
+      <button class="btn-sholat" data-value="Subuh">Subuh</button>
+      <button class="btn-sholat" data-value="Dzuhur">Dzuhur</button>
+      <button class="btn-sholat" data-value="Ashar">Ashar</button>
+      <button class="btn-sholat" data-value="Maghrib">Maghrib</button>
+      <button class="btn-sholat" data-value="Isya">Isya</button>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="block text-sm font-semibold">Hafalan / Murojaah Yang kamu Lakukan:</label>
+    <input type="checkbox" id="hafalanCheck" class="mr-2"> Sudah Melakukan
+    <div id="hafalanInput" class="hidden mt-2">
+      <label class="text-sm">Jumlah Juz:</label>
+      <input id="juzInput" type="number" min="0" class="w-full p-2 border rounded">
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-2 mb-3">
     <div>
-      <h2 id="greet" class="text-lg font-semibold text-[var(--brand-500)]">Assalamu'alaikum,</h2>
-      <p id="sub-greet" class="text-sm text-slate-600">Catat aktivitas harianmu</p>
+      <label class="block text-sm font-semibold">Tahajud</label>
+      <input id="tahajud" type="number" class="w-full p-2 border rounded" placeholder="rakaat">
     </div>
-    <button id="btn-logout" class="text-sm text-slate-500">Logout</button>
-  </header>
+    <div>
+      <label class="block text-sm font-semibold">Dhuha</label>
+      <input id="dhuha" type="number" class="w-full p-2 border rounded" placeholder="rakaat">
+    </div>
+    <div>
+      <label class="block text-sm font-semibold">Rawatib</label>
+      <input id="rawatib" type="number" class="w-full p-2 border rounded" placeholder="rakaat">
+    </div>
+  </div>
 
-  <form id="daily-form" class="space-y-4">
-    <div class="card p-4">
-      <label class="block text-sm text-slate-600">Nama</label>
-      <input id="user-name" name="name" class="mt-2 w-full rounded-md border px-3 py-2" readonly />
-    </div>
-    <div class="card p-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-medium">Sholat Wajib (5 waktu)</h3>
-        <span class="text-xs text-slate-500">Pilih yang sudah dilakukan</span>
-      </div>
-      <div id="sholat-group" class="mt-3 grid grid-cols-5 gap-2"></div>
-      <p class="text-xs text-slate-400 mt-2">Catatan: ini hanya demo, tidak perlu memilih semuanya.</p>
-    </div>
-    <div class="card p-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-medium">Hafalan / Murojaah</h3>
-        <label class="text-sm flex items-center gap-2">
-          <input id="hafalan-toggle" type="checkbox" class="w-4 h-4" />
-          <span class="text-xs text-slate-500">Saya mengisi</span>
-        </label>
-      </div>
-      <p class="text-sm text-slate-600 mt-2">Aktifkan untuk isi jumlah juz.</p>
-      <div id="hafalan-input" class="fade-hidden mt-2">
-        <label class="block text-xs text-slate-500">Berapa juz?</label>
-        <input id="jumlah-juz" type="number" min="1" max="30" placeholder="Masukkan jumlah juz (angka)" class="mt-1 w-full rounded-md border px-3 py-2" />
-      </div>
-    </div>
-    <div class="card p-4">
-      <h3 class="font-medium">Sunnah</h3>
-      <div class="mt-3 space-y-3">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-sm font-medium">Tahajud</div>
-            <div class="text-xs text-slate-500">Berapa rakaat?</div>
-          </div>
-          <input id="tahajud-input" type="number" min="0" placeholder="mis: 2" class="w-20 rounded-md border px-2 py-1" />
-        </div>
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-sm font-medium">Dhuha</div>
-            <div class="text-xs text-slate-500">Berapa rakaat?</div>
-          </div>
-          <input id="dhuha-input" type="number" min="0" placeholder="mis: 2" class="w-20 rounded-md border px-2 py-1" />
-        </div>
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-sm font-medium">Rawatib</div>
-            <div class="text-xs text-slate-500">Berapa rakaat?</div>
-          </div>
-          <input id="rawatib-input" type="number" min="0" placeholder="mis: 4" class="w-20 rounded-md border px-2 py-1" />
-        </div>
-      </div>
-    </div>
-    <div class="flex gap-3">
-      <button id="btn-save" type="button" class="flex-1 py-2 rounded-lg bg-[var(--brand-500)] text-white font-semibold">Simpan</button>
-      <button id="btn-reset" type="button" class="flex-1 py-2 rounded-lg border border-slate-200">Kosongkan</button>
-    </div>
-    <p id="save-note" class="text-xs text-slate-500 mt-2">Data disimpan di localStorage (demo).</p>
-  </form>
-</section>
-
-<!-- POPUP -->
-<div id="popup" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-2xl shadow-lg text-center w-72">
-    <h3 class="text-lg font-semibold text-[var(--brand-500)]">Terima Kasih!</h3>
-    <p class="text-sm text-slate-600 mt-2">Data daily rutinmu sudah tersimpan.</p>
-    <button id="btn-close-popup" class="mt-4 bg-[var(--brand-500)] text-white rounded-lg px-4 py-2 w-full">Tutup</button>
+  <div class="flex gap-2">
+    <button onclick="saveData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Simpan</button>
+    <button onclick="clearData()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded">Kosongkan</button>
   </div>
 </div>
 
-  </div>  <script>
-    const loginPage=document.getElementById('page-login');
-    const formPage=document.getElementById('page-form');
-    const popup=document.getElementById('popup');
-    const btnClosePopup=document.getElementById('btn-close-popup');
+<!-- POPUP SIMPAN -->
+<div id="popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-2xl shadow-xl text-center">
+    <h3 class="text-xl font-semibold text-blue-700 mb-2">Terima kasih!</h3>
+    <p>Data Daily Routine kamu sudah tersimpan 🙏</p>
+    <button onclick="closePopup()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Tutup</button>
+  </div>
+</div>
 
-    const btnLogin=document.getElementById('btn-login');
-    const btnLogout=document.getElementById('btn-logout');
-    const userNameInput=document.getElementById('user-name');
-    const greet=document.getElementById('greet');
-    const sholat=['Subuh','Dzuhur','Ashar','Maghrib','Isya'];
+<!-- POPUP LOGOUT -->
+<div id="logoutPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-2xl shadow-xl text-center">
+    <h3 class="text-xl font-semibold text-blue-700 mb-3">Konfirmasi Logout</h3>
+    <p class="text-gray-600 mb-4">Apakah kamu yakin ingin keluar dari halaman ini?</p>
+    <div class="flex justify-center gap-3">
+      <button onclick="performLogout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Ya, Logout</button>
+      <button onclick="cancelLogout()" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Batal</button>
+    </div>
+  </div>
+</div>
 
-    function createSholatButtons(){
-      const c=document.getElementById('sholat-group');
-      c.innerHTML='';
-      sholat.forEach(n=>{
-        const b=document.createElement('button');
-        b.type='button';
-        b.className='pill border text-slate-700 bg-white hover:shadow';
-        b.textContent=n;
-        b.dataset.selected='false';
-        b.onclick=()=>{
-          const s=b.dataset.selected==='true';
-          b.dataset.selected=(!s).toString();
-          b.classList.toggle('bg-[var(--brand-300)]',!s);
-          b.classList.toggle('text-white',!s);
-        };
-        c.appendChild(b);
-      });
-    }
+<script>
+const { jsPDF } = window.jspdf;
+lucide.createIcons();
 
-    btnLogin.onclick=()=>{
-      const username=document.getElementById('login-username').value.trim();
-      const fullname=document.getElementById('login-fullname').value.trim();
-      if(!username){alert('Masukkan username');return;}
-      localStorage.setItem('rohis_user',JSON.stringify({username,fullname}));
-      openForm();
-    }
-    btnLogout.onclick=()=>{localStorage.removeItem('rohis_user');location.reload();};
+// Tombol sholat toggle
+document.querySelectorAll('.btn-sholat').forEach(btn => {
+  btn.classList.add('bg-gray-100', 'p-2', 'rounded', 'text-sm');
+  btn.addEventListener('click', () => btn.classList.toggle('bg-blue-200'));
+});
 
-    function openForm(){
-      loginPage.classList.add('hidden');
-      formPage.classList.remove('hidden');
-      createSholatButtons();
-      const s=JSON.parse(localStorage.getItem('rohis_user')||'null');
-      userNameInput.value=s.fullname||s.username;
-      greet.textContent=`Assalamu'alaikum, ${s.fullname||s.username}`;
-    }
+// Hafalan fade-in
+document.getElementById('hafalanCheck').addEventListener('change', e => {
+  const input = document.getElementById('hafalanInput');
+  if (e.target.checked) {
+    input.classList.remove('hidden');
+    input.classList.add('animate-fadeIn');
+  } else {
+    input.classList.add('hidden');
+  }
+});
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      const s=JSON.parse(localStorage.getItem('rohis_user')||'null');
-      if(s)openForm();
+// Login
+function login() {
+  const name = document.getElementById('loginName').value.trim();
+  if (!name) return alert('Masukkan nama terlebih dahulu');
+  localStorage.setItem('rohisUser', name);
+  document.getElementById('userName').value = name;
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('mainPage').classList.remove('hidden');
+  document.getElementById('greeting').textContent = `Assalamu'alaikum, ${name}!`;
+  loadData();
+}
+
+// Konfirmasi logout popup
+function confirmLogout() {
+  document.getElementById('logoutPopup').classList.remove('hidden');
+}
+function cancelLogout() {
+  document.getElementById('logoutPopup').classList.add('hidden');
+}
+function performLogout() {
+  document.getElementById('logoutPopup').classList.add('hidden');
+  logout();
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem('rohisUser');
+  document.getElementById('mainPage').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+}
+
+// Popup simpan
+function showPopup() {
+  document.getElementById('popup').classList.remove('hidden');
+}
+function closePopup() {
+  document.getElementById('popup').classList.add('hidden');
+}
+
+// Simpan data ke localStorage dan PDF
+function saveData() {
+  const name = localStorage.getItem('rohisUser') || 'Tanpa Nama';
+  const date = new Date().toLocaleDateString('id-ID');
+  const selectedSholat = Array.from(document.querySelectorAll('.btn-sholat.bg-blue-200')).map(b => b.dataset.value);
+  const hafalan = document.getElementById('hafalanCheck').checked ? (document.getElementById('juzInput').value || 0) : 0;
+  const tahajud = document.getElementById('tahajud').value || 0;
+  const dhuha = document.getElementById('dhuha').value || 0;
+  const rawatib = document.getElementById('rawatib').value || 0;
+
+  let data = JSON.parse(localStorage.getItem('rohisData') || '[]');
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  data = data.filter(d => new Date(d.timestamp).getTime() > weekAgo);
+
+  data.push({
+    name, date, sholat: selectedSholat.join(', '), hafalan, tahajud, dhuha, rawatib,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem('rohisData', JSON.stringify(data));
+
+  generatePDF(data, name);
+  showPopup();
+}
+
+// Generate PDF
+function generatePDF(data, name) {
+  const doc = new jsPDF();
+  doc.setFontSize(14);
+  doc.text(`Nama: ${name}`, 10, 15);
+
+  const startY = 25;
+  const headers = ["Tanggal", "Sholat 5 Waktu", "Hafalan (Juz)", "Tahajud", "Dhuha", "Rawatib"];
+  const colWidths = [25, 60, 25, 20, 20, 25];
+  let y = startY;
+
+  // Header
+  let x = 10;
+  doc.setFontSize(10);
+  headers.forEach((h, i) => { doc.text(h, x, y); x += colWidths[i]; });
+  y += 6;
+  doc.line(10, y - 4, 190, y - 4);
+
+  // Rows
+  data.forEach(row => {
+    x = 10;
+    const vals = [row.date, row.sholat, String(row.hafalan), String(row.tahajud), String(row.dhuha), String(row.rawatib)];
+    vals.forEach((v, i) => {
+      doc.text(v, x, y);
+      x += colWidths[i];
     });
+    y += 6;
+  });
 
-    const hafalanToggle=document.getElementById('hafalan-toggle');
-    const hafalanInputWrap=document.getElementById('hafalan-input');
-    hafalanToggle.onchange=()=>{
-      if(hafalanToggle.checked){
-        hafalanInputWrap.classList.remove('fade-hidden');hafalanInputWrap.classList.add('fade-show');
-      }else{
-        hafalanInputWrap.classList.remove('fade-show');hafalanInputWrap.classList.add('fade-hidden');
-      }
-    };
+  doc.save(`DailyRoutine_${name}_${new Date().toLocaleDateString('id-ID')}.pdf`);
+}
 
-    document.getElementById('btn-save').onclick=()=>{
-      const s=JSON.parse(localStorage.getItem('rohis_user')||'null');
-      const doneSholat=[...document.querySelectorAll('#sholat-group button')].filter(b=>b.dataset.selected==='true').map(b=>b.textContent);
-      const data={
-        username:s.username,
-        fullname:s.fullname||null,
-        timestamp:new Date().toISOString(),
-        sholat:doneSholat,
-        hafalan:hafalanToggle.checked?document.getElementById('jumlah-juz').value:null,
-        sunnah:{
-          tahajud:Number(document.getElementById('tahajud-input').value)||0,
-          dhuha:Number(document.getElementById('dhuha-input').value)||0,
-          rawatib:Number(document.getElementById('rawatib-input').value)||0,
-        }
-      };
-      const file=JSON.stringify(data,null,2);
-      const blob=new Blob([file],{type:'text/plain'});
-      const link=document.createElement('a');
-      link.href=URL.createObjectURL(blob);
-      link.download=`daily_rutin_${s.username}_${Date.now()}.txt`;
-      link.click();
-      popup.classList.remove('hidden');
-    };
+// Kosongkan form
+function clearData() {
+  document.querySelectorAll('.btn-sholat').forEach(b => b.classList.remove('bg-blue-200'));
+  document.getElementById('hafalanCheck').checked = false;
+  document.getElementById('hafalanInput').classList.add('hidden');
+  document.getElementById('juzInput').value = '';
+  document.getElementById('tahajud').value = '';
+  document.getElementById('dhuha').value = '';
+  document.getElementById('rawatib').value = '';
+}
 
-    btnClosePopup.onclick=()=>popup.classList.add('hidden');
+// Load data saat login
+function loadData() {
+  const data = JSON.parse(localStorage.getItem('rohisData') || '[]');
+  const name = localStorage.getItem('rohisUser');
+  if (name) {
+    document.getElementById('userName').value = name;
+    document.getElementById('greeting').textContent = `Assalamu'alaikum, ${name}!`;
+  }
+}
+</script>
 
-    document.getElementById('btn-reset').onclick=()=>{
-      document.querySelectorAll('#daily-form input[type=number]').forEach(i=>i.value='');
-      document.querySelectorAll('#sholat-group button').forEach(b=>{b.dataset.selected='false';b.classList.remove('bg-[var(--brand-300)]','text-white');});
-      hafalanToggle.checked=false;hafalanInputWrap.classList.remove('fade-show');hafalanInputWrap.classList.add('fade-hidden');
-    };
-  </script></body>
+<style>
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fadeIn { animation: fadeIn 0.5s ease-in; }
+</style>
+</body>
 </html>
