@@ -7,59 +7,20 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<style>
-/* Loader umum */
-#loader {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 50;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
-}
-#loader.fade-out {
-  opacity: 0;
-  visibility: hidden;
-}
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #d1d5db;
-  border-top-color: #2563eb;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.animate-fadeIn { animation: fadeIn 0.5s ease-in; }
-</style>
 </head>
-
 <body class="bg-blue-50 min-h-screen flex items-center justify-center">
-
-<!-- LOADER -->
-<div id="loader">
-  <div class="flex flex-col items-center space-y-2">
-    <div class="spinner"></div>
-    <p class="text-blue-700 font-semibold">Memuat...</p>
-  </div>
-</div>
 
 <!-- LOGIN PAGE -->
 <div id="loginPage" class="w-full max-w-sm bg-white p-6 rounded-2xl shadow-md">
   <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">Login Disini</h2>
   <input id="loginName" type="text" placeholder="Masukkan Nama Lengkap" class="w-full p-2 border rounded mb-3 focus:outline-blue-500">
-  <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Masuk</button>
+  <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition-all">Masuk</button>
 </div>
 
 <!-- MAIN FORM PAGE -->
 <div id="mainPage" class="hidden w-full max-w-md bg-white p-6 rounded-2xl shadow-lg relative">
   <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">Daily Routine Faris</h2>
-
+  
   <!-- GREETING -->
   <div class="mb-4 text-left">
     <p id="greeting" class="text-lg font-semibold text-gray-700"></p>
@@ -71,7 +32,7 @@
       <label class="block text-sm font-semibold">Nama Lengkap:</label>
       <input id="userName" readonly class="w-full p-2 border rounded bg-gray-100">
     </div>
-    <button id="logoutBtn" onclick="logout()" class="mt-5 p-2 rounded hover:bg-gray-200 text-gray-500" title="Logout">
+    <button id="logoutBtn" onclick="confirmLogout()" class="mt-5 p-2 rounded hover:bg-gray-200 text-gray-500" title="Logout">
       <i data-lucide="log-out" class="w-5 h-5"></i>
     </button>
   </div>
@@ -112,8 +73,8 @@
   </div>
 
   <div class="flex gap-2">
-    <button onclick="handleSave()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Simpan</button>
-    <button onclick="clearData()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded">Kosongkan</button>
+    <button onclick="saveData()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition-all">Simpan</button>
+    <button onclick="clearData()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded transition-all">Kosongkan</button>
   </div>
 </div>
 
@@ -126,18 +87,36 @@
   </div>
 </div>
 
+<!-- LOGOUT CONFIRMATION -->
+<div id="logoutConfirm" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-2xl shadow-xl text-center">
+    <h3 class="text-lg font-semibold text-gray-700 mb-3">Yakin ingin logout?</h3>
+    <div class="flex justify-center gap-3">
+      <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Ya</button>
+      <button onclick="closeLogoutConfirm()" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loadingOverlay" class="hidden fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
+  <div class="text-blue-700 text-xl font-semibold mb-2">Memuat Website...</div>
+  <div class="loader-bar w-40 h-2 bg-blue-100 rounded-full overflow-hidden">
+    <div class="progress h-full bg-blue-600 rounded-full"></div>
+  </div>
+</div>
+
 <script>
 const { jsPDF } = window.jspdf;
 lucide.createIcons();
 
-window.addEventListener("load", () => {
-  setTimeout(() => document.getElementById("loader").classList.add("fade-out"), 400);
-});
-
-// Tombol sholat toggle
+// Tombol sholat toggle + efek klik
 document.querySelectorAll('.btn-sholat').forEach(btn => {
-  btn.classList.add('bg-gray-100', 'p-2', 'rounded', 'text-sm');
-  btn.addEventListener('click', () => btn.classList.toggle('bg-blue-200'));
+  btn.classList.add('bg-gray-100', 'p-2', 'rounded', 'text-sm', 'cursor-pointer', 'transition-all');
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('bg-blue-200');
+    btn.classList.toggle('text-blue-900');
+  });
 });
 
 // Hafalan fade-in
@@ -151,14 +130,11 @@ document.getElementById('hafalanCheck').addEventListener('change', e => {
   }
 });
 
-// LOGIN dengan loading
-function handleLogin() {
+// Login
+function login() {
   const name = document.getElementById('loginName').value.trim();
   if (!name) return alert('Masukkan nama terlebih dahulu');
-
-  const loader = document.getElementById("loader");
-  loader.classList.remove("fade-out");
-
+  showLoading('Memuat Dashboard...');
   setTimeout(() => {
     localStorage.setItem('rohisUser', name);
     document.getElementById('userName').value = name;
@@ -166,18 +142,31 @@ function handleLogin() {
     document.getElementById('mainPage').classList.remove('hidden');
     document.getElementById('greeting').textContent = `Assalamu'alaikum, ${name}!`;
     loadData();
-    loader.classList.add("fade-out");
-  }, 800);
+    hideLoading();
+  }, 1500);
 }
 
-// LOGOUT
+// Logout confirm
+function confirmLogout() {
+  document.getElementById('logoutConfirm').classList.remove('hidden');
+}
+function closeLogoutConfirm() {
+  document.getElementById('logoutConfirm').classList.add('hidden');
+}
+
+// Logout with loading
 function logout() {
-  localStorage.removeItem('rohisUser');
-  document.getElementById('mainPage').classList.add('hidden');
-  document.getElementById('loginPage').classList.remove('hidden');
+  closeLogoutConfirm();
+  showLoading('Keluar dari akun...');
+  setTimeout(() => {
+    localStorage.removeItem('rohisUser');
+    document.getElementById('mainPage').classList.add('hidden');
+    document.getElementById('loginPage').classList.remove('hidden');
+    hideLoading();
+  }, 1500);
 }
 
-// POPUP
+// Popup
 function showPopup() {
   document.getElementById('popup').classList.remove('hidden');
 }
@@ -185,57 +174,48 @@ function closePopup() {
   document.getElementById('popup').classList.add('hidden');
 }
 
-// HANDLE SIMPAN DENGAN LOADING
-function handleSave() {
-  const loader = document.getElementById("loader");
-  loader.classList.remove("fade-out");
-  setTimeout(() => {
-    saveData();
-    loader.classList.add("fade-out");
-  }, 1000);
-}
-
-// SIMPAN DATA
+// Simpan data
 function saveData() {
-  const name = localStorage.getItem('rohisUser') || 'Tanpa Nama';
-  const date = new Date().toLocaleDateString('id-ID');
-  const selectedSholat = Array.from(document.querySelectorAll('.btn-sholat.bg-blue-200')).map(b => b.dataset.value);
-  const hafalan = document.getElementById('hafalanCheck').checked ? (document.getElementById('juzInput').value || 0) : 0;
-  const tahajud = document.getElementById('tahajud').value || 0;
-  const dhuha = document.getElementById('dhuha').value || 0;
-  const rawatib = document.getElementById('rawatib').value || 0;
+  showLoading('Menyimpan data...');
+  setTimeout(() => {
+    const name = localStorage.getItem('rohisUser') || 'Tanpa Nama';
+    const date = new Date().toLocaleDateString('id-ID');
+    const selectedSholat = Array.from(document.querySelectorAll('.btn-sholat.bg-blue-200')).map(b => b.dataset.value);
+    const hafalan = document.getElementById('hafalanCheck').checked ? (document.getElementById('juzInput').value || 0) : 0;
+    const tahajud = document.getElementById('tahajud').value || 0;
+    const dhuha = document.getElementById('dhuha').value || 0;
+    const rawatib = document.getElementById('rawatib').value || 0;
 
-  let data = JSON.parse(localStorage.getItem('rohisData') || '[]');
-  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  data = data.filter(d => new Date(d.timestamp).getTime() > weekAgo);
+    let data = JSON.parse(localStorage.getItem('rohisData') || '[]');
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    data = data.filter(d => new Date(d.timestamp).getTime() > weekAgo);
 
-  data.push({
-    name, date, sholat: selectedSholat.join(', '), hafalan, tahajud, dhuha, rawatib,
-    timestamp: new Date().toISOString()
-  });
-  localStorage.setItem('rohisData', JSON.stringify(data));
+    data.push({
+      name, date, sholat: selectedSholat.join(', '), hafalan, tahajud, dhuha, rawatib,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('rohisData', JSON.stringify(data));
 
-  generatePDF(data, name);
-  showPopup();
+    generatePDF(data, name);
+    hideLoading();
+    showPopup();
+  }, 1500);
 }
 
-// GENERATE PDF
+// Generate PDF
 function generatePDF(data, name) {
   const doc = new jsPDF();
   doc.setFontSize(14);
   doc.text(`Nama: ${name}`, 10, 15);
-
   const startY = 25;
   const headers = ["Tanggal", "Sholat 5 Waktu", "Hafalan (Juz)", "Tahajud", "Dhuha", "Rawatib"];
   const colWidths = [25, 60, 25, 20, 20, 25];
   let y = startY;
-
   let x = 10;
   doc.setFontSize(10);
   headers.forEach((h, i) => { doc.text(h, x, y); x += colWidths[i]; });
   y += 6;
   doc.line(10, y - 4, 190, y - 4);
-
   data.forEach(row => {
     x = 10;
     const vals = [row.date, row.sholat, String(row.hafalan), String(row.tahajud), String(row.dhuha), String(row.rawatib)];
@@ -245,11 +225,10 @@ function generatePDF(data, name) {
     });
     y += 6;
   });
-
   doc.save(`DailyRoutine_${name}_${new Date().toLocaleDateString('id-ID')}.pdf`);
 }
 
-// KOSONGKAN FORM
+// Kosongkan form
 function clearData() {
   document.querySelectorAll('.btn-sholat').forEach(b => b.classList.remove('bg-blue-200'));
   document.getElementById('hafalanCheck').checked = false;
@@ -260,7 +239,7 @@ function clearData() {
   document.getElementById('rawatib').value = '';
 }
 
-// LOAD DATA SAAT LOGIN
+// Load data saat login
 function loadData() {
   const data = JSON.parse(localStorage.getItem('rohisData') || '[]');
   const name = localStorage.getItem('rohisUser');
@@ -269,6 +248,62 @@ function loadData() {
     document.getElementById('greeting').textContent = `Assalamu'alaikum, ${name}!`;
   }
 }
+
+// Loading overlay control
+function showLoading(text) {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.querySelector('.text-blue-700').textContent = text;
+  overlay.classList.remove('hidden');
+  const bar = overlay.querySelector('.progress');
+  bar.style.width = '0%';
+  setTimeout(() => bar.style.width = '100%', 50);
+}
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  setTimeout(() => overlay.classList.add('hidden'), 700);
+}
+
+// Saat halaman dibuka
+window.addEventListener('load', () => {
+  showLoading('Memuat Website...');
+  setTimeout(hideLoading, 1200);
+});
 </script>
+
+<style>
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fadeIn { animation: fadeIn 0.5s ease-in; }
+
+/* --- Efek Hover dan Klik pada Tombol Sholat --- */
+.btn-sholat {
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.btn-sholat:hover {
+  background-color: #bfdbfe;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+.btn-sholat.bg-blue-200 {
+  background-color: #bfdbfe;
+  border-color: #2563eb;
+  color: #1e3a8a;
+  font-weight: 600;
+  box-shadow: inset 0 0 6px rgba(37, 99, 235, 0.4);
+}
+.btn-sholat:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+}
+
+/* --- Loading Progress Bar --- */
+.loader-bar .progress {
+  width: 0%;
+  transition: width 1.2s ease;
+}
+</style>
 </body>
 </html>
