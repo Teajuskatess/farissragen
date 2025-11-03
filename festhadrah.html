@@ -1,0 +1,250 @@
+<!doctype html>
+
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Festival Hadrah 2026 — Pendaftaran</title>
+  <meta name="description" content="Form pendaftaran Festival Hadrah 2026 | Countdown & informasi acara" />
+  <!-- Tailwind CDN (for prototyping) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom small extras */
+    :root{--primary:#0ea5e9;--accent:#0369a1}
+    /* Simple page loader animation */
+    .loader-circle{width:72px;height:72px;border-radius:9999px;border:6px solid rgba(255,255,255,0.08);border-top-color:var(--primary);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}/* Smooth appear */
+.fade-in{opacity:0;transform:translateY(6px);animation:fadeIn .7s forwards}
+@keyframes fadeIn{to{opacity:1;transform:none}}
+
+/* Hamburger animation */
+.ham-line{transition:transform .3s,opacity .2s}
+.ham-open .l1{transform:translateY(8px) rotate(45deg)}
+.ham-open .l2{opacity:0}
+.ham-open .l3{transform:translateY(-8px) rotate(-45deg)}
+
+/* Floating entrance door button */
+.door-btn{backdrop-filter: blur(6px)}
+
+/* small screen smooth scroll hint */
+.bounce{animation:bounce 1.6s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  </style>
+</head>
+<body class="antialiased bg-gradient-to-b from-white to-sky-50 min-h-screen text-slate-800">  <!-- LOADER OVERLAY -->  <div id="page-loader" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-sky-600 to-sky-700 text-white">
+    <div class="text-center space-y-4">
+      <div class="mx-auto loader-circle"></div>
+      <div class="text-xl font-semibold">Festival Hadrah 2026</div>
+      <div class="opacity-80">Mempersiapkan halaman...</div>
+    </div>
+  </div>  <!-- NAVBAR -->  <header class="sticky top-0 z-40 bg-white/60 backdrop-blur-md border-b border-sky-100">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <!-- logo left -->
+          <a href="#" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-700 flex items-center justify-center text-white font-bold">FH</div>
+            <div class="hidden sm:block">
+              <div class="text-sm font-semibold">Festival Hadrah</div>
+              <div class="text-xs text-slate-500">26 Jan 2026 — Sragen</div>
+            </div>
+          </a>
+        </div><!-- Desktop menu -->
+    <nav class="hidden md:flex items-center gap-6">
+      <div id="countdownTop" class="text-sm font-medium text-sky-600"></div>
+      <a href="#alur" class="hover:text-sky-700 transition">Alur</a>
+      <a href="#syarat" class="hover:text-sky-700 transition">Persyaratan</a>
+      <a href="#rules" class="hover:text-sky-700 transition">Peraturan</a>
+      <a href="#" id="gformBtnTop" class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg shadow hover:bg-sky-700 transition">Daftar</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <!-- door exit button right -->
+      <button id="exitBtn" title="Keluar" class="door-btn hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full border border-slate-100 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+        </svg>
+        <span class="text-sm hidden sm:inline">Keluar</span>
+      </button>
+
+      <!-- hamburger mobile -->
+      <div id="hamburger" class="md:hidden p-2 rounded-lg border border-transparent hover:bg-sky-50 transition cursor-pointer">
+        <div id="ham" class="w-7 h-6 relative">
+          <span class="block absolute left-0 top-1 bg-slate-700 h-0.5 w-7 ham-line l1"></span>
+          <span class="block absolute left-0 top-3 bg-slate-700 h-0.5 w-7 ham-line l2"></span>
+          <span class="block absolute left-0 top-5 bg-slate-700 h-0.5 w-7 ham-line l3"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile menu panel -->
+<div id="mobilePanel" class="md:hidden hidden border-t border-sky-100 bg-white/80">
+  <div class="px-4 py-4 space-y-2">
+    <a href="#greeting" class="block py-2">Greeting</a>
+    <a href="#alur" class="block py-2">Alur</a>
+    <a href="#syarat" class="block py-2">Persyaratan</a>
+    <a href="#rules" class="block py-2">Peraturan</a>
+    <a href="#" id="gformBtnMobile" class="block w-full text-center py-2 bg-sky-600 text-white rounded-lg">Daftar</a>
+  </div>
+</div>
+
+  </header>  <!-- HERO / GREETING -->  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="greeting" class="min-h-[60vh] flex flex-col justify-center items-start gap-6 py-14">
+      <div class="w-full flex items-center justify-between">
+        <div class="space-y-4 fade-in">
+          <p class="text-sm text-slate-500">Assalamu'alaikum — Selamat datang</p>
+          <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">Festival Hadrah 2026</h1>
+          <p class="text-lg text-slate-600 max-w-xl">Gabung bersama kami dalam perayaan hadrah, syiar dan kreasi seni musik rebana — daftar sekarang.</p><div class="flex items-center gap-3 mt-3">
+        <a id="gformBtnHero" href="#" class="inline-flex items-center gap-2 px-4 py-3 bg-white border border-sky-600 text-sky-600 rounded-lg shadow hover:bg-sky-50 transition">Daftar Sekarang</a>
+        <a href="#alur" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-800 transition">Lihat Alur <span class="ml-1">→</span></a>
+      </div>
+    </div>
+
+    <!-- realtime / countdown in hero -->
+    <div class="hidden sm:flex flex-col items-center p-4 bg-white border border-sky-100 rounded-2xl shadow-sm">
+      <div class="text-xs text-slate-500">Waktu sekarang</div>
+      <div id="nowTime" class="font-mono font-semibold text-lg"></div>
+      <div class="h-px w-full my-2 bg-sky-50"></div>
+      <div class="text-xs text-slate-500">Countdown ke acara</div>
+      <div id="countdown" class="font-mono text-center text-lg font-bold"></div>
+    </div>
+  </div>
+
+  <!-- scroll hint -->
+  <div class="w-full flex justify-center mt-8">
+    <button onclick="document.getElementById('alur').scrollIntoView({behavior:'smooth'})" class="flex flex-col items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-sky-600 bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+      <span class="text-xs text-slate-500">Scroll down</span>
+    </button>
+  </div>
+</section>
+
+<!-- ALUR (flow) -->
+<section id="alur" class="py-12">
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h2 class="text-xl font-semibold">Alur Pendaftaran & Acara</h2>
+    <ol class="mt-4 space-y-3 text-slate-600">
+      <li><strong>1.</strong> Klik tombol <em>Daftar</em> untuk mengisi formulir Google Form.</li>
+      <li><strong>2.</strong> Tim panitia konfirmasi via WhatsApp/Email.</li>
+      <li><strong>3.</strong> Peserta hadir di lokasi paling lambat 1 jam sebelum acara.</li>
+      <li><strong>4.</strong> Hari H: Penampilan & penjurian—pengumuman pemenang di akhir acara.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- PERSYARATAN -->
+<section id="syarat" class="py-8">
+  <div class="bg-gradient-to-r from-white to-sky-50 rounded-2xl p-6 shadow-sm">
+    <h3 class="text-lg font-semibold">Persyaratan</h3>
+    <ul class="mt-3 list-disc ml-5 text-slate-600 space-y-2">
+      <li>Mengisi formulir pendaftaran lengkap.</li>
+      <li>Kelompok minimal 5 orang (sesuaikan ketentuan kategori).</li>
+      <li>Membawa peralatan sendiri sesuai kebutuhan penampilan.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- RULES -->
+<section id="rules" class="py-8">
+  <div class="bg-white rounded-2xl p-6 shadow-sm">
+    <h3 class="text-lg font-semibold">Peraturan</h3>
+    <ul class="mt-3 list-decimal ml-5 text-slate-600 space-y-2">
+      <li>Tepat waktu dan menjaga ketertiban.</li>
+      <li>Menjaga adab dan norma islami selama acara.</li>
+      <li>Keputusan panitia bersifat final.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER with small info and mobile CTA -->
+<footer class="py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <div class="text-sm text-slate-500">© Festival Hadrah 2026 — Diselenggarakan oleh Panitia.</div>
+  <div class="flex items-center gap-3">
+    <a id="gformBtnFooter" href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-lg shadow">Daftar via Google Form</a>
+  </div>
+</footer>
+
+  </main>  <script>
+    // --- Basic config ---
+    const GFORM_URL = 'https://forms.gle/YOUR_FORM_ID'; // <- ganti dengan link Google Form yang benar
+    const EVENT_DATE = new Date('2026-01-26T09:00:00'); // waktu acara (ubah jam sesuai kebutuhan)
+
+    // Hook up all GForm buttons
+    document.querySelectorAll('#gformBtnTop, #gformBtnMobile, #gformBtnHero, #gformBtnFooter').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open(GFORM_URL, '_blank');
+      });
+    });
+
+    // Exit button: close tab (best-effort) or go back
+    document.getElementById('exitBtn').addEventListener('click', () => {
+      try{ window.close(); } catch(e){ window.history.back(); }
+    });
+
+    // Mobile hamburger toggles
+    const hamburger = document.getElementById('hamburger');
+    const ham = document.getElementById('ham');
+    const mobilePanel = document.getElementById('mobilePanel');
+    let hamOpen = false;
+    hamburger.addEventListener('click', () => {
+      hamOpen = !hamOpen;
+      if(hamOpen){ ham.classList.add('ham-open'); mobilePanel.classList.remove('hidden'); }
+      else { ham.classList.remove('ham-open'); mobilePanel.classList.add('hidden'); }
+    });
+
+    // Realtime clock and countdown
+    function pad(n){return n.toString().padStart(2,'0');}
+    function updateTime(){
+      const now = new Date();
+      const nowStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} — ${now.toLocaleDateString('id-ID', {weekday:'long', day:'2-digit', month:'long', year:'numeric'})}`;
+      document.getElementById('nowTime').textContent = nowStr;
+
+      // countdown
+      const diff = EVENT_DATE - now;
+      if(diff<=0){
+        document.getElementById('countdown').textContent = 'Acara sedang berlangsung!';
+        document.getElementById('countdownTop').textContent = 'Acara: 26 Jan 2026';
+        return;
+      }
+      const d = Math.floor(diff/86400000); // days
+      const h = Math.floor(diff%86400000/3600000);
+      const m = Math.floor(diff%3600000/60000);
+      const s = Math.floor(diff%60000/1000);
+      document.getElementById('countdown').textContent = `${d} hari ${pad(h)}:${pad(m)}:${pad(s)}`;
+      document.getElementById('countdownTop').textContent = `${d} hari tersisa`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Page loader hide after content ready
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('page-loader');
+      loader.style.transition = 'opacity .4s ease';
+      loader.style.opacity = '0';
+      setTimeout(()=>loader.remove(),500);
+    });
+
+    // Small accessibility: close mobile panel on resize to desktop
+    window.addEventListener('resize', ()=>{
+      if(window.innerWidth>=768){ mobilePanel.classList.add('hidden'); ham.classList.remove('ham-open'); hamOpen=false; }
+    });
+
+    // Smooth-scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const target = a.getAttribute('href');
+        if(target.startsWith('#')){
+          e.preventDefault();
+          const el = document.querySelector(target);
+          if(el) el.scrollIntoView({behavior:'smooth'});
+        }
+      });
+    });
+  </script></body>
+      </html>
