@@ -137,7 +137,7 @@
 /* ================== KONFIGURASI ==================
    Ganti API_URL dengan URL Web App kamu (akhiran /exec)
    =================================================*/
-const API_URL = "https://script.google.com/macros/s/AKfycbyuZW795g4qmdEoh1gw52gWqaQtAN2KannjUZib-P7iXvOFNLFqCxFoqAliV9BrObYHAg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyFgXbCWDdkbTr4ufDCnMNGtIkBaagNnIUwQrty_CcPYFXAdTn1fMtl9SwBx2XkKn8IYg/exec";
 
 /* ===== Elemen ===== */
 const loadingOverlay = document.getElementById("loadingOverlay");
@@ -145,37 +145,30 @@ const namaInput = document.getElementById("namaKetua");
 const sekolahSelect = document.getElementById("sekolah");
 const btnUndian = document.getElementById("btnUndian");
 const statusBar = document.getElementById("statusBar");
-
 const greetingModal = document.getElementById("greetingModal");
 const greetName = document.getElementById("greetName");
 const greetNumber = document.getElementById("greetNumber");
 const greetSchool = document.getElementById("greetSchool");
 const closeGreet = document.getElementById("closeGreet");
 const closeAndBack = document.getElementById("closeAndBack");
-const downloadTicket = document.getElementById("downloadTicket");
-
 const logo = document.getElementById("logoContainer");
 const adminPanel = document.getElementById("adminPanel");
 const confirmReset = document.getElementById("confirmReset");
 const closeAdmin = document.getElementById("closeAdmin");
 const adminStatus = document.getElementById("adminStatus");
 
-let lastTicket = null; // simpan data tiket terakhir untuk unduh kembali
+let lastTicket = null; // data tiket terakhir
 
-/* ===== Helper UI ===== */
-function showLoading(show=true) {
+/* ===== Helper ===== */
+function showLoading(show = true) {
   loadingOverlay.style.display = show ? "flex" : "none";
 }
 
-/* ===== Inisialisasi: singkat loading saat mulai ===== */
+/* ===== Inisialisasi ===== */
 showLoading(true);
-window.addEventListener("load", () => {
-  // minimal tampil sebentar agar efek loading terlihat
-  setTimeout(() => showLoading(false), 350);
-});
+window.addEventListener("load", () => setTimeout(() => showLoading(false), 350));
 
-/* ===== Fungsi fetch untuk POST (pakai text/plain untuk kurangi preflight) ===== */
-async function postToApi(payload, opt={}) {
+async function postToApi(payload, opt = {}) {
   const url = opt.action ? `${API_URL}?action=${opt.action}` : API_URL;
   const res = await fetch(url, {
     method: "POST",
@@ -189,34 +182,43 @@ async function postToApi(payload, opt={}) {
 btnUndian.addEventListener("click", async () => {
   const nama = namaInput.value.trim();
   const sekolah = sekolahSelect.value;
-  statusBar.innerHTML = "";
   if (!nama || !sekolah) {
     alert("Lengkapi nama dan pilih sekolah!");
     return;
   }
+
+  statusBar.innerHTML = "";
   showLoading(true);
+
   try {
     const data = await postToApi({ nama, sekolah });
     showLoading(false);
+
     if (!data.success) {
       statusBar.innerHTML = `<div class="text-red-600 font-medium">${data.message}</div>`;
-      if (data.nomor) statusBar.innerHTML += `<div class="text-sm text-slate-600 mt-1">Nomor terdaftar: <b>${data.nomor}</b></div>`;
+      if (data.nomor)
+        statusBar.innerHTML += `<div class="text-sm text-slate-600 mt-1">Nomor terdaftar: <b>${data.nomor}</b></div>`;
       return;
     }
 
-    // sukses -> tampil greeting card modal
+    // simpan data tiket
     lastTicket = { nama: data.nama, sekolah: data.sekolah, nomor: data.nomor };
+
+    // tampilkan greeting card
     greetName.textContent = data.nama;
     greetSchool.textContent = data.sekolah;
     greetNumber.textContent = data.nomor;
     greetingModal.classList.remove("hidden");
     greetingModal.style.display = "flex";
 
-    // juga tampil pesan singkat di bawah form
-    statusBar.innerHTML = `<div class="text-emerald-600 font-semibold">🎉 Selamat — Nomor: <span class="text-blue-700 text-lg font-bold">${data.nomor}</span></div>`;
+    // tampilkan juga di bawah form
+    statusBar.innerHTML = `
+      <div class="text-emerald-600 font-semibold">
+        🎉 Selamat ${data.nama}! Nomor kamu: <span class="text-blue-700 text-lg font-bold">${data.nomor}</span>
+      </div>`;
 
-    // auto-generate PDF download (opsional auto download)
-    generatePDFAndDownload(lastTicket);
+    // === otomatis download PDF tiket ===
+    setTimeout(() => generatePDFAndDownload(lastTicket), 1200);
 
   } catch (err) {
     showLoading(false);
@@ -224,109 +226,82 @@ btnUndian.addEventListener("click", async () => {
   }
 });
 
-/* ===== Greeting card controls ===== */
-closeGreet.addEventListener("click", () => {
-  greetingModal.classList.add("hidden");
-  greetingModal.style.display = "none";
-});
-closeAndBack.addEventListener("click", () => {
-  greetingModal.classList.add("hidden");
-  greetingModal.style.display = "none";
-});
-downloadTicket.addEventListener("click", () => {
-  if (lastTicket) generatePDFAndDownload(lastTicket);
+/* ===== Tutup Greeting ===== */
+[closeGreet, closeAndBack].forEach(btn => {
+  btn.addEventListener("click", () => {
+    greetingModal.classList.add("hidden");
+    greetingModal.style.display = "none";
+  });
 });
 
-/* ===== Admin panel: buka saat logo diklik 3x ===== */
+/* ===== Admin Panel Triple Click ===== */
 let logoClicks = 0, logoTimer;
 logo.addEventListener("click", () => {
   logoClicks++;
   clearTimeout(logoTimer);
-  logoTimer = setTimeout(() => logoClicks = 0, 600);
+  logoTimer = setTimeout(() => (logoClicks = 0), 600);
   if (logoClicks >= 3) {
     adminPanel.classList.remove("hidden");
     adminPanel.style.display = "flex";
     logoClicks = 0;
   }
 });
-
 closeAdmin.addEventListener("click", () => {
   adminPanel.classList.add("hidden");
   adminPanel.style.display = "none";
 });
 
-/* ===== Reset Undian (admin) =====
-   - Memanggil endpoint API_URL?action=reset dengan POST { reset: true }
-   - Pastikan Apps Script memiliki handler untuk action=reset atau fungsi resetUndian
-*/
+/* ===== Reset Undian (Admin) ===== */
 confirmReset.addEventListener("click", async () => {
-  if (!confirm("Yakin ingin mereset semua data undian? (Tindakan ini tidak bisa dibatalkan)")) return;
+  if (!confirm("Yakin ingin mereset semua data undian?")) return;
   adminStatus.textContent = "⏳ Mengirim perintah reset...";
   try {
     const result = await postToApi({ reset: true }, { action: "reset" });
     if (result.success) {
       adminStatus.textContent = "✅ " + result.message;
-      // refresh small UI
-      statusBar.innerHTML = `<div class="text-slate-600">Data telah direset. Halaman siap untuk undian baru.</div>`;
+      statusBar.innerHTML = `<div class="text-slate-600">Data telah direset, undian siap diulang.</div>`;
     } else {
-      adminStatus.textContent = "❌ " + (result.message || "Reset gagal");
+      adminStatus.textContent = "❌ " + result.message;
     }
   } catch (err) {
     adminStatus.textContent = "⚠️ Gagal reset: " + err.message;
   }
 });
 
-/* ===== PDF generator (A4) ===== */
+/* ===== PDF Generator ===== */
 function generatePDFAndDownload({ nama, sekolah, nomor }) {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
 
-  // background
   doc.setFillColor(249, 250, 255);
-  doc.rect(0, 0, 210, 297, 'F');
+  doc.rect(0, 0, 210, 297, "F");
 
-  // header box
-  doc.setDrawColor(20, 66, 130);
-  doc.setLineWidth(0.8);
-  doc.rect(14, 14, 182, 40);
-  doc.setFontSize(16);
-  doc.setTextColor(15, 76, 129);
-  doc.text("Festival Hadrah 2026", 105, 28, { align: "center" });
-  doc.setFontSize(10);
-  doc.setTextColor(90,90,90);
-  doc.text("Tiket Undian Resmi", 105, 36, { align: "center" });
-
-  // content box
-  doc.setDrawColor(150,150,150);
-  doc.setLineWidth(0.4);
-  doc.rect(14, 60, 182, 170);
-
-  // nama & sekolah
-  doc.setFontSize(12);
-  doc.setTextColor(20,20,20);
-  doc.text(`Nama Ketua: ${nama}`, 20, 80);
-  doc.text(`Sekolah: ${sekolah}`, 20, 90);
-
-  // nomor besar
-  doc.setFontSize(72);
+  doc.setFontSize(18);
   doc.setTextColor(0, 51, 153);
-  doc.text(String(nomor), 105, 145, { align: "center" });
+  doc.text("TIKET UNDIAN FESTIVAL HADRAH 2026", 105, 40, { align: "center" });
 
-  // footer
-  doc.setFontSize(10);
-  doc.setTextColor(90,90,90);
-  doc.text("Mohon simpan tiket ini dan tunjukkan saat acara undian berlangsung.", 20, 260);
-  doc.text(`Dicetak: ${new Date().toLocaleString()}`, 20, 270);
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Nama Ketua: ${nama}`, 20, 70);
+  doc.text(`Sekolah: ${sekolah}`, 20, 80);
 
-  const safeName = (nama || "peserta").replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
+  doc.setFontSize(60);
+  doc.setTextColor(255, 0, 0);
+  doc.text(String(nomor), 105, 150, { align: "center" });
+
+  doc.setFontSize(11);
+  doc.setTextColor(80, 80, 80);
+  doc.text("Harap simpan tiket ini dan tunjukkan pada saat acara undian berlangsung.", 20, 270);
+  doc.text(`Dicetak: ${new Date().toLocaleString()}`, 20, 280);
+
+  const safeName = nama.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
   doc.save(`Undian_${safeName}_${nomor}.pdf`);
 }
 
-/* Optional: keyboard Enter to submit */
+/* Tekan Enter untuk submit */
 namaInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") btnUndian.click();
 });
-
 </script>
 </body>
 </html>
