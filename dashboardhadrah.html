@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard Festival Hadrah 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0B63D6',
+            secondary: '#E5F0FF',
+            dark: '#062A6F'
+          },
+          animation: {
+            float: 'float 3s ease-in-out infinite',
+            fade: 'fadeIn 1.2s ease-in-out',
+            spinSlow: 'spin 1.5s linear infinite',
+            dots: 'dots 1.4s steps(5, end) infinite'
+          },
+          keyframes: {
+            float: {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' }
+            },
+            fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+            dots: {
+              '0%, 20%': { color: 'rgba(0,0,0,0)' },
+              '40%': { color: '#0B63D6' },
+              '60%': { color: '#0B63D6' },
+              '80%,100%': { color: 'rgba(0,0,0,0)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { transition: background-color 0.5s, color 0.5s; }
+    .card-transition { transition: background-color 0.5s, color 0.5s; }
+
+    #themeToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: grab; z-index: 50;
+      transition: background .3s;
+    }
+    #themeToggle:active { cursor: grabbing; }
+    .dark #themeToggle { background: rgba(0,0,0,0.5); color: #fff; }
+    .animate-dots::after { content: '...'; animation: dots 1.2s steps(5, end) infinite; }
+  </style>
+</head>
+<body class="bg-white text-gray-800 dark:bg-[#0b0f19] dark:text-gray-200">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-white dark:bg-[#0b0f19] z-50">
+    <div class="animate-fade text-center">
+      <div class="w-16 h-16 border-4 border-t-primary border-gray-300 rounded-full animate-spinSlow mx-auto"></div>
+      <p class="mt-4 text-primary font-semibold">Memuat Dashboard...</p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardPage" class="hidden">
+    <!-- NAVBAR -->
+    <header class="fixed top-0 left-0 w-full bg-gradient-to-b from-white/60 to-transparent dark:from-black/50 backdrop-blur-md z-30 transition">
+      <div class="max-w-6xl mx-auto flex justify-between items-center px-5 md:px-10 py-4">
+        <h1 class="font-bold text-black dark:text-white text-lg">Festival Hadrah 2026</h1>
+        <nav class="hidden md:flex items-center gap-6 font-medium text-black dark:text-white">
+          <a href="#greeting" class="hover:text-primary">Greeting</a>
+          <a href="#info" class="hover:text-primary">Info</a>
+          <a href="#rundown" class="hover:text-primary">Rundown</a>
+          <a href="#rules" class="hover:text-primary">Persyaratan</a>
+          <a href="https://teajuskatess.github.io/farissragen/festhadrah.html" target="_blank" class="bg-primary text-white hover:bg-dark px-4 py-2 rounded-full">Daftar</a>
+        </nav>
+        <button id="hamburger" class="md:hidden p-2 rounded-lg border border-black/30 dark:border-white/30 bg-white/20 dark:bg-black/30">
+          <svg class="w-6 h-6 text-black dark:text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- MOBILE MENU -->
+      <div id="mobileNav" class="hidden md:hidden flex-col bg-white/40 dark:bg-black/60 backdrop-blur-lg text-black dark:text-white px-5 py-4 space-y-3 text-center">
+        <a href="#greeting" class="block hover:text-primary">Greeting</a>
+        <a href="#info" class="block hover:text-primary">Info</a>
+        <a href="#rundown" class="block hover:text-primary">Rundown</a>
+        <a href="#rules" class="block hover:text-primary">Persyaratan</a>
+        <a href="https://teajuskatess.github.io/farissragen/festhadrah.html" target="_blank" class="block bg-primary text-white rounded-full py-2 hover:bg-dark">Daftar</a>
+      </div>
+    </header>
+
+    <!-- GREETING -->
+    <section id="greeting" class="relative min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-white via-secondary to-white dark:from-black dark:via-gray-900 dark:to-[#0b0f19] text-center text-black dark:text-white">
+      <div class="max-w-4xl mx-auto px-6">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight animate-fade">
+          Assalamu'alaikum 👋<br>
+          <span>Selamat Datang di <span class="text-primary">Festival Hadrah 2026</span></span>
+        </h1>
+        <p class="text-gray-700 dark:text-gray-300 text-base md:text-lg max-w-2xl mx-auto mb-8">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Temukan informasi lengkap seputar acara, jadwal, dan pengumuman terbaru di sini.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 animate-fade">
+          <a href="https://teajuskatess.github.io/farissragen/festhadrah.html"
+             target="_blank"
+             class="bg-primary text-white hover:bg-dark px-8 py-3 rounded-full text-base font-semibold transition shadow">
+            Daftar Sekarang
+          </a>
+          <button id="goUndian"
+                  class="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full text-base font-semibold transition dark:border-white dark:text-white">
+            Ikut Undian
+          </button>
+        </div>
+      </div>
+
+      <!-- Scroll Down -->
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-center">
+        <a href="#info" class="text-black dark:text-white text-sm flex flex-col items-center">
+          <div class="w-6 h-10 border-2 border-current rounded-full flex justify-center pt-2">
+            <div class="w-2 h-2 bg-current rounded-full animate-bounce"></div>
+          </div>
+          <span class="mt-1">Scroll Down</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- INFO -->
+    <section id="info" class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="text-3xl font-bold text-primary mb-4">Informasi Acara</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-white/80 dark:bg-gray-800/70 shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Jadwal Utama</h3>
+          <p>Detail kegiatan utama akan diumumkan.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white/80 dark:bg-gray-800/70 shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Lokasi</h3>
+          <p>Pelaksanaan festival di pusat kota.</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white/80 dark:bg-gray-800/70 shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Kontak</h3>
+          <p>Email dan nomor resmi segera tersedia.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RUNDOWN -->
+    <section id="rundown" class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="text-3xl font-bold text-primary mb-4">Rundown Acara</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="text-lg font-semibold text-primary mb-2">📋 Pendaftaran</h3>
+          <p>Sampai <b>10 Februari 2026</b>.</p>
+        </div>
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="text-lg font-semibold text-primary mb-2">🎤 Technical Meeting</h3>
+          <p><b>20 Februari 2026</b>.</p>
+        </div>
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="text-lg font-semibold text-primary mb-2">🎉 Hari H Festival</h3>
+          <p><b>1 Maret 2026</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RULES -->
+    <section id="rules" class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="text-3xl font-bold text-primary mb-4">Persyaratan & Peraturan</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Persyaratan</h3>
+          <p>Peserta wajib dari lembaga resmi.</p>
+        </div>
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Peraturan</h3>
+          <ul class="list-disc pl-5 space-y-1 text-sm">
+            <li>Berpakaian sopan.</li><li>Menjaga kebersihan.</li><li>Tidak membawa barang terlarang.</li>
+          </ul>
+        </div>
+        <div class="p-6 bg-white/80 dark:bg-gray-800/70 rounded-2xl shadow card-transition">
+          <h3 class="font-semibold text-lg text-primary mb-2">Ketentuan</h3>
+          <p>Keputusan panitia bersifat mutlak.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-white/40 dark:bg-black/40 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 py-4 text-center text-sm">
+      © 2026 Festival Hadrah — Semua hak cipta dilindungi.
+    </footer>
+  </div>
+
+  <!-- HALAMAN UNDIAN -->
+  <div id="undianPage" class="hidden min-h-screen flex flex-col items-center justify-center text-center bg-white dark:bg-[#0b0f19]">
+    <div class="animate-fade">
+      <div class="text-6xl mb-4">⚙️</div>
+      <h2 class="text-2xl font-bold text-primary mb-2">Mohon tunggu<span class="animate-dots"></span></h2>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">Fitur undian sedang dalam perawatan.<br>Mohon bersabar sebentar ya 🙏</p>
+      <div class="w-12 h-12 border-4 border-t-primary border-gray-300 rounded-full animate-spinSlow mx-auto mb-4"></div>
+      <button id="backDashboard" class="bg-primary hover:bg-dark text-white px-6 py-2 rounded-full">Kembali ke Dashboard</button>
+    </div>
+  </div>
+
+  <!-- TOGGLE -->
+  <button id="themeToggle">🌙</button>
+
+  <!-- SCRIPT -->
+  <script>
+    const loading = document.getElementById('loadingScreen');
+    const dashboard = document.getElementById('dashboardPage');
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+      }, 1500);
+    });
+
+    const goUndian = document.getElementById('goUndian');
+    const undian = document.getElementById('undianPage');
+    const backDashboard = document.getElementById('backDashboard');
+    goUndian.addEventListener('click', () => {
+      dashboard.classList.add('hidden');
+      undian.classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    backDashboard.addEventListener('click', () => {
+      undian.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') {
+      html.classList.add('dark');
+      toggle.textContent = '🌞';
+    }
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      const isDark = html.classList.contains('dark');
+      toggle.textContent = isDark ? '🌞' : '🌙';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    let isDragging = false, offsetX, offsetY;
+    toggle.addEventListener('mousedown', e => {
+      isDragging = true;
+      offsetX = e.clientX - toggle.offsetLeft;
+      offsetY = e.clientY - toggle.offsetTop;
+    });
+    document.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      toggle.style.left = e.clientX - offsetX + 'px';
+      toggle.style.top = e.clientY - offsetY + 'px';
+    });
+    document.addEventListener('mouseup', () => isDragging = false);
+
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    hamburger.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+  </script>
+</body>
+        </html>
