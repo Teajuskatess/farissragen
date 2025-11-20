@@ -1,13 +1,10 @@
 <!doctype html>
-<html lang="id">
 
-<head>
+<html lang="id"><head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Portofolio — Yusuf Ramadhan</title>
-  <meta name="description" content="Portofolio Yusuf Ramadhan — Lulusan SMK Sragen. Developer, Designer, Teknisi Jaringan.">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Portofolio Yusuf Ramadhan — Lulusan SMK Sragen. Developer, Designer, Teknisi Jaringan.">  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -23,9 +20,7 @@
         }
       }
     }
-  </script>
-
-  <style>
+  </script>  <style>
     html,
     body {
       width: 100%;
@@ -128,269 +123,230 @@
       background: linear-gradient(90deg, var(--accent), #7ad1ff);
       z-index: 60;
     }
-  </style>
-</head>
 
-<body>
+    /* === MINIMAL LIGHT PINK THEME === */
+    body:not(.dark) {
+      background: #ffeaf3 !important;
+    }
 
+    body:not(.dark) .glass {
+      background: rgba(255, 230, 240, 0.55) !important;
+      border-color: rgba(255, 160, 200, 0.25) !important;
+    }
+    }
+  </style></head><body>
   <!-- Loading -->
-  <div id="loading"
-    class="fixed inset-0 flex flex-col items-center justify-center bg-white dark:bg-midnight z-50 transition">
+  <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white dark:bg-midnight z-50 transition">
     <div class="w-12 h-12 border-4 border-t-primary border-gray-200 dark:border-gray-700 rounded-full animate-spin"></div>
     <p class="mt-4 text-primary font-medium">Memuat portofolio...</p>
+  </div>  <!-- Header -->  <header class="sticky top-0 z-40 glass border-b border-slate-100 dark:border-white/10">
+    <div class="max-w-6xl mx-auto px-6 md:px-10 py-3 flex items-center justify-between"><div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center font-bold">YR</div>
+    <div>
+      <div class="text-sm font-semibold">Yusuf Ramadhan</div>
+      <div class="text-xs text-muted dark:text-slate-400"><b>Teajuskatess.id</b></div>
+    </div>
   </div>
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 glass border-b border-slate-100 dark:border-white/10">
-    <div class="max-w-6xl mx-auto px-6 md:px-10 py-3 flex items-center justify-between">
+  <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+    <a href="#home" class="hover:text-primary">Home</a>
+    <a href="#skills" class="hover:text-primary">Skills</a>
+    <a href="#projects" class="hover:text-primary">Katalog</a>
+    <a href="#contact" class="hover:text-primary">Kontak</a>
+  </nav>
 
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center font-bold">YR</div>
-        <div>
-          <div class="text-sm font-semibold">Yusuf Ramadhan</div>
-          <div class="text-xs text-muted dark:text-slate-400"><b>Teajuskatess.id</b></div>
-        </div>
-      </div>
-
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="#home" class="hover:text-primary">Home</a>
-        <a href="#skills" class="hover:text-primary">Skills</a>
-        <a href="#projects" class="hover:text-primary">Katalog</a>
-        <a href="#contact" class="hover:text-primary">Kontak</a>
-      </nav>
-
-      <button id="mobileBtn" class="md:hidden p-2 rounded-md glass">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
-    </div>
-
-    <div id="mobileNav" class="hidden px-6 pb-4 md:hidden">
-      <a href="#home" class="block py-2">Home</a>
-      <a href="#skills" class="block py-2">Skills</a>
-      <a href="#projects" class="block py-2">Katalog</a>
-      <a href="#contact" class="block py-2">Kontak</a>
-    </div>
-  </header>
-
-  <main id="app" class="hidden relative">
-
-    <div class="hero-blob"></div>
-    <div class="parallax-bg"></div>
-
-    <!-- HERO -->
-    <section id="home" class="min-h-screen flex items-center">
-      <div class="max-w-6xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-10 items-center">
-
-        <div class="space-y-6">
-          <h1 class="text-4xl md:text-5xl font-extrabold leading-tight reveal">
-            <span id="typing" class="text-primary"></span>
-          </h1>
-          <p class="text-sm text-slate-500 dark:text-slate-400 reveal">
-           Selamat Datang. Saya lulusan SMK dari Sragen yang fokus mengembangkan kemampuan di bidang coding, desain, dan networking. Sebagai anak terakhir, saya terbiasa belajar cepat dan mengambil inisiatif. Saya membangun karya dengan perpaduan logika, kreativitas, dan perhatian pada detail tujuan saya adalah menghadirkan solusi digital yang rapi, fungsional, dan bernilai.
-          </p>
-
-          <div class="flex gap-3 reveal">
-            <a href="#projects"
-              class="bg-primary text-white px-5 py-2 rounded-full text-sm font-semibold hover:opacity-90">
-             Project Saya
-            </a>
-            <a href="#contact"
-              class="border border-primary text-primary px-5 py-2 rounded-full text-sm font-semibold hover:bg-primary/10">
-              Here Me
-            </a>
-          </div>
-        </div>
-
-        <div class="flex justify-center">
-          <div class="p-6 rounded-2xl glass shadow-lg card w-full max-w-sm reveal avatar-tilt">
-            <div class="flex items-center gap-4">
-              <div
-                class="w-24 h-24 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/90 to-sky-400">
-                <svg viewBox="0 0 120 120" width="72" height="72">
-                  <rect rx="18" width="120" height="120" fill="#fff" />
-                  <circle cx="60" cy="50" r="26" />
-                  <circle cx="48" cy="48" r="4" />
-                  <circle cx="72" cy="48" r="4" />
-                  <path d="M50 60 q10 8 20 0" stroke="#222" stroke-width="2" stroke-linecap="round" />
-                </svg>
-              </div>
-              <div>
-                <div class="font-semibold"><b>Teajuskatess.id</b></div>
-                <div class="text-xs text-slate-500 dark:text-slate-400"><b>Yusuf Ramadhan</b></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SKILLS WITH SMALLER ICONS -->
-    <section id="skills" class="py-16">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-
-        <h2 class="text-3xl font-bold text-primary reveal">Kemampuan Saya</h2>
-
-        <div class="mt-8 grid md:grid-cols-3 gap-6">
-
-          <!-- CODING -->
-          <div class="p-6 rounded-2xl glass shadow card reveal">
-            <div class="flex items-center gap-4 mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M8.25 4.5l-4.5 7.5 4.5 7.5m7.5-15l4.5 7.5-4.5 7.5" />
-              </svg>
-              <h3 class="font-semibold text-lg">Coding</h3>
-            </div>
-            <p class="text-sm text-slate-600 dark:text-slate-300">Website, skrip, dan automasi.</p>
-          </div>
-
-          <!-- DESIGN -->
-          <div class="p-6 rounded-2xl glass shadow card reveal">
-            <div class="flex items-center gap-4 mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M16.862 3.488a2.125 2.125 0 113.01 3.01l-10.97 10.97a4.5 4.5 0 01-1.897 1.13l-3.12.94.94-3.12a4.5 4.5 0 011.13-1.897l10.97-10.97z" />
-              </svg>
-              <h3 class="font-semibold text-lg">Desain</h3>
-            </div>
-            <p class="text-sm text-slate-600 dark:text-slate-300">UI/UX, banner, visual, dan layout.</p>
-          </div>
-
-          <!-- NETWORK -->
-          <div class="p-6 rounded-2xl glass shadow card reveal">
-            <div class="flex items-center gap-4 mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M8.288 15.712a5 5 0 017.424 0m-9.9-2.828a9 9 0 0114.142 0M2.1 10.1a13 13 0 0119.8 0M12 18.5h.01" />
-              </svg>
-              <h3 class="font-semibold text-lg">Network</h3>
-            </div>
-            <p class="text-sm text-slate-600 dark:text-slate-300">Instalasi WiFi & troubleshooting jaringan.</p>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" class="py-16">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-        <h2 class="text-3xl font-bold text-primary reveal">Katalog Website</h2>
-
-        <div class="mt-8 grid md:grid-cols-3 gap-6">
-
-          <div class="rounded-2xl overflow-hidden glass shadow card reveal">
-            <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
-              Website A
-            </div>
-            <div class="p-5">
-              <h3 class="font-semibold"><b>Website A</b></h3>
-              <p class="text-sm">Lorem Ipsum</p></p>
-            </div>
-          </div>
-
-          <div class="rounded-2xl overflow-hidden glass shadow card reveal">
-            <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
-              Website B
-            </div>
-            <div class="p-5">
-              <h3 class="font-semibold"><b>Website B</b></h3>
-              <p class="text-sm">Lorem Ipsum</p>
-            </div>
-          </div>
-
-          <div class="rounded-2xl overflow-hidden glass shadow card reveal">
-            <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
-              Website C
-            </div>
-            <div class="p-5">
-              <h3 class="font-semibold"><b>Website C</b></h3>
-              <p class="text-sm">Lorem Ipsum</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="py-16">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-        <h2 class="text-3xl font-bold text-primary reveal">Kontak Person</h2>
-
-        <div class="mt-6 grid md:grid-cols-2 gap-6">
-
-          <div class="p-6 rounded-2xl glass shadow card reveal">
-            <h3 class="font-semibold mb-3">Informasi Kontak</h3>
-            <ul class="space-y-2 text-sm">
-              <li>Email:
-                <a href="mailto:yusuf@example.com" class="text-primary">yusuf@example.com</a>
-              </li>
-              <li>WhatsApp:
-                <a href="https://wa.me/6281234567890" class="text-primary">+62 812-3456-7890</a>
-              </li>
-              <li>Instagram:
-                <a href="https://instagram.com/yusufdesign" class="text-primary">@yusufdesign</a>
-              </li>
-              <li>GitHub:
-                <a href="https://github.com/yusufcode" class="text-primary">@yusufcode</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="p-6 rounded-2xl glass shadow card reveal">
-            <h3 class="font-semibold mb-3">Kirim Pesan</h3>
-            <form onsubmit="event.preventDefault(); alert('Pesan terkirim (simulasi).');" class="space-y-3 text-sm">
-              <input class="w-full px-3 py-2 border rounded-md" placeholder="Nama" required>
-              <input class="w-full px-3 py-2 border rounded-md" placeholder="Email / WhatsApp" required>
-              <textarea class="w-full px-3 py-2 border rounded-md" rows="3" placeholder="Pesan..." required></textarea>
-              <button type="submit" class="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
-                Kirim
-              </button>
-            </form>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <footer class="py-8 border-t border-slate-100 dark:border-white/10 text-center text-sm text-slate-500">
-      © <span id="year"></span> Website by <b>Teajuskatess.id</b>
-    </footer>
-
-  </main>
-
-  <!-- FLOATING THEME TOGGLE (OUTLINE ICONS) -->
-  <button id="themeToggle"
-    class="fixed bottom-6 right-6 w-12 h-12 rounded-full glass flex items-center justify-center shadow-lg backdrop-blur-lg border border-white/50 cursor-pointer transition hover:scale-105 active:scale-95 z-[9999]">
-
-    <!-- Default: Moon outline -->
-    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
-      stroke="currentColor" stroke-width="1.8">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z" />
+  <button id="mobileBtn" class="md:hidden p-2 rounded-md glass">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
-
-    <!-- Hidden Sun outline -->
-    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 hidden" fill="none" viewBox="0 0 24 24"
-      stroke="currentColor" stroke-width="1.8">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636" />
-      <circle cx="12" cy="12" r="4" />
-    </svg>
-
   </button>
 
-  <div id="scrollProgress"></div>
+</div>
 
-  <script>
+<div id="mobileNav" class="hidden px-6 pb-4 md:hidden">
+  <a href="#home" class="block py-2">Home</a>
+  <a href="#skills" class="block py-2">Skills</a>
+  <a href="#projects" class="block py-2">Katalog</a>
+  <a href="#contact" class="block py-2">Kontak</a>
+</div>
+
+  </header>  <main id="app" class="hidden relative"><div class="hero-blob"></div>
+<div class="parallax-bg"></div>
+
+<!-- HERO -->
+<section id="home" class="min-h-screen flex items-center">
+  <div class="max-w-6xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-10 items-center">
+
+    <div class="space-y-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight reveal">
+        <span id="typing" class="text-primary"></span>
+      </h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 reveal">
+        Selamat Datang. Saya lulusan SMK dari Sragen yang fokus mengembangkan kemampuan di bidang coding, desain, dan networking.
+      </p>
+
+      <div class="flex gap-3 reveal">
+        <a href="#projects" class="bg-primary text-white px-5 py-2 rounded-full text-sm font-semibold hover:opacity-90">
+          Project Saya
+        </a>
+        <a href="#contact" class="border border-primary text-primary px-5 py-2 rounded-full text-sm font-semibold hover:bg-primary/10">
+          Here Me
+        </a>
+      </div>
+    </div>
+
+    <div class="flex justify-center">
+      <div class="p-6 rounded-2xl glass shadow-lg card w-full max-w-sm reveal avatar-tilt">
+        <div class="flex items-center gap-4">
+          <div class="w-24 h-24 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/90 to-sky-400">
+            <svg viewBox="0 0 120 120" width="72" height="72">
+              <rect rx="18" width="120" height="120" fill="#fff" />
+              <circle cx="60" cy="50" r="26" />
+              <circle cx="48" cy="48" r="4" />
+              <circle cx="72" cy="48" r="4" />
+              <path d="M50 60 q10 8 20 0" stroke="#222" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold"><b>Teajuskatess.id</b></div>
+            <div class="text-xs text-slate-500 dark:text-slate-400"><b>Yusuf Ramadhan</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="py-16">
+  <div class="max-w-6xl mx-auto px-6 md:px-10">
+
+    <h2 class="text-3xl font-bold text-primary reveal">Kemampuan Saya</h2>
+
+    <div class="mt-8 grid md:grid-cols-3 gap-6">
+
+      <div class="p-6 rounded-2xl glass shadow card reveal">
+        <div class="flex items-center gap-4 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l-4.5 7.5 4.5 7.5m7.5-15l4.5 7.5-4.5 7.5" />
+          </svg>
+          <h3 class="font-semibold text-lg">Coding</h3>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Website, skrip, dan automasi.</p>
+      </div>
+
+      <div class="p-6 rounded-2xl glass shadow card reveal">
+        <div class="flex items-center gap-4 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.488a2.125 2.125 0 113.01 3.01l-10.97 10.97a4.5 4.5 0 01-1.897 1.13l-3.12.94.94-3.12a4.5 4.5 0 011.13-1.897l10.97-10.97z" />
+          </svg>
+          <h3 class="font-semibold text-lg">Desain</h3>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300">UI/UX, banner, visual, dan layout.</p>
+      </div>
+
+      <div class="p-6 rounded-2xl glass shadow card reveal">
+        <div class="flex items-center gap-4 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.712a5 5 0 017.424 0m-9.9-2.828a9 9 0 0114.142 0M2.1 10.1a13 13 0 0119.8 0M12 18.5h.01" />
+          </svg>
+          <h3 class="font-semibold text-lg">Network</h3>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Instalasi WiFi & troubleshooting jaringan.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="py-16">
+  <div class="max-w-6xl mx-auto px-6 md:px-10">
+    <h2 class="text-3xl font-bold text-primary reveal">Katalog Website</h2>
+
+    <div class="mt-8 grid md:grid-cols-3 gap-6">
+
+      <div class="rounded-2xl overflow-hidden glass shadow card reveal">
+        <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
+          Website A
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold"><b>Website A</b></h3>
+          <p class="text-sm">Lorem Ipsum</p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl overflow-hidden glass shadow card reveal">
+        <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
+          Website B
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold"><b>Website B</b></h3>
+          <p class="text-sm">Lorem Ipsum</p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl overflow-hidden glass shadow card reveal">
+        <div class="h-44 bg-gradient-to-br from-primary/10 to-soft flex items-center justify-center text-primary font-bold text-xl">
+          Website C
+        </div>
+        <div class="p-5">
+          <h3 class="font-semibold"><b>Website C</b></h3>
+          <p class="text-sm">Lorem Ipsum</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-16">
+  <div class="max-w-6xl mx-auto px-6 md:px-10">
+    <h2 class="text-3xl font-bold text-primary reveal">Kontak Person</h2>
+
+    <div class="mt-6 grid md:grid-cols-2 gap-6">
+
+      <div class="p-6 rounded-2xl glass shadow card reveal">
+        <h3 class="font-semibold mb-3">Informasi Kontak</h3>
+        <ul class="space-y-2 text-sm">
+          <li>Email: <a href="mailto:yusuf@example.com" class="text-primary">yusuf@example.com</a></li>
+          <li>WhatsApp: <a href="https://wa.me/6281234567890" class="text-primary">+62 812-3456-7890</a></li>
+          <li>Instagram: <a href="https://instagram.com/yusufdesign" class="text-primary">@yusufdesign</a></li>
+          <li>GitHub: <a href="https://github.com/yusufcode" class="text-primary">@yusufcode</a></li>
+        </ul>
+      </div>
+
+      <div class="p-6 rounded-2xl glass shadow card reveal">
+        <h3 class="font-semibold mb-3">Kirim Pesan</h3>
+        <form onsubmit="event.preventDefault(); alert('Pesan terkirim (simulasi).');" class="space-y-3 text-sm">
+          <input class="w-full px-3 py-2 border rounded-md" placeholder="Nama" required>
+          <input class="w-full px-3 py-2 border rounded-md" placeholder="Email / WhatsApp" required>
+          <textarea class="w-full px-3 py-2 border rounded-md" rows="3" placeholder="Pesan..." required></textarea>
+          <button type="submit" class="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
+            Kirim
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="py-8 border-t border-slate-100 dark:border-white/10 text-center text-sm text-slate-500">
+  © <span id="year"></span> Website by <b>Teajuskatess.id</b>
+</footer>
+
+  </main>  <!-- THEME TOGGLE -->  <button id="themeToggle" class="fixed bottom-6 right-6 w-12 h-12 rounded-full glass flex items-center justify-center shadow-lg backdrop-blur-lg border border-white/50 cursor-pointer transition hover:scale-105 active:scale-95 z-[9999]">
+    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 0111.21 3 7 7 0 0021 12.79z" />
+    </svg><svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m12.728 0l-1.414-1.414M7.05 7.05L5.636 5.636" />
+  <circle cx="12" cy="12" r="4" />
+</svg>
+
+  </button>  <div id="scrollProgress"></div>  <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
     window.addEventListener('load', () => {
@@ -419,7 +375,6 @@
       els.forEach(el => io.observe(el));
     }
 
-    /* Typing */
     const tEl = document.getElementById('typing');
     const words = [
       'Halo, Saya Yusuff',
@@ -446,7 +401,6 @@
       type();
     }
 
-    /* TOGGLE DARK MODE OUTLINE VERSION */
     const themeToggle = document.getElementById('themeToggle');
     const iconMoon = document.getElementById('iconMoon');
     const iconSun = document.getElementById('iconSun');
@@ -472,7 +426,6 @@
       updateThemeIcon(dark);
     });
 
-    /* Scroll Progress */
     const progress = document.getElementById('scrollProgress');
     window.addEventListener('scroll', () => {
       const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -480,8 +433,4 @@
       progress.style.width = pct + '%';
     });
 
-  </script>
-
-</body>
-
-</html>
+  </script></body></html>
