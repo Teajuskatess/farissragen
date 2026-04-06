@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KayaKu — Kelola Keuangan</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #080C1A;
+  --ink-mid: #111827;
+  --ink-card: #161D2F;
+  --ink-glass: rgba(22,29,47,0.85);
+  --accent: #6EE7B7;
+  --accent-glow: rgba(110,231,183,0.25);
+  --accent-dim: rgba(110,231,183,0.12);
+  --blue: #60A5FA;
+  --blue-glow: rgba(96,165,250,0.25);
+  --violet: #A78BFA;
+  --red: #F87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --orange: #FBBF24;
+  --gold: #F59E0B;
+  --text: #F1F5F9;
+  --text-sub: #94A3B8;
+  --text-muted: #475569;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --shadow: 0 4px 24px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.5);
+  --r: 20px;
+  --r-sm: 14px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+::selection{background:var(--accent-dim);color:var(--accent);}
+
+body{
+  font-family:'Sora',sans-serif;
+  background:var(--ink);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ═══ NOISE GRAIN OVERLAY ═══ */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+
+/* ═══ LOADING ═══ */
+#loading{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  transition:opacity 0.6s ease;
+}
+.loading-orb-wrap{position:relative;width:120px;height:120px;}
+.loading-orb{
+  width:120px;height:120px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--accent),var(--blue),var(--violet),var(--accent));
+  animation:orbSpin 1.8s linear infinite;
+  filter:blur(0px);
+}
+.loading-orb::after{
+  content:'';position:absolute;inset:8px;border-radius:50%;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+.loading-orb-inner{
+  position:absolute;inset:8px;border-radius:50%;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:18px;font-weight:700;color:var(--accent);
+  letter-spacing:-0.5px;
+}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+
+.loading-brand{font-size:28px;font-weight:800;color:var(--text);letter-spacing:-1.5px;}
+.loading-brand em{color:var(--accent);font-style:normal;}
+.loading-tagline{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;}
+.loading-progress{
+  width:160px;height:2px;background:var(--border);border-radius:99px;overflow:hidden;
+}
+.loading-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--blue));
+  border-radius:99px;
+  transition:width 2.6s cubic-bezier(0.25,1,0.5,1);
+  box-shadow:0 0 12px var(--accent-glow);
+}
+
+/* ═══ LOGIN ═══ */
+#loginScreen{
+  position:fixed;inset:0;z-index:9998;
+  background:var(--ink);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px;
+}
+.login-bg-orb{
+  position:absolute;
+  border-radius:50%;filter:blur(80px);pointer-events:none;
+}
+.login-bg-orb:nth-child(1){width:400px;height:400px;top:-100px;right:-100px;background:rgba(96,165,250,0.06);}
+.login-bg-orb:nth-child(2){width:300px;height:300px;bottom:-50px;left:-80px;background:rgba(110,231,183,0.06);}
+
+.login-inner{position:relative;z-index:1;width:100%;max-width:380px;}
+.login-logo{
+  font-size:52px;font-weight:800;letter-spacing:-3px;color:var(--text);
+  margin-bottom:6px;
+}
+.login-logo em{color:var(--accent);font-style:normal;}
+.login-tagline{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:48px;
+}
+.login-card{
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:28px;padding:32px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.03),var(--shadow-lg);
+  animation:cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:none}}
+.login-card h2{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.login-card p{font-size:13px;color:var(--text-sub);margin-bottom:28px;}
+.login-field{margin-bottom:16px;}
+.login-field label{
+  display:block;font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;color:var(--text-muted);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;
+}
+.login-field input{
+  width:100%;padding:14px 16px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:14px;color:var(--text);
+  font-size:15px;font-family:'Sora',sans-serif;outline:none;
+  transition:all 0.25s;
+}
+.login-field input::placeholder{color:var(--text-muted);}
+.login-field input:focus{
+  border-color:var(--accent);
+  background:rgba(110,231,183,0.05);
+  box-shadow:0 0 0 3px rgba(110,231,183,0.08);
+}
+.btn-login{
+  width:100%;padding:16px;
+  background:var(--accent);
+  border:none;border-radius:14px;
+  color:var(--ink);font-size:15px;font-weight:700;
+  cursor:pointer;margin-top:8px;
+  font-family:'Sora',sans-serif;letter-spacing:-0.3px;
+  transition:all 0.25s;position:relative;overflow:hidden;
+}
+.btn-login::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
+  pointer-events:none;
+}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-glow);}
+.btn-login:active{transform:translateY(0);}
+.login-hint{font-size:11px;color:var(--text-muted);text-align:center;margin-top:16px;font-family:'JetBrains Mono',monospace;}
+
+/* ═══ APP WRAPPER ═══ */
+#app{
+  display:none;max-width:480px;margin:0 auto;
+  min-height:100vh;position:relative;padding-bottom:96px;
+  background:var(--ink);
+}
+
+/* ═══ ANIMATED BG GRADIENT ═══ */
+#app::before{
+  content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:480px;height:480px;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(96,165,250,0.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ═══ TOP BAR ═══ */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,12,26,0.85);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  padding:16px 20px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.3s;
+}
+.topbar-left{}
+.topbar-title{font-size:22px;font-weight:800;letter-spacing:-1px;color:var(--text);}
+.topbar-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--text-muted);letter-spacing:2.5px;text-transform:uppercase;
+  margin-top:1px;
+}
+.topbar-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--blue));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink);font-weight:800;font-size:14px;cursor:pointer;
+  transition:all 0.2s;
+  box-shadow:0 0 0 2px rgba(110,231,183,0.15);
+}
+.topbar-avatar:hover{transform:scale(1.05);box-shadow:0 0 0 3px rgba(110,231,183,0.3);}
+
+/* ═══ PAGES ═══ */
+.page{display:none;animation:fadeSlide 0.35s ease;}
+.page.active{display:block;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══ WEALTH CARD ═══ */
+.wealth-card{
+  margin:16px 16px 0;
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:28px;padding:28px 24px;
+  position:relative;overflow:hidden;
+}
+.wealth-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(96,165,250,0.12),transparent 70%);
+  pointer-events:none;
+}
+.wealth-card::after{
+  content:'';position:absolute;bottom:-80px;left:20px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(110,231,183,0.07),transparent 70%);
+  pointer-events:none;
+}
+.wealth-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.wealth-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;
+}
+.live-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(110,231,183,0.1);
+  border:1px solid rgba(110,231,183,0.2);
+  border-radius:20px;padding:4px 10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:700;color:var(--accent);
+  letter-spacing:1.5px;
+}
+.live-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--accent);
+  animation:liveGlow 1.8s ease-in-out infinite;
+  box-shadow:0 0 6px var(--accent);
+}
+@keyframes liveGlow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+
+.wealth-amount{
+  font-size:38px;font-weight:800;letter-spacing:-2px;color:var(--text);
+  margin:10px 0 24px;
+  position:relative;z-index:1;
+}
+.wealth-amount.counting{color:var(--accent);}
+
+.wealth-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;z-index:1;}
+.wealth-split-item{
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;
+  transition:all 0.2s;
+}
+.wealth-split-item:hover{background:rgba(255,255,255,0.06);border-color:var(--border-hover);}
+.wealth-split-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;
+}
+.wealth-split-val{font-size:15px;font-weight:700;color:var(--text);}
+.wealth-split-val.green{color:var(--accent);}
+
+/* ═══ SECTION ═══ */
+.section{padding:20px 16px 0;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{
+  font-size:14px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:8px;
+}
+.section-icon-wrap{
+  width:28px;height:28px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  background:rgba(255,255,255,0.06);
+}
+.section-link{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--accent);font-weight:600;
+  cursor:pointer;letter-spacing:0.5px;
+  padding:6px 12px;border-radius:99px;
+  background:var(--accent-dim);border:1px solid rgba(110,231,183,0.15);
+  transition:all 0.2s;
+}
+.section-link:hover{background:rgba(110,231,183,0.2);}
+
+/* ═══ WALLET GRID ═══ */
+.wallet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.wallet-card{
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:16px 12px;
+  text-align:center;cursor:pointer;
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden;
+}
+.wallet-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);
+  opacity:0;transition:opacity 0.2s;
+}
+.wallet-card:hover{transform:translateY(-4px) scale(1.02);border-color:var(--border-hover);box-shadow:var(--shadow);}
+.wallet-card:hover::before{opacity:1;}
+.wallet-card:active{transform:scale(0.97);}
+.wallet-icon{
+  width:44px;height:44px;border-radius:14px;
+  margin:0 auto 10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.wallet-name{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;color:var(--text-muted);font-weight:500;
+  letter-spacing:1.5px;margin-bottom:5px;
+}
+.wallet-bal{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ═══ DEBT GRID ═══ */
+.debt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.debt-card{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:20px;padding:18px 16px;cursor:pointer;
+  transition:all 0.25s;position:relative;overflow:hidden;
+}
+.debt-card:hover{border-color:var(--border-hover);transform:translateY(-2px);}
+.debt-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:600;letter-spacing:1.5px;
+  color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;
+}
+.debt-val{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+.debt-icon{font-size:20px;margin-bottom:10px;}
+
+/* ═══ INVEST GRID ═══ */
+.invest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.invest-card{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:20px;padding:16px 12px;cursor:pointer;
+  transition:all 0.25s;
+}
+.invest-card:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:var(--shadow);}
+.invest-icon{font-size:22px;margin-bottom:8px;}
+.invest-name{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;color:var(--text-muted);font-weight:500;
+  letter-spacing:1.5px;margin-bottom:5px;text-transform:uppercase;
+}
+.invest-val{font-size:13px;font-weight:700;color:var(--text);}
+.invest-rate{font-size:9px;color:var(--text-muted);margin-top:3px;font-family:'JetBrains Mono',monospace;}
+
+/* ═══ NEED LIST ═══ */
+.need-list{display:flex;flex-direction:column;gap:8px;}
+.need-item{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  animation:itemIn 0.35s ease;
+}
+@keyframes itemIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.need-item.fulfilled{
+  opacity:0.35;
+  animation:itemOut 0.5s forwards 0.3s;
+}
+@keyframes itemOut{to{height:0;padding:0;margin:0;opacity:0;overflow:hidden}}
+.need-check{
+  width:26px;height:26px;border-radius:50%;
+  border:2px solid var(--border-hover);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  color:var(--text);font-size:11px;
+}
+.need-check:hover{border-color:var(--accent);background:var(--accent-dim);}
+.need-check.done{background:var(--accent);border-color:var(--accent);color:var(--ink);}
+.need-info{flex:1;}
+.need-name{font-size:14px;font-weight:600;color:var(--text);}
+.need-meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-muted);margin-top:2px;letter-spacing:0.5px;
+}
+.need-amount{font-size:13px;font-weight:700;color:var(--accent);}
+.need-actions{display:flex;gap:6px;}
+.need-btn{
+  width:30px;height:30px;border-radius:10px;border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:12px;transition:all 0.2s;
+}
+.need-btn.edit-btn{background:rgba(96,165,250,0.12);color:var(--blue);}
+.need-btn.del-btn{background:rgba(248,113,113,0.12);color:var(--red);}
+.need-btn:hover{transform:scale(1.1);}
+
+/* ═══ TX LIST ═══ */
+.tx-list{display:flex;flex-direction:column;gap:8px;}
+.tx-item{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:all 0.2s;
+  animation:itemIn 0.3s ease;
+}
+.tx-item:hover{border-color:var(--border-hover);transform:translateX(3px);}
+.tx-item:active{transform:scale(0.98);}
+.tx-icon{
+  width:42px;height:42px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.tx-info{flex:1;}
+.tx-name{font-size:14px;font-weight:600;color:var(--text);}
+.tx-meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--text-muted);margin-top:2px;letter-spacing:0.5px;
+}
+.tx-amount{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;}
+.tx-amount.in{color:var(--accent);}
+.tx-amount.out{color:var(--red);}
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  background:rgba(8,12,26,0.92);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:10px 16px 24px;z-index:100;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;transition:all 0.25s;padding:8px 4px;border-radius:16px;
+}
+.nav-item:hover{background:rgba(255,255,255,0.04);}
+.nav-icon{font-size:20px;transition:all 0.25s;}
+.nav-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:500;color:var(--text-muted);
+  letter-spacing:1px;transition:all 0.25s;
+}
+.nav-item.active .nav-label{color:var(--accent);}
+.nav-item.active .nav-icon{filter:drop-shadow(0 0 8px var(--accent));}
+
+.nav-fab{
+  width:56px;height:56px;border-radius:18px;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;color:var(--ink);
+  font-weight:700;cursor:pointer;margin-top:-22px;
+  box-shadow:0 0 0 6px rgba(110,231,183,0.08),0 8px 24px rgba(110,231,183,0.3);
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);flex-shrink:0;
+}
+.nav-fab:hover{transform:scale(1.1) rotate(45deg);}
+.nav-fab.open-state{transform:rotate(45deg) scale(1.05);}
+
+/* ═══ FAB MENU ═══ */
+.fab-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(8px);
+  z-index:200;display:none;align-items:flex-end;justify-content:center;
+}
+.fab-overlay.open{display:flex;}
+.fab-menu{
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:32px 32px 0 0;
+  padding:20px 20px 110px;
+  width:100%;max-width:480px;
+  animation:sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.fab-menu-handle{width:40px;height:4px;background:var(--border-hover);border-radius:99px;margin:0 auto 20px;}
+.fab-menu h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.fab-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fab-opt{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:20px;padding:18px 14px;
+  text-align:center;cursor:pointer;
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.fab-opt:hover{border-color:var(--accent);background:var(--accent-dim);transform:scale(1.02);}
+.fab-opt:active{transform:scale(0.96);}
+.fab-opt-icon{font-size:26px;margin-bottom:8px;}
+.fab-opt-name{font-size:14px;font-weight:700;color:var(--text);}
+.fab-opt-desc{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* ═══ MODAL ═══ */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  z-index:300;display:none;align-items:flex-end;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal-sheet{
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:32px 32px 0 0;
+  padding:12px 24px 48px;
+  width:100%;max-width:480px;
+  max-height:92vh;overflow-y:auto;
+  animation:sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+.sheet-handle{width:40px;height:4px;background:var(--border-hover);border-radius:99px;margin:8px auto 20px;}
+.sheet-title{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:4px;}
+.sheet-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;}
+
+/* ACTION POPUP */
+.action-popup{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);
+  z-index:400;display:none;align-items:flex-end;justify-content:center;
+}
+.action-popup.open{display:flex;}
+.action-sheet{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:32px 32px 0 0;
+  padding:12px 20px 48px;
+  width:100%;max-width:480px;
+  animation:sheetUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.action-sheet-handle{width:40px;height:4px;background:var(--border-hover);border-radius:99px;margin:8px auto 16px;}
+.action-sheet-title{font-size:18px;font-weight:800;color:var(--text);text-align:center;}
+.action-sheet-sub{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:24px;margin-top:4px;font-family:'JetBrains Mono',monospace;}
+.action-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.action-btn{
+  padding:18px;border-radius:20px;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:'Sora',sans-serif;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.action-btn:hover{transform:translateY(-3px);}
+.action-btn:active{transform:scale(0.96);}
+.action-btn .action-btn-icon{font-size:22px;}
+.action-btn .action-btn-label{font-size:14px;font-weight:700;}
+.action-btn.edit{background:rgba(96,165,250,0.12);color:var(--blue);border:1px solid rgba(96,165,250,0.2);}
+.action-btn.del{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.action-cancel{
+  width:100%;padding:16px;border:1px solid var(--border);
+  border-radius:18px;background:transparent;
+  color:var(--text-sub);font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Sora',sans-serif;transition:all 0.2s;
+}
+.action-cancel:hover{background:rgba(255,255,255,0.04);}
+
+/* ═══ FORM FIELDS ═══ */
+.form-group{margin-bottom:16px;}
+.form-label{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;color:var(--text-muted);
+  margin-bottom:8px;letter-spacing:1.5px;text-transform:uppercase;
+}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:14px 16px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:14px;font-size:15px;
+  font-family:'Sora',sans-serif;
+  color:var(--text);outline:none;
+  transition:all 0.25s;appearance:none;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--accent);
+  background:rgba(110,231,183,0.04);
+  box-shadow:0 0 0 3px rgba(110,231,183,0.07);
+}
+.form-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;
+  padding-right:40px;
+}
+.form-select option{background:var(--ink-mid);}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.type-toggle{display:flex;gap:8px;}
+.type-btn{
+  flex:1;padding:12px;border:1px solid var(--border);
+  border-radius:12px;background:transparent;
+  font-family:'Sora',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;color:var(--text-sub);transition:all 0.2s;
+}
+.type-btn.active-in{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);}
+.type-btn.active-out{border-color:var(--red);background:rgba(248,113,113,0.1);color:var(--red);}
+.btn-submit{
+  width:100%;padding:16px;
+  background:var(--accent);
+  border:none;border-radius:14px;color:var(--ink);
+  font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Sora',sans-serif;letter-spacing:-0.3px;
+  transition:all 0.25s;margin-top:8px;
+  position:relative;overflow:hidden;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow);}
+.btn-submit:active{transform:scale(0.98);}
+.btn-submit.red{background:var(--red);}
+.btn-submit.red:hover{box-shadow:0 8px 24px rgba(248,113,113,0.3);}
+
+/* ═══ HISTORY PAGE ═══ */
+.history-header{padding:16px;position:sticky;top:57px;z-index:90;background:rgba(8,12,26,0.9);backdrop-filter:blur(20px);}
+.summary-bar{display:flex;gap:8px;margin-bottom:14px;}
+.summary-chip{
+  flex:1;background:var(--ink-card);
+  border:1px solid var(--border);
+  border-radius:14px;padding:12px;text-align:center;
+}
+.summary-chip-val{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.summary-chip-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;color:var(--text-muted);
+  font-weight:500;letter-spacing:1.5px;margin-top:3px;text-transform:uppercase;
+}
+.history-filter{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.history-filter::-webkit-scrollbar{display:none;}
+.filter-chip{
+  padding:8px 16px;border-radius:99px;
+  border:1px solid var(--border);
+  background:transparent;font-family:'Sora',sans-serif;
+  font-size:12px;font-weight:600;color:var(--text-sub);
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+}
+.filter-chip.active{
+  border-color:var(--accent);background:var(--accent-dim);color:var(--accent);
+}
+
+/* ═══ REPORT PAGE ═══ */
+.report-card{
+  background:var(--ink-card);border:1px solid var(--border);
+  border-radius:20px;padding:20px;margin-bottom:10px;
+}
+.report-card h4{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:700;color:var(--text-muted);
+  margin-bottom:14px;letter-spacing:2px;text-transform:uppercase;
+}
+.report-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.report-row:last-child{border:none;padding-bottom:0;}
+.report-row-label{font-size:13px;color:var(--text-sub);}
+.report-row-val{font-size:14px;font-weight:700;color:var(--text);}
+
+/* ═══ EMPTY STATE ═══ */
+.empty-state{text-align:center;padding:32px;color:var(--text-muted);}
+.empty-state .empty-icon{font-size:36px;margin-bottom:10px;opacity:0.4;}
+.empty-state p{font-size:13px;}
+
+/* ═══ TOAST ═══ */
+.toast{
+  position:fixed;bottom:110px;left:50%;
+  transform:translateX(-50%) translateY(12px);
+  background:var(--ink-card);
+  border:1px solid var(--border);
+  color:var(--text);padding:12px 24px;
+  border-radius:99px;font-size:13px;font-weight:600;
+  z-index:600;opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;backdrop-filter:blur(20px);
+  box-shadow:var(--shadow);white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ═══ DEBT PILL ═══ */
+.debt-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:99px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:600;letter-spacing:0.5px;
+}
+.debt-pill.hutang{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.debt-pill.piutang{background:rgba(110,231,183,0.1);color:var(--accent);border:1px solid rgba(110,231,183,0.2);}
+
+/* ═══ STAGGER ANIMATIONS ═══ */
+.stagger-child{opacity:0;transform:translateY(12px);animation:staggerIn 0.4s ease forwards;}
+@keyframes staggerIn{to{opacity:1;transform:none}}
+.stagger-child:nth-child(1){animation-delay:0.05s}
+.stagger-child:nth-child(2){animation-delay:0.1s}
+.stagger-child:nth-child(3){animation-delay:0.15s}
+.stagger-child:nth-child(4){animation-delay:0.2s}
+.stagger-child:nth-child(5){animation-delay:0.25s}
+.stagger-child:nth-child(6){animation-delay:0.3s}
+
+/* ═══ SCROLL BAR ═══ */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:99px;}
+
+/* ═══ DESKTOP ═══ */
+@media(min-width:520px){
+  body{background:#050810;}
+  #app{box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 40px 120px rgba(0,0,0,0.5);}
+}
+
+/* ═══ RIPPLE EFFECT ═══ */
+.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:rippleAnim 0.5s linear;background:rgba(255,255,255,0.1);pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ═══ NUMBER COUNTER ═══ */
+@keyframes countUp{from{transform:translateY(4px);opacity:0}to{transform:none;opacity:1}}
+.count-updated{animation:countUp 0.3s ease}
+
+/* ═══ SHIMMER SKELETON ═══ */
+.shimmer{
+  background:linear-gradient(90deg,var(--ink-card) 25%,rgba(255,255,255,0.04) 50%,var(--ink-card) 75%);
+  background-size:200%;animation:shimmerAnim 1.5s infinite;
+}
+@keyframes shimmerAnim{from{background-position:200% 0}to{background-position:-200% 0}}
+
+/* ═══ FLOATING PARTICLES (hero card) ═══ */
+.particle{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:floatParticle linear infinite;
+}
+@keyframes floatParticle{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-120px) translateX(20px);opacity:0}
+}
+
+/* ═══ PULSE RING ═══ */
+.pulse-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid var(--accent);
+  animation:pulseRing 2s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes pulseRing{
+  0%{transform:scale(1);opacity:0.5}
+  100%{transform:scale(1.8);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOADING ═══ -->
+<div id="loading">
+  <div class="loading-orb-wrap">
+    <div class="loading-orb"></div>
+    <div class="loading-orb-inner">Rp</div>
+  </div>
+  <div class="loading-brand">Kaya<em>Ku</em></div>
+  <div class="loading-tagline">Kelola Keuangan Cerdas</div>
+  <div class="loading-progress"><div class="loading-fill" id="loadingFill"></div></div>
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginScreen">
+  <div class="login-bg-orb"></div>
+  <div class="login-bg-orb"></div>
+  <div class="login-inner">
+    <div class="login-logo">Kaya<em>Ku</em></div>
+    <div class="login-tagline">Kelola keuangan cerdas</div>
+    <div class="login-card">
+      <h2>Selamat Datang 👋</h2>
+      <p>Masuk untuk mengelola keuangan Anda</p>
+      <div class="login-field">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="Masukkan username" autocomplete="off">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Masukkan password">
+      </div>
+      <button class="btn-login" onclick="doLogin()">Masuk →</button>
+      <div class="login-hint">Demo: username & password apa saja</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="pageTitle">Beranda</div>
+      <div class="topbar-sub" id="pageSubtitle">Overview Kekayaan</div>
+    </div>
+    <div class="topbar-avatar" id="userAvatar" onclick="doLogout()">U</div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="pageHome" class="page active">
+    <!-- Wealth Card -->
+    <div class="wealth-card" id="wealthCard">
+      <div class="wealth-top">
+        <div class="wealth-label">Total Kekayaan Bersih</div>
+        <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      </div>
+      <div class="wealth-amount" id="totalWealth">Rp 0</div>
+      <div class="wealth-split">
+        <div class="wealth-split-item stagger-child">
+          <div class="wealth-split-label">Total Dompet</div>
+          <div class="wealth-split-val" id="totalWallet">Rp 0</div>
+        </div>
+        <div class="wealth-split-item stagger-child">
+          <div class="wealth-split-label">Nilai Investasi</div>
+          <div class="wealth-split-val green" id="totalInvest">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallets -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon-wrap">💳</div> Dompet Anda
+        </div>
+      </div>
+      <div class="wallet-grid">
+        <div class="wallet-card stagger-child" onclick="openEditWallet('tunai')">
+          <div class="wallet-icon" style="background:rgba(110,231,183,0.12)">💵</div>
+          <div class="wallet-name">TUNAI</div>
+          <div class="wallet-bal" id="walTunai">Rp 0</div>
+        </div>
+        <div class="wallet-card stagger-child" onclick="openEditWallet('mbanking')">
+          <div class="wallet-icon" style="background:rgba(96,165,250,0.12)">🏦</div>
+          <div class="wallet-name">M-BANKING</div>
+          <div class="wallet-bal" id="walMbanking">Rp 0</div>
+        </div>
+        <div class="wallet-card stagger-child" onclick="openEditWallet('ewallet')">
+          <div class="wallet-icon" style="background:rgba(167,139,250,0.12)">📱</div>
+          <div class="wallet-name">E-WALLET</div>
+          <div class="wallet-bal" id="walEwallet">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debt -->
+    <div class="section" style="margin-top:16px">
+      <div class="debt-grid">
+        <div class="debt-card stagger-child" onclick="switchPage('pageAssets','Aset & Utang','Hutang & Piutang','nav-assets')">
+          <div class="debt-icon">🔴</div>
+          <div class="debt-label">HUTANG SAYA</div>
+          <div class="debt-val" id="homeHutang">Rp 0</div>
+        </div>
+        <div class="debt-card stagger-child" onclick="switchPage('pageAssets','Aset & Utang','Hutang & Piutang','nav-assets')">
+          <div class="debt-icon">🟢</div>
+          <div class="debt-label">PIUTANG</div>
+          <div class="debt-val" id="homePiutang">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invest -->
+    <div class="section" style="margin-top:16px">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon-wrap">📈</div> Aset Investasi
+        </div>
+      </div>
+      <div class="invest-grid">
+        <div class="invest-card stagger-child" onclick="openEditWallet('emas')">
+          <div class="invest-icon">💎</div>
+          <div class="invest-name">EMAS</div>
+          <div class="invest-val" id="walEmas">0.00 gr</div>
+          <div class="invest-rate" id="rateEmas">1gr = Rp 1.800.000</div>
+        </div>
+        <div class="invest-card stagger-child" onclick="openEditWallet('crypto')">
+          <div class="invest-icon">🪙</div>
+          <div class="invest-name">KRIPTO</div>
+          <div class="invest-val" id="walCrypto">0.0000 BTC</div>
+          <div class="invest-rate" id="rateCrypto">1BTC = Rp 1.5M</div>
+        </div>
+        <div class="invest-card stagger-child" onclick="openEditWallet('saham')">
+          <div class="invest-icon">📊</div>
+          <div class="invest-name">SAHAM</div>
+          <div class="invest-val" id="walSaham">0 lot</div>
+          <div class="invest-rate" style="color:var(--orange)">Harga statis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Needs -->
+    <div class="section" style="margin-top:16px;padding-bottom:24px">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-icon-wrap">📋</div> Kebutuhan Bulan Ini
+        </div>
+        <span class="section-link" onclick="openNeedForm()">+ Tambah</span>
+      </div>
+      <div class="need-list" id="needList">
+        <div class="empty-state"><div class="empty-icon">📋</div><p>Belum ada kebutuhan bulan ini</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div id="pageHistory" class="page">
+    <div class="history-header">
+      <div class="summary-bar">
+        <div class="summary-chip">
+          <div class="summary-chip-val" style="color:var(--accent)" id="sumIncome">Rp 0</div>
+          <div class="summary-chip-label">Pemasukan</div>
+        </div>
+        <div class="summary-chip">
+          <div class="summary-chip-val" style="color:var(--red)" id="sumExpense">Rp 0</div>
+          <div class="summary-chip-label">Pengeluaran</div>
+        </div>
+        <div class="summary-chip">
+          <div class="summary-chip-val" id="sumBalance">Rp 0</div>
+          <div class="summary-chip-label">Net</div>
+        </div>
+      </div>
+      <div class="history-filter" id="historyFilter">
+        <button class="filter-chip active" onclick="filterTx('all',this)">Semua</button>
+        <button class="filter-chip" onclick="filterTx('in',this)">Pemasukan</button>
+        <button class="filter-chip" onclick="filterTx('out',this)">Pengeluaran</button>
+      </div>
+    </div>
+    <div class="section" style="padding-bottom:24px">
+      <div class="tx-list" id="txList">
+        <div class="empty-state"><div class="empty-icon">💸</div><p>Belum ada transaksi</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT PAGE -->
+  <div id="pageReport" class="page">
+    <div class="section" style="padding-bottom:24px">
+      <div class="report-card stagger-child">
+        <h4>📊 Ringkasan Keuangan</h4>
+        <div class="report-row"><span class="report-row-label">Total Pemasukan</span><span class="report-row-val" style="color:var(--accent)" id="repIncome">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">Total Pengeluaran</span><span class="report-row-val" style="color:var(--red)" id="repExpense">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">Saldo Bersih</span><span class="report-row-val" id="repBalance">Rp 0</span></div>
+      </div>
+      <div class="report-card stagger-child">
+        <h4>💳 Saldo Dompet</h4>
+        <div class="report-row"><span class="report-row-label">💵 Tunai</span><span class="report-row-val" id="repTunai">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">🏦 M-Banking</span><span class="report-row-val" id="repMbanking">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">📱 E-Wallet</span><span class="report-row-val" id="repEwallet">Rp 0</span></div>
+      </div>
+      <div class="report-card stagger-child">
+        <h4>📈 Aset Investasi</h4>
+        <div class="report-row"><span class="report-row-label">💎 Emas</span><span class="report-row-val" id="repEmas">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">🪙 Kripto</span><span class="report-row-val" id="repCrypto">Rp 0</span></div>
+      </div>
+      <div class="report-card stagger-child">
+        <h4>🔴 Hutang & Piutang</h4>
+        <div class="report-row"><span class="report-row-label">Hutang Saya</span><span class="report-row-val" style="color:var(--red)" id="repHutang">Rp 0</span></div>
+        <div class="report-row"><span class="report-row-label">Piutang</span><span class="report-row-val" style="color:var(--accent)" id="repPiutang">Rp 0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSETS PAGE -->
+  <div id="pageAssets" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title"><div class="section-icon-wrap">🔴</div> Hutang Saya</div>
+        <span class="section-link" onclick="openDebtForm('hutang')">+ Tambah</span>
+      </div>
+      <div id="hutangList" class="tx-list">
+        <div class="empty-state"><div class="empty-icon">🔴</div><p>Tidak ada hutang</p></div>
+      </div>
+    </div>
+    <div class="section" style="margin-top:20px;padding-bottom:24px">
+      <div class="section-header">
+        <div class="section-title"><div class="section-icon-wrap">🟢</div> Piutang</div>
+        <span class="section-link" onclick="openDebtForm('piutang')">+ Tambah</span>
+      </div>
+      <div id="piutangList" class="tx-list">
+        <div class="empty-state"><div class="empty-icon">🟢</div><p>Tidak ada piutang</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('pageHome','Beranda','Overview Kekayaan','nav-home')">
+      <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" id="nav-assets" onclick="switchPage('pageAssets','Aset & Utang','Hutang & Piutang','nav-assets')">
+      <span class="nav-icon">📊</span><span class="nav-label">Assets</span>
+    </div>
+    <div class="nav-fab" id="navFab" onclick="openFabMenu()">＋</div>
+    <div class="nav-item" id="nav-report" onclick="switchPage('pageReport','Laporan','Ringkasan Keuangan','nav-report')">
+      <span class="nav-icon">📈</span><span class="nav-label">Report</span>
+    </div>
+    <div class="nav-item" id="nav-history" onclick="switchPage('pageHistory','Riwayat','Semua Transaksi','nav-history')">
+      <span class="nav-icon">🕐</span><span class="nav-label">History</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ═══ FAB MENU ═══ -->
+<div class="fab-overlay" id="fabOverlay" onclick="closeFabIfOutside(event)">
+  <div class="fab-menu">
+    <div class="fab-menu-handle"></div>
+    <h3>Tambah Baru</h3>
+    <div class="fab-options">
+      <div class="fab-opt" onclick="openTxForm('in')">
+        <div class="fab-opt-icon">💰</div>
+        <div class="fab-opt-name">Pemasukan</div>
+        <div class="fab-opt-desc">Catat penghasilan</div>
+      </div>
+      <div class="fab-opt" onclick="openTxForm('out')">
+        <div class="fab-opt-icon">💸</div>
+        <div class="fab-opt-name">Pengeluaran</div>
+        <div class="fab-opt-desc">Catat pengeluaran</div>
+      </div>
+      <div class="fab-opt" onclick="closeFabMenu();openDebtForm('hutang')">
+        <div class="fab-opt-icon">🔴</div>
+        <div class="fab-opt-name">Hutang</div>
+        <div class="fab-opt-desc">Catat hutang baru</div>
+      </div>
+      <div class="fab-opt" onclick="closeFabMenu();openDebtForm('piutang')">
+        <div class="fab-opt-icon">🟢</div>
+        <div class="fab-opt-name">Piutang</div>
+        <div class="fab-opt-desc">Catat piutang baru</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TX FORM MODAL ═══ -->
+<div class="modal-overlay" id="txModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="txModalTitle">Tambah Transaksi</div>
+    <div class="sheet-sub" id="txModalSub">Pilih sumber & jumlah</div>
+    <div class="form-group">
+      <label class="form-label">Jenis</label>
+      <div class="type-toggle">
+        <button class="type-btn active-in" id="typeIn" onclick="setTxType('in')">💰 Pemasukan</button>
+        <button class="type-btn" id="typeOut" onclick="setTxType('out')">💸 Pengeluaran</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Keterangan</label>
+      <input class="form-input" id="txName" placeholder="Misal: Gaji, Makan siang...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Jumlah (Rp)</label>
+      <input class="form-input" id="txAmount" type="number" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sumber / Dompet</label>
+      <select class="form-select" id="txWallet">
+        <option value="tunai">💵 Tunai</option>
+        <option value="mbanking">🏦 M-Banking</option>
+        <option value="ewallet">📱 E-Wallet</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tanggal</label>
+      <input class="form-input" id="txDate" type="date">
+    </div>
+    <button class="btn-submit" id="txSubmitBtn" onclick="submitTx()">Simpan Transaksi</button>
+    <button class="action-cancel" style="margin-top:8px" onclick="closeTxModal()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══ DEBT FORM MODAL ═══ -->
+<div class="modal-overlay" id="debtModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="debtModalTitle">Tambah Hutang</div>
+    <div class="sheet-sub">Catat detail hutang/piutang</div>
+    <div class="form-group">
+      <label class="form-label">Nama / Keterangan</label>
+      <input class="form-input" id="debtName" placeholder="Misal: Hutang ke Budi...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Jumlah (Rp)</label>
+      <input class="form-input" id="debtAmount" type="number" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dompet Terkait</label>
+      <select class="form-select" id="debtWallet">
+        <option value="tunai">💵 Tunai</option>
+        <option value="mbanking">🏦 M-Banking</option>
+        <option value="ewallet">📱 E-Wallet</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Jatuh Tempo</label>
+      <input class="form-input" id="debtDue" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Catatan</label>
+      <textarea class="form-textarea" id="debtNote" placeholder="Opsional..."></textarea>
+    </div>
+    <button class="btn-submit" id="debtSubmitBtn" onclick="submitDebt()">Simpan</button>
+    <button class="action-cancel" style="margin-top:8px" onclick="closeDebtModal()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══ NEED FORM MODAL ═══ -->
+<div class="modal-overlay" id="needModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="needModalTitle">Kebutuhan Bulanan</div>
+    <div class="sheet-sub">Tambah kebutuhan yang perlu dipenuhi</div>
+    <div class="form-group">
+      <label class="form-label">Nama Kebutuhan</label>
+      <input class="form-input" id="needName" placeholder="Misal: Bayar listrik, Beras...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Jumlah (Rp)</label>
+      <input class="form-input" id="needAmount" type="number" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kategori</label>
+      <select class="form-select" id="needCat">
+        <option value="tagihan">📋 Tagihan</option>
+        <option value="makanan">🍱 Makanan</option>
+        <option value="transport">🚗 Transport</option>
+        <option value="kesehatan">🏥 Kesehatan</option>
+        <option value="pendidikan">📚 Pendidikan</option>
+        <option value="lainnya">📌 Lainnya</option>
+      </select>
+    </div>
+    <button class="btn-submit" id="needSubmitBtn" onclick="submitNeed()">Simpan</button>
+    <button class="action-cancel" style="margin-top:8px" onclick="closeNeedModal()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══ WALLET EDIT MODAL ═══ -->
+<div class="modal-overlay" id="walletModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="walletModalTitle">Edit Saldo</div>
+    <div class="sheet-sub">Update saldo dompet Anda</div>
+    <div class="form-group">
+      <label class="form-label" id="walletAmountLabel">Saldo (Rp)</label>
+      <input class="form-input" id="walletAmount" type="number" placeholder="0">
+    </div>
+    <div id="walletExtraField"></div>
+    <button class="btn-submit" onclick="submitWallet()">Simpan</button>
+    <button class="action-cancel" style="margin-top:8px" onclick="closeWalletModal()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══ ACTION POPUP ═══ -->
+<div class="action-popup" id="actionPopup">
+  <div class="action-sheet">
+    <div class="action-sheet-handle"></div>
+    <div class="action-sheet-title">Opsi</div>
+    <div class="action-sheet-sub" id="actionPopupSub">Pilih aksi</div>
+    <div class="action-btns">
+      <button class="action-btn edit" onclick="doEditAction()">
+        <span class="action-btn-icon">✏️</span>
+        <span class="action-btn-label">Edit</span>
+      </button>
+      <button class="action-btn del" onclick="doDeleteAction()">
+        <span class="action-btn-icon">🗑️</span>
+        <span class="action-btn-label">Hapus</span>
+      </button>
+    </div>
+    <button class="action-cancel" onclick="closeActionPopup()">Batal</button>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════ DATA STORE ═══════════
+let state = {
+  user: null,
+  wallets: { tunai: 0, mbanking: 0, ewallet: 0 },
+  invest: { emas: 0, emasRate: 1800000, crypto: 0, cryptoRate: 1500000000, saham: 0 },
+  transactions: [],
+  debts: [],
+  needs: [],
+};
+
+function saveState() { try { localStorage.setItem('kayaku_v2', JSON.stringify(state)); } catch(e){} }
+function loadState() {
+  try {
+    const s = localStorage.getItem('kayaku_v2') || localStorage.getItem('kayaku');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+
+// ═══════════ LOADING ═══════════
+window.addEventListener('load', () => {
+  loadState();
+  const fill = document.getElementById('loadingFill');
+  setTimeout(() => fill.style.width = '100%', 80);
+  setTimeout(() => {
+    const el = document.getElementById('loading');
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.6s ease';
+    setTimeout(() => {
+      el.style.display = 'none';
+      if (state.user) showApp();
+      else { document.getElementById('loginScreen').style.display = 'flex'; }
+    }, 600);
+  }, 2800);
+});
+
+// ═══════════ LOGIN ═══════════
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  if (!u || !p) { showToast('⚠️ Isi username dan password!'); return; }
+  state.user = u; saveState();
+  document.getElementById('loginScreen').style.display = 'none';
+  showApp();
+}
+function doLogout() {
+  if (!confirm('Keluar dari akun?')) return;
+  state.user = null; saveState();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+function showApp() {
+  const av = document.getElementById('userAvatar');
+  av.textContent = (state.user || 'U')[0].toUpperCase();
+  document.getElementById('app').style.display = 'block';
+  setTodayDate();
+  renderAll();
+  initParticles();
+}
+
+// ═══════════ PARTICLES (wealth card) ═══════════
+function initParticles() {
+  const card = document.getElementById('wealthCard');
+  const colors = ['var(--accent)','var(--blue)','var(--violet)'];
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*80+10}%;
+      bottom:${Math.random()*30}px;
+      background:${colors[i%colors.length]};
+      opacity:0.5;
+      animation-duration:${3+Math.random()*3}s;
+      animation-delay:${Math.random()*3}s;
+    `;
+    card.appendChild(p);
+  }
+}
+
+// ═══════════ NAVIGATION ═══════════
+function switchPage(pageId, title, subtitle, navId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.getElementById('pageTitle').textContent = title;
+  document.getElementById('pageSubtitle').textContent = subtitle;
+  if (navId) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const el = document.getElementById(navId);
+    if (el) el.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderAll();
+}
+
+// ═══════════ RENDER ═══════════
+function renderAll() {
+  renderWallets(); renderInvest(); renderWealth();
+  renderTxList(); renderDebtList(); renderNeeds();
+  renderReport(); renderSummary();
+}
+
+function fmt(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+
+function animateValue(el, newText) {
+  if (!el) return;
+  if (el.textContent !== newText) {
+    el.classList.remove('count-updated');
+    void el.offsetWidth; // reflow
+    el.textContent = newText;
+    el.classList.add('count-updated');
+  }
+}
+
+function renderWallets() {
+  animateValue(document.getElementById('walTunai'), fmt(state.wallets.tunai));
+  animateValue(document.getElementById('walMbanking'), fmt(state.wallets.mbanking));
+  animateValue(document.getElementById('walEwallet'), fmt(state.wallets.ewallet));
+}
+function renderInvest() {
+  document.getElementById('walEmas').textContent = state.invest.emas.toFixed(2) + ' gr';
+  document.getElementById('rateEmas').textContent = '1gr = ' + fmt(state.invest.emasRate);
+  document.getElementById('walCrypto').textContent = state.invest.crypto.toFixed(4) + ' BTC';
+  document.getElementById('rateCrypto').textContent = '1BTC = ' + fmt(state.invest.cryptoRate);
+  document.getElementById('walSaham').textContent = state.invest.saham + ' lot';
+}
+function renderWealth() {
+  const walletTotal = state.wallets.tunai + state.wallets.mbanking + state.wallets.ewallet;
+  const investTotal = state.invest.emas * state.invest.emasRate + state.invest.crypto * state.invest.cryptoRate;
+  const total = walletTotal + investTotal;
+  animateValue(document.getElementById('totalWealth'), fmt(total));
+  animateValue(document.getElementById('totalWallet'), fmt(walletTotal));
+  animateValue(document.getElementById('totalInvest'), fmt(investTotal));
+  const hutangTotal = state.debts.filter(d=>d.type==='hutang').reduce((s,d)=>s+d.amount,0);
+  const piutangTotal = state.debts.filter(d=>d.type==='piutang').reduce((s,d)=>s+d.amount,0);
+  animateValue(document.getElementById('homeHutang'), fmt(hutangTotal));
+  animateValue(document.getElementById('homePiutang'), fmt(piutangTotal));
+}
+function renderSummary() {
+  const income = state.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+  const expense = state.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+  const bal = income - expense;
+  document.getElementById('sumIncome').textContent = fmt(income);
+  document.getElementById('sumExpense').textContent = fmt(expense);
+  const sb = document.getElementById('sumBalance');
+  sb.textContent = fmt(bal);
+  sb.style.color = bal >= 0 ? 'var(--accent)' : 'var(--red)';
+}
+
+let currentFilter = 'all';
+function filterTx(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderTxList();
+}
+function renderTxList() {
+  const list = document.getElementById('txList');
+  let txs = [...state.transactions].reverse();
+  if (currentFilter === 'in') txs = txs.filter(t=>t.type==='in');
+  if (currentFilter === 'out') txs = txs.filter(t=>t.type==='out');
+  if (!txs.length) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">💸</div><p>Belum ada transaksi</p></div>'; return; }
+  list.innerHTML = txs.map((t,i) => `
+    <div class="tx-item" style="animation-delay:${i*0.04}s" onclick="openActionPopup('tx','${t.id}','${t.name}')">
+      <div class="tx-icon" style="background:${t.type==='in'?'rgba(110,231,183,0.12)':'rgba(248,113,113,0.12)'}">
+        ${t.type==='in'?'💰':'💸'}
+      </div>
+      <div class="tx-info">
+        <div class="tx-name">${t.name}</div>
+        <div class="tx-meta">${walletLabel(t.wallet)} · ${t.date}</div>
+      </div>
+      <div class="tx-amount ${t.type}">${t.type==='in'?'+':'-'}${fmt(t.amount)}</div>
+    </div>
+  `).join('');
+}
+function renderDebtList() {
+  const hutangs = state.debts.filter(d=>d.type==='hutang');
+  const piutangs = state.debts.filter(d=>d.type==='piutang');
+  const hl = document.getElementById('hutangList');
+  const pl = document.getElementById('piutangList');
+  if (!hutangs.length) hl.innerHTML = '<div class="empty-state"><div class="empty-icon">🔴</div><p>Tidak ada hutang</p></div>';
+  else hl.innerHTML = hutangs.map((d,i)=>`
+    <div class="tx-item" style="animation-delay:${i*0.04}s" onclick="openActionPopup('debt','${d.id}','${d.name}')">
+      <div class="tx-icon" style="background:rgba(248,113,113,0.12)">🔴</div>
+      <div class="tx-info">
+        <div class="tx-name">${d.name}</div>
+        <div class="tx-meta">${walletLabel(d.wallet)}${d.due ? ' · Jatuh: '+d.due : ''}</div>
+      </div>
+      <div class="tx-amount out">-${fmt(d.amount)}</div>
+    </div>
+  `).join('');
+  if (!piutangs.length) pl.innerHTML = '<div class="empty-state"><div class="empty-icon">🟢</div><p>Tidak ada piutang</p></div>';
+  else pl.innerHTML = piutangs.map((d,i)=>`
+    <div class="tx-item" style="animation-delay:${i*0.04}s" onclick="openActionPopup('debt','${d.id}','${d.name}')">
+      <div class="tx-icon" style="background:rgba(110,231,183,0.12)">🟢</div>
+      <div class="tx-info">
+        <div class="tx-name">${d.name}</div>
+        <div class="tx-meta">${walletLabel(d.wallet)}${d.due ? ' · Jatuh: '+d.due : ''}</div>
+      </div>
+      <div class="tx-amount in">+${fmt(d.amount)}</div>
+    </div>
+  `).join('');
+}
+function renderNeeds() {
+  const list = document.getElementById('needList');
+  if (!state.needs.length) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>Belum ada kebutuhan bulan ini</p></div>'; return; }
+  const catIcon = {tagihan:'📋',makanan:'🍱',transport:'🚗',kesehatan:'🏥',pendidikan:'📚',lainnya:'📌'};
+  list.innerHTML = state.needs.map((n,i) => `
+    <div class="need-item ${n.done?'fulfilled':''}" id="need-${n.id}" style="animation-delay:${i*0.05}s">
+      <div class="need-check ${n.done?'done':''}" onclick="toggleNeed('${n.id}')">
+        ${n.done?'✓':''}
+      </div>
+      <div style="font-size:18px">${catIcon[n.cat]||'📌'}</div>
+      <div class="need-info">
+        <div class="need-name" style="${n.done?'text-decoration:line-through;opacity:0.4':''}">${n.name}</div>
+        <div class="need-meta">${n.cat}</div>
+      </div>
+      <div class="need-amount">${fmt(n.amount)}</div>
+      <div class="need-actions">
+        <button class="need-btn edit-btn" onclick="event.stopPropagation();openEditNeed('${n.id}')">✏️</button>
+        <button class="need-btn del-btn" onclick="event.stopPropagation();deleteNeed('${n.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+function renderReport() {
+  const income = state.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+  const expense = state.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+  const bal = income - expense;
+  document.getElementById('repIncome').textContent = fmt(income);
+  document.getElementById('repExpense').textContent = fmt(expense);
+  const rb = document.getElementById('repBalance');
+  rb.textContent = fmt(bal);
+  rb.style.color = bal>=0?'var(--accent)':'var(--red)';
+  document.getElementById('repTunai').textContent = fmt(state.wallets.tunai);
+  document.getElementById('repMbanking').textContent = fmt(state.wallets.mbanking);
+  document.getElementById('repEwallet').textContent = fmt(state.wallets.ewallet);
+  document.getElementById('repEmas').textContent = fmt(state.invest.emas*state.invest.emasRate);
+  document.getElementById('repCrypto').textContent = fmt(state.invest.crypto*state.invest.cryptoRate);
+  const hutangTotal = state.debts.filter(d=>d.type==='hutang').reduce((s,d)=>s+d.amount,0);
+  const piutangTotal = state.debts.filter(d=>d.type==='piutang').reduce((s,d)=>s+d.amount,0);
+  document.getElementById('repHutang').textContent = fmt(hutangTotal);
+  document.getElementById('repPiutang').textContent = fmt(piutangTotal);
+}
+
+function walletLabel(w) { return {tunai:'💵 Tunai',mbanking:'🏦 M-Banking',ewallet:'📱 E-Wallet'}[w]||w; }
+
+// ═══════════ FAB MENU ═══════════
+function openFabMenu() {
+  document.getElementById('fabOverlay').classList.add('open');
+  document.getElementById('navFab').classList.add('open-state');
+}
+function closeFabMenu() {
+  document.getElementById('fabOverlay').classList.remove('open');
+  document.getElementById('navFab').classList.remove('open-state');
+}
+function closeFabIfOutside(e) { if(e.target===document.getElementById('fabOverlay')) closeFabMenu(); }
+
+// ═══════════ TX FORM ═══════════
+let editingTxId = null;
+function setTodayDate() {
+  const d = new Date().toISOString().split('T')[0];
+  const el = document.getElementById('txDate');
+  if (el) el.value = d;
+}
+function openTxForm(type) {
+  closeFabMenu(); editingTxId = null;
+  document.getElementById('txName').value = '';
+  document.getElementById('txAmount').value = '';
+  document.getElementById('txWallet').value = 'mbanking';
+  setTodayDate(); setTxType(type||'in');
+  document.getElementById('txModalTitle').textContent = 'Tambah Transaksi';
+  document.getElementById('txSubmitBtn').textContent = 'Simpan Transaksi';
+  document.getElementById('txModal').classList.add('open');
+}
+function closeTxModal() { document.getElementById('txModal').classList.remove('open'); }
+function setTxType(t) {
+  const inBtn = document.getElementById('typeIn');
+  const outBtn = document.getElementById('typeOut');
+  inBtn.className = 'type-btn' + (t==='in'?' active-in':'');
+  outBtn.className = 'type-btn' + (t==='out'?' active-out':'');
+  inBtn.dataset.active = t==='in'?'1':'0';
+  outBtn.dataset.active = t==='out'?'1':'0';
+  document.getElementById('txModal').dataset.txtype = t;
+}
+function submitTx() {
+  const name = document.getElementById('txName').value.trim();
+  const amount = parseFloat(document.getElementById('txAmount').value);
+  const wallet = document.getElementById('txWallet').value;
+  const date = document.getElementById('txDate').value;
+  const type = document.getElementById('txModal').dataset.txtype||'in';
+  if (!name||!amount) { showToast('⚠️ Isi semua kolom!'); return; }
+  if (editingTxId) {
+    const old = state.transactions.find(t=>t.id===editingTxId);
+    if (old) { reverseWalletEffect(old); old.name=name;old.amount=amount;old.wallet=wallet;old.date=date;old.type=type; applyWalletEffect(old); }
+    showToast('✅ Transaksi diperbarui!');
+  } else {
+    const tx = {id:uid(),name,amount,wallet,date,type};
+    state.transactions.push(tx); applyWalletEffect(tx);
+    showToast(type==='in'?'💰 Pemasukan ditambahkan!':'💸 Pengeluaran dicatat!');
+  }
+  saveState(); closeTxModal(); renderAll(); editingTxId=null;
+}
+function applyWalletEffect(tx) {
+  if(tx.type==='in') state.wallets[tx.wallet]=(state.wallets[tx.wallet]||0)+tx.amount;
+  else state.wallets[tx.wallet]=(state.wallets[tx.wallet]||0)-tx.amount;
+}
+function reverseWalletEffect(tx) {
+  if(tx.type==='in') state.wallets[tx.wallet]=(state.wallets[tx.wallet]||0)-tx.amount;
+  else state.wallets[tx.wallet]=(state.wallets[tx.wallet]||0)+tx.amount;
+}
+
+// ═══════════ DEBT FORM ═══════════
+let editingDebtId=null, currentDebtType='hutang';
+function openDebtForm(type) {
+  editingDebtId=null; currentDebtType=type;
+  document.getElementById('debtName').value='';
+  document.getElementById('debtAmount').value='';
+  document.getElementById('debtDue').value='';
+  document.getElementById('debtNote').value='';
+  document.getElementById('debtModalTitle').textContent = type==='hutang'?'Tambah Hutang':'Tambah Piutang';
+  const btn = document.getElementById('debtSubmitBtn');
+  btn.textContent='Simpan';
+  btn.className='btn-submit'+(type==='hutang'?' red':'');
+  document.getElementById('debtModal').classList.add('open');
+}
+function closeDebtModal() { document.getElementById('debtModal').classList.remove('open'); }
+function submitDebt() {
+  const name=document.getElementById('debtName').value.trim();
+  const amount=parseFloat(document.getElementById('debtAmount').value);
+  const wallet=document.getElementById('debtWallet').value;
+  const due=document.getElementById('debtDue').value;
+  const note=document.getElementById('debtNote').value;
+  if(!name||!amount){showToast('⚠️ Isi kolom nama dan jumlah!');return;}
+  if(editingDebtId){
+    const d=state.debts.find(d=>d.id===editingDebtId);
+    if(d){d.name=name;d.amount=amount;d.wallet=wallet;d.due=due;d.note=note;}
+    showToast('✅ Hutang/piutang diperbarui!');
+  } else {
+    state.debts.push({id:uid(),type:currentDebtType,name,amount,wallet,due,note});
+    showToast(currentDebtType==='hutang'?'🔴 Hutang dicatat!':'🟢 Piutang dicatat!');
+  }
+  saveState(); closeDebtModal(); renderAll(); editingDebtId=null;
+}
+
+// ═══════════ NEED FORM ═══════════
+let editingNeedId=null;
+function openNeedForm() {
+  editingNeedId=null;
+  document.getElementById('needName').value='';
+  document.getElementById('needAmount').value='';
+  document.getElementById('needCat').value='tagihan';
+  document.getElementById('needModalTitle').textContent='Kebutuhan Bulanan';
+  document.getElementById('needSubmitBtn').textContent='Simpan';
+  document.getElementById('needModal').classList.add('open');
+}
+function closeNeedModal() { document.getElementById('needModal').classList.remove('open'); }
+function submitNeed() {
+  const name=document.getElementById('needName').value.trim();
+  const amount=parseFloat(document.getElementById('needAmount').value);
+  const cat=document.getElementById('needCat').value;
+  if(!name||!amount){showToast('⚠️ Isi kolom kebutuhan!');return;}
+  if(editingNeedId){
+    const n=state.needs.find(n=>n.id===editingNeedId);
+    if(n){n.name=name;n.amount=amount;n.cat=cat;}
+    showToast('✅ Kebutuhan diperbarui!');
+  } else {
+    state.needs.push({id:uid(),name,amount,cat,done:false});
+    showToast('📋 Kebutuhan ditambahkan!');
+  }
+  saveState(); closeNeedModal(); renderNeeds(); editingNeedId=null;
+}
+function openEditNeed(id) {
+  const n=state.needs.find(n=>n.id===id); if(!n) return;
+  editingNeedId=id;
+  document.getElementById('needName').value=n.name;
+  document.getElementById('needAmount').value=n.amount;
+  document.getElementById('needCat').value=n.cat;
+  document.getElementById('needModalTitle').textContent='Edit Kebutuhan';
+  document.getElementById('needSubmitBtn').textContent='Perbarui';
+  document.getElementById('needModal').classList.add('open');
+}
+function deleteNeed(id) { state.needs=state.needs.filter(n=>n.id!==id); saveState(); renderNeeds(); showToast('🗑️ Kebutuhan dihapus!'); }
+function toggleNeed(id) {
+  const n=state.needs.find(n=>n.id===id); if(!n) return;
+  n.done=!n.done; saveState(); renderNeeds();
+  if(n.done){
+    showToast('✅ Kebutuhan terpenuhi!');
+    setTimeout(()=>{ state.needs=state.needs.filter(n=>n.id!==id); saveState(); renderNeeds(); }, 1500);
+  }
+}
+
+// ═══════════ WALLET EDIT ═══════════
+let currentEditWallet=null;
+function openEditWallet(w) {
+  currentEditWallet=w;
+  const labels={tunai:'💵 Saldo Tunai (Rp)',mbanking:'🏦 Saldo M-Banking (Rp)',ewallet:'📱 Saldo E-Wallet (Rp)',emas:'💎 Jumlah Emas (gram)',crypto:'🪙 Jumlah BTC (unit)',saham:'📊 Jumlah Saham (lot)'};
+  document.getElementById('walletModalTitle').textContent='Edit '+({tunai:'Tunai',mbanking:'M-Banking',ewallet:'E-Wallet',emas:'Emas',crypto:'Kripto',saham:'Saham'}[w]);
+  document.getElementById('walletAmountLabel').textContent=labels[w];
+  const isInvest=['emas','crypto','saham'].includes(w);
+  const current=isInvest?state.invest[w]:state.wallets[w];
+  document.getElementById('walletAmount').value=current||'';
+  document.getElementById('walletAmount').step=isInvest?'0.0001':'1';
+  const extra=document.getElementById('walletExtraField');
+  if(w==='emas'){
+    extra.innerHTML=`<div class="form-group"><label class="form-label">Harga per gram (Rp)</label><input class="form-input" id="walletRate" type="number" value="${state.invest.emasRate}"></div>`;
+  } else if(w==='crypto'){
+    extra.innerHTML=`<div class="form-group"><label class="form-label">Harga 1 BTC (Rp)</label><input class="form-input" id="walletRate" type="number" value="${state.invest.cryptoRate}"></div>`;
+  } else { extra.innerHTML=''; }
+  document.getElementById('walletModal').classList.add('open');
+}
+function closeWalletModal() { document.getElementById('walletModal').classList.remove('open'); }
+function submitWallet() {
+  const val=parseFloat(document.getElementById('walletAmount').value)||0;
+  const isInvest=['emas','crypto','saham'].includes(currentEditWallet);
+  if(isInvest){
+    state.invest[currentEditWallet]=val;
+    const rateEl=document.getElementById('walletRate');
+    if(rateEl){
+      if(currentEditWallet==='emas') state.invest.emasRate=parseFloat(rateEl.value)||state.invest.emasRate;
+      if(currentEditWallet==='crypto') state.invest.cryptoRate=parseFloat(rateEl.value)||state.invest.cryptoRate;
+    }
+  } else { state.wallets[currentEditWallet]=val; }
+  saveState(); closeWalletModal(); renderAll(); showToast('✅ Saldo diperbarui!');
+}
+
+// ═══════════ ACTION POPUP ═══════════
+let actionCtx={type:null,id:null};
+function openActionPopup(type,id,name) {
+  actionCtx={type,id};
+  document.getElementById('actionPopupSub').textContent='Pilih aksi untuk: '+name;
+  document.getElementById('actionPopup').classList.add('open');
+}
+function closeActionPopup() { document.getElementById('actionPopup').classList.remove('open'); }
+function doEditAction() {
+  closeActionPopup();
+  if(actionCtx.type==='tx'){
+    const t=state.transactions.find(t=>t.id===actionCtx.id); if(!t) return;
+    editingTxId=t.id;
+    document.getElementById('txName').value=t.name;
+    document.getElementById('txAmount').value=t.amount;
+    document.getElementById('txWallet').value=t.wallet;
+    document.getElementById('txDate').value=t.date;
+    setTxType(t.type);
+    document.getElementById('txModalTitle').textContent='Edit Transaksi';
+    document.getElementById('txSubmitBtn').textContent='Perbarui';
+    document.getElementById('txModal').classList.add('open');
+  } else if(actionCtx.type==='debt'){
+    const d=state.debts.find(d=>d.id===actionCtx.id); if(!d) return;
+    editingDebtId=d.id; currentDebtType=d.type;
+    document.getElementById('debtName').value=d.name;
+    document.getElementById('debtAmount').value=d.amount;
+    document.getElementById('debtWallet').value=d.wallet;
+    document.getElementById('debtDue').value=d.due||'';
+    document.getElementById('debtNote').value=d.note||'';
+    document.getElementById('debtModalTitle').textContent='Edit '+(d.type==='hutang'?'Hutang':'Piutang');
+    document.getElementById('debtSubmitBtn').textContent='Perbarui';
+    document.getElementById('debtModal').classList.add('open');
+  }
+}
+function doDeleteAction() {
+  closeActionPopup();
+  if(actionCtx.type==='tx'){
+    const idx=state.transactions.findIndex(t=>t.id===actionCtx.id);
+    if(idx>-1){reverseWalletEffect(state.transactions[idx]);state.transactions.splice(idx,1);}
+    showToast('🗑️ Transaksi dihapus!');
+  } else if(actionCtx.type==='debt'){
+    state.debts=state.debts.filter(d=>d.id!==actionCtx.id);
+    showToast('🗑️ Data dihapus!');
+  }
+  saveState(); renderAll();
+}
+
+// ═══════════ UTILS ═══════════
+function uid() { return Math.random().toString(36).substr(2,9); }
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.remove('show');
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ═══════════ RIPPLE ═══════════
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.wallet-card,.invest-card,.debt-card,.fab-opt,.tx-item,.need-item');
+  if (!target) return;
+  const ripple = document.createElement('div');
+  ripple.className = 'ripple';
+  const rect = target.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.cssText = `
+    width:${size}px;height:${size}px;
+    left:${e.clientX-rect.left-size/2}px;
+    top:${e.clientY-rect.top-size/2}px;
+  `;
+  target.style.position = 'relative';
+  target.style.overflow = 'hidden';
+  target.appendChild(ripple);
+  setTimeout(()=>ripple.remove(), 500);
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
+});
+document.getElementById('actionPopup').addEventListener('click', function(e) {
+  if(e.target===this) closeActionPopup();
+});
+
+// ═══════════ KEYBOARD ═══════════
+document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
