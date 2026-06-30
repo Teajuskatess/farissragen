@@ -166,8 +166,8 @@
 
 <p class="hint">Pastikan izinkan akses kamera. Gestur yang dikenali: <b>telunjuk + jari tengah terangkat, lainnya terlipat</b> (tanda peace ✌️).</p>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1675469240/hands.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1633559619/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
 <script>
 const video = document.getElementById('video');
@@ -189,7 +189,7 @@ canvas.width = 960;
 canvas.height = 720;
 
 const hands = new Hands({
-  locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1675469240/${file}`
+  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
 hands.setOptions({
   maxNumHands: 1,
@@ -311,6 +311,12 @@ stopBtn.addEventListener('click', stopCamera);
 
 // Auto-start camera as soon as the page loads
 window.addEventListener('DOMContentLoaded', () => {
+  if (typeof Hands === 'undefined' || typeof Camera === 'undefined') {
+    loadingEl.style.display = 'flex';
+    loadingEl.textContent = 'Gagal memuat library deteksi tangan (cek koneksi internet / adblocker).';
+    statusEl.textContent = 'Error: library tidak dimuat';
+    return;
+  }
   startCamera();
 });
 </script>
