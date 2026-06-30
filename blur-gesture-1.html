@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Peace Blur — Kamera Blur dengan Dua Jari</title>
+<style>
+  :root{
+    --ink:#101013;
+    --paper:#f6f3ee;
+    --accent:#ff5a36;
+    --accent-dim:#ffd9cc;
+    --line:#23222066;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--ink);
+    color:var(--paper);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 64px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:28px;
+    max-width:560px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  h1{
+    font-size:clamp(28px,5vw,42px);
+    margin:0 0 10px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    line-height:1.05;
+  }
+  p.sub{
+    color:#cfcdc8;
+    font-size:15px;
+    line-height:1.5;
+    margin:0;
+  }
+  .stage{
+    position:relative;
+    width:min(720px,92vw);
+    aspect-ratio:4/3;
+    border-radius:18px;
+    overflow:hidden;
+    background:#000;
+    border:1px solid #2b2a28;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+  }
+  video{display:none;}
+  canvas{
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .status{
+    position:absolute;
+    top:14px;
+    left:14px;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    background:rgba(16,16,19,.65);
+    backdrop-filter: blur(6px);
+    border:1px solid var(--line);
+    transition: all .25s ease;
+  }
+  .status.blur-on{
+    background:var(--accent);
+    color:#1a0a04;
+    border-color:transparent;
+  }
+  .fingercount{
+    position:absolute;
+    bottom:14px;
+    right:14px;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:12px;
+    background:rgba(16,16,19,.65);
+    border:1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+  .controls{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  button{
+    appearance:none;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--paper);
+    padding:12px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition: all .15s ease;
+  }
+  button.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#1a0a04;
+  }
+  button:hover{ filter:brightness(1.1); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  .hint{
+    margin-top:18px;
+    font-size:13px;
+    color:#9a9892;
+    text-align:center;
+    max-width:480px;
+  }
+  .hint b{color:var(--accent-dim);}
+  .loading{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    color:#9a9892;
+    background:#000;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Gesture Blur</div>
+  <h1>Acungkan dua jari,<br/>kamera ikut menghilang.</h1>
+  <p class="sub">Kamera live kamu otomatis blur saat sistem mendeteksi gestur dua jari (✌️). Turunkan jari untuk kembali normal.</p>
+</header>
+
+<div class="stage">
+  <video id="video" playsinline></video>
+  <canvas id="canvas"></canvas>
+  <div class="loading" id="loading">Mengaktifkan kamera otomatis…</div>
+  <div class="status" id="status">Memulai…</div>
+  <div class="fingercount" id="fingercount">jari: –</div>
+</div>
+
+<div class="controls">
+  <button class="primary" id="startBtn" style="display:none;">Aktifkan Kamera</button>
+  <button id="stopBtn">Matikan</button>
+</div>
+
+<p class="hint">Pastikan izinkan akses kamera. Gestur yang dikenali: <b>telunjuk + jari tengah terangkat, lainnya terlipat</b> (tanda peace ✌️).</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1675469240/hands.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1633559619/camera_utils.js"></script>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const fingerEl = document.getElementById('fingercount');
+const loadingEl = document.getElementById('loading');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+
+let stream = null;
+let isBlurring = false;
+let camera = null;
+let lastLandmarks = null;
+let running = false;
+
+canvas.width = 960;
+canvas.height = 720;
+
+const hands = new Hands({
+  locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/mediapipe/0.4.1675469240/${file}`
+});
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
+});
+hands.onResults(onResults);
+
+function countExtendedFingers(landmarks) {
+  // landmark indices per MediaPipe Hands
+  const tips = [8, 12, 16, 20]; // index, middle, ring, pinky
+  const pips = [6, 10, 14, 18];
+  let count = 0;
+  for (let i = 0; i < tips.length; i++) {
+    if (landmarks[tips[i]].y < landmarks[pips[i]].y - 0.02) {
+      count++;
+    }
+  }
+  // thumb: compare x relative to its IP joint (rough, works for either hand facing camera)
+  const thumbTip = landmarks[4];
+  const thumbIp = landmarks[3];
+  const thumbExtended = Math.abs(thumbTip.x - thumbIp.x) > 0.05;
+  return { fingers: count, thumbExtended };
+}
+
+function isPeaceSign(landmarks) {
+  const tips = [8, 12, 16, 20];
+  const pips = [6, 10, 14, 18];
+  const up = tips.map((t, i) => landmarks[t].y < landmarks[pips[i]].y - 0.02);
+  // index and middle up, ring and pinky down
+  return up[0] && up[1] && !up[2] && !up[3];
+}
+
+function onResults(results) {
+  ctx.save();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  let detectedPeace = false;
+  let fingerCount = 0;
+
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    const landmarks = results.multiHandLandmarks[0];
+    lastLandmarks = landmarks;
+    const { fingers } = countExtendedFingers(landmarks);
+    fingerCount = fingers;
+    detectedPeace = isPeaceSign(landmarks);
+  } else {
+    lastLandmarks = null;
+  }
+
+  isBlurring = detectedPeace;
+
+  // draw video frame, blurred if needed
+  ctx.filter = isBlurring ? 'blur(18px) saturate(1.1)' : 'none';
+  ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+  ctx.filter = 'none';
+
+  if (isBlurring) {
+    ctx.fillStyle = 'rgba(255,90,54,0.12)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  ctx.restore();
+
+  statusEl.textContent = isBlurring ? '✌️ Blur Aktif' : 'Live — Normal';
+  statusEl.classList.toggle('blur-on', isBlurring);
+  fingerEl.textContent = results.multiHandLandmarks && results.multiHandLandmarks.length > 0
+    ? `jari terdeteksi: ${fingerCount}`
+    : 'jari: –';
+}
+
+async function startCamera() {
+  loadingEl.style.display = 'flex';
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+    video.srcObject = stream;
+    await video.play();
+    loadingEl.style.display = 'none';
+
+    camera = new Camera(video, {
+      onFrame: async () => {
+        if (running) await hands.send({ image: video });
+      },
+      width: 960,
+      height: 720
+    });
+    running = true;
+    camera.start();
+
+    startBtn.style.display = 'none';
+    stopBtn.disabled = false;
+    statusEl.textContent = 'Live — Normal';
+  } catch (err) {
+    loadingEl.textContent = 'Gagal mengakses kamera: ' + err.message;
+    startBtn.style.display = 'inline-block';
+    startBtn.disabled = false;
+    startBtn.textContent = 'Coba Lagi';
+  }
+}
+
+function stopCamera() {
+  running = false;
+  if (camera) camera.stop();
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  statusEl.textContent = 'Kamera dimatikan';
+  statusEl.classList.remove('blur-on');
+  fingerEl.textContent = 'jari: –';
+  startBtn.style.display = 'inline-block';
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+}
+
+startBtn.addEventListener('click', startCamera);
+stopBtn.addEventListener('click', stopCamera);
+
+// Auto-start camera as soon as the page loads
+window.addEventListener('DOMContentLoaded', () => {
+  startCamera();
+});
+</script>
+
+</body>
+</html>
