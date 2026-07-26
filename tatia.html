@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ada yang mau aku bilang...</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* =========================================================
+   CONFESS WEBSITE — style.css
+   Palette   : #FFE4EC (blush), #FFD6E7 (bubblegum), #FFFFFF, #FF6FA5 (accent)
+   Type      : Fredoka (display / judul besar & tombol),
+               Poppins (UI kecil / label / eyebrow),
+               Nunito (isi cerita, terasa seperti tulisan tangan chat)
+   Signature : tumpukan kartu cerita seperti polaroid/notes miring,
+               progress bar berbentuk hati yang benar-benar berdetak.
+   ========================================================= */
+
+:root{
+  --blush: #FFE4EC;
+  --bubblegum: #FFD6E7;
+  --white: #FFFFFF;
+  --accent: #FF6FA5;
+  --accent-deep: #E85386;
+  --ink: #5A3B48;
+  --ink-soft: #8A6373;
+  --shadow-pink: rgba(232, 83, 134, 0.18);
+
+  --font-display: 'Fredoka', sans-serif;
+  --font-ui: 'Poppins', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--blush) 0%, var(--bubblegum) 55%, #FFEAF3 100%);
+  overflow-x: hidden;
+  cursor: none; /* custom heart cursor replaces default */
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse){
+  body{ cursor: auto; } /* keep native touch behaviour on mobile */
+}
+
+/* ---------------------------------------------------------
+   Custom heart cursor (desktop only)
+--------------------------------------------------------- */
+#cursorHeart{
+  position: fixed;
+  top:0; left:0;
+  width: 22px; height: 22px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  transition: transform .08s ease-out;
+  will-change: transform;
+}
+
+/* Click love-particles */
+.love-particle{
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  font-size: 18px;
+  animation: floatUpFade 900ms ease-out forwards;
+}
+@keyframes floatUpFade{
+  0%   { opacity: 1; transform: translate(0,0) scale(0.8) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--dx,10px), -70px) scale(1.1) rotate(20deg); }
+}
+
+/* ---------------------------------------------------------
+   Ambient floating background hearts
+--------------------------------------------------------- */
+.bg-hearts{
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-heart{
+  position: absolute;
+  bottom: -40px;
+  color: var(--accent);
+  opacity: .25;
+  animation-name: floatUp;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@keyframes floatUp{
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: .3; }
+  100% { transform: translateY(-115vh) translateX(20px) rotate(25deg); opacity: 0; }
+}
+
+/* ---------------------------------------------------------
+   Logo (easter egg trigger)
+--------------------------------------------------------- */
+.logo{
+  position: fixed;
+  top: 16px; left: 16px;
+  font-size: 28px;
+  z-index: 50;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .2s ease;
+}
+.logo:active{ transform: scale(0.85) rotate(-10deg); }
+
+/* ---------------------------------------------------------
+   Music button
+--------------------------------------------------------- */
+.music-btn{
+  position: fixed;
+  top: 14px; right: 14px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px var(--shadow-pink);
+  font-size: 18px;
+  z-index: 50;
+  cursor: pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition: transform .2s ease;
+}
+.music-btn:active{ transform: scale(0.9); }
+.music-btn.playing #musicIcon{ animation: spin 3s linear infinite; }
+@keyframes spin{ to{ transform: rotate(360deg);} }
+
+/* ---------------------------------------------------------
+   App / Scenes
+--------------------------------------------------------- */
+#app{
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.scene{
+  min-height: 100vh;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px 60px;
+  position: relative;
+}
+.scene.active{
+  display: flex;
+  animation: sceneFade .6s ease both;
+}
+@keyframes sceneFade{
+  from{ opacity: 0; transform: translateY(14px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------------------------------------------------
+   Buttons (shared)
+--------------------------------------------------------- */
+.btn{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  border: none;
+  border-radius: 999px;
+  padding: 16px 34px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active{ transform: scale(0.95); }
+
+.btn-primary{
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: var(--white);
+  box-shadow: 0 8px 20px var(--shadow-pink);
+}
+.btn-primary:hover{ box-shadow: 0 10px 26px var(--shadow-pink); transform: translateY(-2px); }
+
+.btn-outline{
+  background: var(--white);
+  color: var(--accent-deep);
+  border: 2px solid var(--bubblegum);
+}
+
+.btn-small{
+  font-size: 14px;
+  padding: 11px 22px;
+}
+
+/* Ripple effect */
+.ripple{
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleAnim 600ms ease-out;
+  background: rgba(255,255,255,0.55);
+  pointer-events: none;
+}
+@keyframes rippleAnim{
+  to{ transform: scale(3.2); opacity: 0; }
+}
+
+/* ---------------------------------------------------------
+   Glassmorphism card
+--------------------------------------------------------- */
+.glass-card{
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 28px;
+  box-shadow: 0 12px 40px var(--shadow-pink);
+}
+
+/* ===========================================================
+   SCENE 1 — Opening
+=========================================================== */
+.opening-wrap{
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+.greeting{
+  font-family: var(--font-display);
+  font-size: clamp(28px, 7vw, 40px);
+  margin: 0 0 28px;
+  color: var(--accent-deep);
+}
+.heart-pop{ display:inline-block; animation: pop 1.2s ease-in-out infinite; }
+@keyframes pop{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.25); }
+}
+
+.typing-lines{
+  min-height: 140px;
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.typing-line{
+  font-family: var(--font-body);
+  font-size: clamp(16px, 4.4vw, 19px);
+  font-weight: 600;
+  color: var(--ink);
+  opacity: 0;
+}
+.typing-line.show{
+  animation: lineIn .5s ease both;
+}
+@keyframes lineIn{
+  from{ opacity: 0; transform: translateY(8px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+.typing-line .cursor-blink{
+  display: inline-block;
+  width: 2px;
+  background: var(--accent-deep);
+  margin-left: 2px;
+  animation: blink 0.9s step-end infinite;
+}
+@keyframes blink{ 50%{ opacity: 0; } }
+
+.btn-promise{
+  transition: opacity .5s ease, transform .3s ease;
+}
+
+/* ===========================================================
+   SCENE 2 — Story cards (signature element)
+=========================================================== */
+.story-wrap{
+  max-width: 420px;
+  width: 100%;
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  gap: 22px;
+}
+
+.story-card-stack{
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* each note looks like a little tilted paper card / polaroid — not a generic centered card */
+.story-card{
+  position: absolute;
+  width: 84%;
+  max-width: 340px;
+  background: var(--white);
+  border-radius: 18px;
+  padding: 34px 26px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(19px, 5.2vw, 24px);
+  color: var(--ink);
+  box-shadow: 0 14px 34px var(--shadow-pink);
+  border: 1px solid rgba(255,255,255,0.9);
+  opacity: 0;
+  transform: translateX(60px) rotate(6deg) scale(.9);
+  pointer-events: none;
+}
+.story-card::before{
+  content: "";
+  position: absolute;
+  top: -8px; left: 20px;
+  width: 34px; height: 16px;
+  background: var(--bubblegum);
+  opacity: .8;
+  border-radius: 3px;
+  transform: rotate(-8deg);
+}
+.story-card.enter{
+  animation: cardIn .55s cubic-bezier(.2,.8,.3,1) forwards;
+  pointer-events: auto;
+}
+.story-card.leave{
+  animation: cardOut .45s ease forwards;
+}
+@keyframes cardIn{
+  from{ opacity: 0; transform: translateX(70px) rotate(6deg) scale(.9); }
+  to{ opacity: 1; transform: translateX(0) rotate(var(--tilt,-2deg)) scale(1); }
+}
+@keyframes cardOut{
+  from{ opacity: 1; transform: translateX(0) rotate(var(--tilt,-2deg)) scale(1); }
+  to{ opacity: 0; transform: translateX(-70px) rotate(-6deg) scale(.9); }
+}
+
+.story-progress{
+  display:flex;
+  gap: 6px;
+}
+.story-dot{
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(232,83,134,0.25);
+  transition: background .3s ease, transform .3s ease;
+}
+.story-dot.done{ background: var(--accent-deep); transform: scale(1.15); }
+
+.tap-hint{
+  background: none;
+  border: none;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  animation: hintPulse 1.8s ease-in-out infinite;
+}
+@keyframes hintPulse{
+  0%,100%{ opacity: .55; }
+  50%{ opacity: 1; }
+}
+
+/* ===========================================================
+   SCENE 3 — Question / mini game
+=========================================================== */
+.question-wrap{
+  max-width: 420px;
+  width: 100%;
+  padding: 40px 28px 34px;
+  text-align: center;
+}
+.question-eyebrow{
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+}
+.question-title{
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6vw, 27px);
+  margin: 0 0 34px;
+  color: var(--accent-deep);
+}
+
+.answer-zone{
+  position: relative;
+  min-height: 170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* On mobile, the zone becomes a "roaming field" the no-button jumps around in */
+.answer-zone.roaming{
+  min-height: 220px;
+}
+
+.btn-yes{
+  font-size: 18px;
+  padding: 18px 38px;
+}
+
+.btn-no{
+  background: var(--white);
+  color: var(--ink-soft);
+  border: 2px solid var(--bubblegum);
+  transition: transform .18s ease, left .28s ease, top .28s ease, opacity .2s ease;
+}
+
+/* When escaping (desktop hover-dodge), the no-button becomes absolutely positioned */
+.btn-no.escaping,
+.btn-no.roam-mode{
+  position: absolute;
+}
+
+.question-sub{
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-top: 26px;
+}
+
+/* ===========================================================
+   SCENE 4 — Loading
+=========================================================== */
+.loading-wrap{
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+}
+.heart-progress-track{
+  display:flex;
+  justify-content:center;
+  margin-bottom: 26px;
+}
+
+/* heart shaped progress using two circles + rotated square, clipped fill via mask */
+.heart-progress-shape{
+  position: relative;
+  width: 140px;
+  height: 126px;
+  animation: heartbeat 1.1s ease-in-out infinite;
+}
+@keyframes heartbeat{
+  0%,100%{ transform: scale(1); }
+  25%{ transform: scale(1.06); }
+  40%{ transform: scale(0.98); }
+  55%{ transform: scale(1.04); }
+}
+.heart-progress-shape::before,
+.heart-progress-shape::after{
+  content:"";
+  position:absolute;
+  width: 76px; height: 122px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 50px 50px 0 0;
+  top:0;
+}
+.heart-progress-shape::before{ left: 70px; transform: rotate(45deg); transform-origin: 0 100%; }
+.heart-progress-shape::after{ left: 70px; transform: rotate(-45deg) scaleX(-1); transform-origin: 0 100%; }
+
+.heart-progress-fill{
+  position:absolute;
+  inset: 0;
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
+}
+.heart-progress-fill::before,
+.heart-progress-fill::after{
+  content:"";
+  position:absolute;
+  width: 76px; height: 122px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  border-radius: 50px 50px 0 0;
+  top:0;
+}
+.heart-progress-fill::before{ left: 70px; transform: rotate(45deg); transform-origin: 0 100%; }
+.heart-progress-fill::after{ left: 70px; transform: rotate(-45deg) scaleX(-1); transform-origin: 0 100%; }
+
+.loading-text{
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+  min-height: 24px;
+}
+
+/* ===========================================================
+   SCENE 5 — Result
+=========================================================== */
+.scene-result{
+  background: linear-gradient(160deg, #FFD6E7 0%, #FFB6D0 100%);
+  position: relative;
+  overflow: hidden;
+}
+#confettiCanvas{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.balloons{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.balloon{
+  position: absolute;
+  bottom: -140px;
+  width: 46px;
+  height: 58px;
+  border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+  animation: balloonRise linear forwards;
+}
+.balloon::after{
+  content:"";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 40px;
+  background: rgba(90,59,72,0.35);
+  transform: translateX(-50%);
+}
+@keyframes balloonRise{
+  to{ transform: translateY(-135vh) translateX(var(--drift,0px)); }
+}
+
+.result-wrap{
+  position: relative;
+  z-index: 2;
+  text-align:center;
+  max-width: 420px;
+}
+.result-title{
+  font-family: var(--font-display);
+  font-size: clamp(34px, 10vw, 52px);
+  color: var(--white);
+  text-shadow: 0 4px 18px rgba(232,83,134,0.4);
+  margin: 0 0 12px;
+  animation: resultPop .6s cubic-bezier(.3,1.4,.4,1) both;
+}
+@keyframes resultPop{
+  0%{ opacity: 0; transform: scale(.6); }
+  100%{ opacity: 1; transform: scale(1); }
+}
+.result-sub{
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--white);
+  margin: 0 0 34px;
+}
+.countdown{
+  font-family: var(--font-display);
+  font-size: 46px;
+  color: var(--white);
+  animation: countPulse .9s ease both;
+}
+@keyframes countPulse{
+  0%{ transform: scale(1.4); opacity: 0; }
+  50%{ transform: scale(1); opacity: 1; }
+  100%{ transform: scale(1); opacity: 1; }
+}
+.countdown-label{
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.85);
+  margin-top: 6px;
+}
+
+/* ===========================================================
+   Overlays / popups
+=========================================================== */
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(90,59,72,0.35);
+  backdrop-filter: blur(3px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index: 200;
+  padding: 20px;
+}
+.overlay.show{
+  display:flex;
+  animation: overlayFade .25s ease both;
+}
+@keyframes overlayFade{
+  from{ opacity: 0; }
+  to{ opacity: 1; }
+}
+.popup-card{
+  max-width: 320px;
+  width: 100%;
+  padding: 30px 26px;
+  text-align: center;
+  animation: popupPop .3s cubic-bezier(.3,1.5,.4,1) both;
+}
+@keyframes popupPop{
+  from{ opacity: 0; transform: scale(.85) translateY(10px); }
+  to{ opacity: 1; transform: scale(1) translateY(0); }
+}
+.popup-title{
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--accent-deep);
+  margin: 0 0 8px;
+}
+.popup-body{
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+.popup-actions{
+  display:flex;
+  gap: 12px;
+  justify-content:center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* ===========================================================
+   Responsive tuning
+=========================================================== */
+@media (max-width: 380px){
+  .story-card{ padding: 26px 18px; }
+  .btn{ padding: 14px 26px; font-size: 15px; }
+}
+
+@media (min-width: 768px){
+  .opening-wrap, .story-wrap, .question-wrap, .loading-wrap, .result-wrap{ max-width: 480px; }
+  .story-card{ max-width: 380px; }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+</style>
+</head>
+<body>
+
+  <!-- ============ Floating background hearts (ambient) ============ -->
+  <div class="bg-hearts" id="bgHearts" aria-hidden="true"></div>
+
+  <!-- ============ Logo / easter egg trigger ============ -->
+  <div class="logo" id="logo" aria-hidden="true">🌷</div>
+
+  <!-- ============ Music toggle ============ -->
+  <button class="music-btn" id="musicBtn" title="putar musik">
+    <span id="musicIcon">🎵</span>
+  </button>
+
+  <!-- Player YouTube disembunyikan (audio-only experience). ID video diatur di script.js -->
+  <div id="ytPlayer" style="position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;"></div>
+
+  <main id="app">
+
+    <!-- ============ SCENE 1: Opening ============ -->
+    <section class="scene scene-opening active" id="scene-opening">
+      <div class="opening-wrap">
+        <h1 class="greeting">Hy, Tatia Agustina <h1>
+        <div class="typing-lines" id="typingLines"></div>
+        <button class="btn btn-primary btn-promise" id="btnPromise" style="opacity:0; pointer-events:none;">
+          Okayy
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 2: Story cards ============ -->
+    <section class="scene scene-story" id="scene-story">
+      <div class="story-wrap">
+        <div class="story-card-stack" id="storyStack"></div>
+        <div class="story-progress" id="storyProgress"></div>
+        <button class="tap-hint" id="tapHint">ketuk untuk lanjut →</button>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 3: Mini game (Iya / Enggak) ============ -->
+    <section class="scene scene-question" id="scene-question">
+      <div class="question-wrap glass-card">
+        <p class="question-eyebrow">jadi...</p>
+        <h2 class="question-title">Kamu mau jadi pacar aku?</h2>
+        <div class="answer-zone" id="answerZone">
+          <button class="btn btn-yes" id="btnYes">❤️ Iyaa</button>
+          <button class="btn btn-no" id="btnNo">💔 Enggaa</button>
+        </div>
+        <p class="question-sub" id="questionSub">kumohonn jawabb iyaa</p>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 4: Loading ============ -->
+    <section class="scene scene-loading" id="scene-loading">
+      <div class="loading-wrap">
+        <div class="heart-progress-track">
+          <div class="heart-progress-shape">
+            <div class="heart-progress-fill" id="heartFill"></div>
+          </div>
+        </div>
+        <p class="loading-text" id="loadingText">Mengumpulkan keberanian...</p>
+      </div>
+    </section>
+
+    <!-- ============ SCENE 5: Result ============ -->
+    <section class="scene scene-result" id="scene-result">
+      <canvas id="confettiCanvas"></canvas>
+      <div class="balloons" id="balloons" aria-hidden="true"></div>
+      <div class="result-wrap">
+        <h1 class="result-title">YEAYYY!!</h1>
+        <p class="result-sub">Makasih udah bukaa yaa</p>
+        <div class="countdown" id="countdown">3</div>
+        <p class="countdown-label">mengalihkan ke WhatsApp...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ Popup: "Beneran nih?" ============ -->
+  <div class="overlay" id="overlayConfirm">
+    <div class="popup-card glass-card">
+      <p class="popup-title">Beneran nih? 👀</p>
+      <div class="popup-actions">
+        <button class="btn btn-primary btn-small" id="btnReallyYes">Iya dong</button>
+        <button class="btn btn-outline btn-small" id="btnReallySure">Yakin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Popup: alert lucu tombol "Enggak" ============ -->
+  <div class="overlay" id="overlayNo">
+    <div class="popup-card glass-card">
+      <p class="popup-title">Eitsss... 😠</p>
+      <p class="popup-body">pilih yang satunya dong</p>
+      <button class="btn btn-primary btn-small" id="btnNoOk">iya iya</button>
+    </div>
+  </div>
+
+  <!-- ============ Popup: easter egg ============ -->
+  <div class="overlay" id="overlayEgg">
+    <div class="popup-card glass-card">
+      <p class="popup-title">Ketahuan~ 😂</p>
+      <p class="popup-body">Kamu kepo banget ya wkwkwk</p>
+      <button class="btn btn-primary btn-small" id="btnEggOk">hehe iya</button>
+    </div>
+  </div>
+
+  <script>
+
+/* =========================================================
+   CONFESS WEBSITE — script.js
+   Semua bagian diberi komentar supaya gampang diubah.
+   ========================================================= */
+
+/* =========================================================
+   1) KONFIGURASI — GAMPANG DIGANTI DI SINI
+   ========================================================= */
+const WA_NUMBER = "6287729966044"; // ganti dengan nomor WhatsApp tujuan (format 62xxxx, tanpa + / spasi)
+const WA_MESSAGE = "Haii ini jawabannkuu"; // isi pesan otomatis
+const YOUTUBE_VIDEO_ID = "2uJut6USftQ";
+
+// Baris-baris opening (muncul satu per satu, delay 2 detik)
+const OPENING_LINES = [
+  "Aku punya sesuatu",
+  "Sabar yaa",
+  "Janji baca sampai habis."
+];
+
+// Kartu cerita (urut sesuai alur yang diminta)
+const STORY_CARDS = [
+  "Awalnya, aku sungguh berpikir bisa menulis satu paragraf panjang tentangmu",
+  "Tapi ternyata aku salah. Itu tidak semudah yang kubayangkan",
+  "Karena tepat saat aku mulai mengetik, senyum manismu tiba-tiba muncul di layar.",
+  "Seketika pikiranku teralihkan. Semua kata yang tadi mengalir lancar mendadak buyar",
+  "seakan tak ada lagi yang bisa aku tumpahkan dalam satu tulisan selain sebuah ungkapan sederhana: bahwa kamu, manis sekali.",
+  "Ternyata seluruh aksara jadi tak berdaya ketika berhadapan dengan senyuman itu,",
+  "seketika daya kreativitas menurun,",
+  "berganti dengan ucapan- ucapan pujian akan cantiknya ciptaan Tuhan",
+  "makasihh, aku sayang sama kamu."
+];
+
+// Teks loading yang berganti-ganti
+const LOADING_STEPS = [
+  "Mengumpulkan keberanian...",
+  "Menyiapkan kata-kata...",
+  "Deg-degan...",
+  "Hampir selesai...",
+  "Semoga jawabannya iya 🥹"
+];
+
+/* =========================================================
+   2) HELPERS
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
+const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
+function showScene(id){
+  document.querySelectorAll(".scene").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+/* Ripple effect: tambahkan lingkaran kecil di titik klik pada tombol */
+function attachRipple(button){
+  button.addEventListener("click", (e) => {
+    const rect = button.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    const size = Math.max(rect.width, rect.height);
+    ripple.className = "ripple";
+    ripple.style.width = ripple.style.height = size + "px";
+    ripple.style.left = (e.clientX ?? rect.left + rect.width/2) - rect.left - size/2 + "px";
+    ripple.style.top = (e.clientY ?? rect.top + rect.height/2) - rect.top - size/2 + "px";
+    button.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 650);
+  });
+}
+document.querySelectorAll(".btn").forEach(attachRipple);
+
+/* =========================================================
+   3) CUSTOM CURSOR + LOVE PARTICLES (efek tambahan)
+   ========================================================= */
+if (!isTouchDevice){
+  const cursorHeart = document.createElement("div");
+  cursorHeart.id = "cursorHeart";
+  cursorHeart.textContent = "💗";
+  document.body.appendChild(cursorHeart);
+
+  window.addEventListener("mousemove", (e) => {
+    cursorHeart.style.left = e.clientX + "px";
+    cursorHeart.style.top = e.clientY + "px";
+  });
+}
+
+function spawnLoveParticle(x, y){
+  const p = document.createElement("div");
+  p.className = "love-particle";
+  p.textContent = ["❤️","💕","💖","💓"][Math.floor(Math.random()*4)];
+  p.style.left = x + "px";
+  p.style.top = y + "px";
+  p.style.setProperty("--dx", (Math.random()*60 - 30) + "px");
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 950);
+}
+
+window.addEventListener("click", (e) => {
+  // hindari nembak partikel saat klik di dalam overlay popup supaya tidak menutupi tombol kecil
+  spawnLoveParticle(e.clientX, e.clientY);
+});
+window.addEventListener("touchstart", (e) => {
+  if (e.touches && e.touches[0]){
+    spawnLoveParticle(e.touches[0].clientX, e.touches[0].clientY);
+  }
+}, { passive: true });
+
+/* =========================================================
+   4) AMBIENT FLOATING HEARTS DI BACKGROUND
+   ========================================================= */
+function spawnBgHeart(){
+  const container = $("bgHearts");
+  const heart = document.createElement("div");
+  heart.className = "bg-heart";
+  heart.textContent = ["❤️","💗","💞","💓","💕"][Math.floor(Math.random()*5)];
+  const size = 14 + Math.random()*20;
+  heart.style.left = Math.random()*100 + "vw";
+  heart.style.fontSize = size + "px";
+  const duration = 8 + Math.random()*8;
+  heart.style.animationDuration = duration + "s";
+  container.appendChild(heart);
+  setTimeout(() => heart.remove(), duration*1000 + 500);
+}
+setInterval(spawnBgHeart, 900);
+for (let i=0;i<5;i++) setTimeout(spawnBgHeart, i*300); // biar langsung ramai di awal
+
+/* =========================================================
+   5) MUSIK DARI YOUTUBE (opsional, tombol play/pause)
+   Karena <audio> tidak bisa memutar link YouTube langsung,
+   kita pakai YouTube IFrame Player API secara tersembunyi.
+   ========================================================= */
+const musicBtn = $("musicBtn");
+let musicPlaying = false;
+let ytPlayer = null;
+let ytReady = false;
+
+// Muat script YouTube IFrame API secara dinamis
+const ytScript = document.createElement("script");
+ytScript.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(ytScript);
+
+// Dipanggil otomatis oleh YouTube API begitu sudah siap
+window.onYouTubeIframeAPIReady = function(){
+  ytPlayer = new YT.Player("ytPlayer", {
+    height: "1",
+    width: "1",
+    videoId: YOUTUBE_VIDEO_ID,
+    playerVars: {
+      autoplay: 0,
+      loop: 1,
+      playlist: YOUTUBE_VIDEO_ID, // wajib diisi supaya loop:1 berfungsi
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      modestbranding: 1
+    },
+    events: {
+      onReady: () => { ytReady = true; },
+      onError: () => {
+        // video tidak bisa diputar (mis. embed dimatikan pemilik video / origin ditolak)
+        $("musicIcon").textContent = "🚫";
+        musicBtn.title = "musik tidak bisa diputar (cek video/izin embed)";
+      }
+    }
+  });
+};
+
+musicBtn.addEventListener("click", () => {
+  if (!ytReady){
+    // API belum siap (koneksi lambat), coba lagi sebentar lalu ulangi klik
+    return;
+  }
+  if (!musicPlaying){
+    ytPlayer.playVideo();
+    musicBtn.classList.add("playing");
+    $("musicIcon").textContent = "🎶";
+    musicPlaying = true;
+  } else {
+    ytPlayer.pauseVideo();
+    musicBtn.classList.remove("playing");
+    $("musicIcon").textContent = "🎵";
+    musicPlaying = false;
+  }
+});
+
+/* =========================================================
+   6) EASTER EGG — klik logo 10x
+   ========================================================= */
+let logoClicks = 0;
+$("logo").addEventListener("click", () => {
+  logoClicks++;
+  if (logoClicks >= 10){
+    openOverlay("overlayEgg");
+    logoClicks = 0;
+  }
+});
+$("btnEggOk").addEventListener("click", () => closeOverlay("overlayEgg"));
+
+/* =========================================================
+   7) OVERLAY HELPERS
+   ========================================================= */
+function openOverlay(id){ $(id).classList.add("show"); }
+function closeOverlay(id){ $(id).classList.remove("show"); }
+
+/* =========================================================
+   8) SCENE 1 — OPENING (typing animation baris per baris)
+   ========================================================= */
+async function runOpening(){
+  const wrap = $("typingLines");
+  for (const line of OPENING_LINES){
+    await wait(1400); // jeda sebelum baris berikutnya muncul (bagian dari delay 2 detik termasuk waktu ketik)
+    const div = document.createElement("div");
+    div.className = "typing-line";
+    wrap.appendChild(div);
+    await typeLine(div, line);
+    div.classList.add("show");
+  }
+  // tampilkan tombol janji
+  const btn = $("btnPromise");
+  btn.style.pointerEvents = "auto";
+  btn.style.opacity = "1";
+  btn.style.transform = "translateY(0)";
+}
+
+function typeLine(el, text){
+  return new Promise((resolve) => {
+    let i = 0;
+    el.classList.add("show");
+    const cursor = document.createElement("span");
+    cursor.className = "cursor-blink";
+    cursor.textContent = "\u00A0";
+    function step(){
+      if (i <= text.length){
+        el.textContent = text.slice(0, i);
+        el.appendChild(cursor);
+        i++;
+        setTimeout(step, 28);
+      } else {
+        cursor.remove();
+        resolve();
+      }
+    }
+    step();
+  });
+}
+
+runOpening();
+
+$("btnPromise").addEventListener("click", () => {
+  showScene("scene-story");
+  runStoryCards();
+});
+
+/* =========================================================
+   9) SCENE 2 — STORY CARDS (geser satu per satu, tap untuk lanjut)
+   ========================================================= */
+let storyIndex = 0;
+let storyStarted = false;
+
+function buildStoryProgressDots(){
+  const bar = $("storyProgress");
+  bar.innerHTML = "";
+  STORY_CARDS.forEach(() => {
+    const dot = document.createElement("div");
+    dot.className = "story-dot";
+    bar.appendChild(dot);
+  });
+}
+
+function showStoryCard(index){
+  const stack = $("storyStack");
+  stack.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "story-card enter";
+  card.textContent = STORY_CARDS[index];
+  // sedikit rotasi acak biar terasa seperti kartu ditulis tangan, bukan template kaku
+  const tilt = (index % 2 === 0 ? -1 : 1) * (2 + Math.random()*2);
+  card.style.setProperty("--tilt", tilt.toFixed(1) + "deg");
+  stack.appendChild(card);
+
+  // update progress dots
+  document.querySelectorAll(".story-dot").forEach((d, i) => {
+    d.classList.toggle("done", i <= index);
+  });
+}
+
+function runStoryCards(){
+  if (!storyStarted){
+    buildStoryProgressDots();
+    storyStarted = true;
+  }
+  storyIndex = 0;
+  showStoryCard(storyIndex);
+}
+
+function advanceStory(){
+  const stack = $("storyStack");
+  const current = stack.querySelector(".story-card");
+  if (current) current.classList.replace("enter", "leave");
+
+  if (storyIndex < STORY_CARDS.length - 1){
+    storyIndex++;
+    setTimeout(() => showStoryCard(storyIndex), 380);
+  } else {
+    // kartu terakhir selesai dibaca → lanjut ke scene pertanyaan
+    setTimeout(() => {
+      showScene("scene-question");
+      initQuestionScene();
+    }, 420);
+  }
+}
+
+$("storyStack").addEventListener("click", advanceStory);
+$("tapHint").addEventListener("click", advanceStory);
+
+/* =========================================================
+   10) SCENE 3 — MINI GAME (tombol "Enggak" kabur / berpindah)
+   ========================================================= */
+const btnYes = $("btnYes");
+const btnNo = $("btnNo");
+const answerZone = $("answerZone");
+let noRoamInterval = null;
+let questionInitDone = false;
+
+function initQuestionScene(){
+  if (questionInitDone) return;
+  questionInitDone = true;
+
+  answerZone.style.position = "relative";
+
+  if (isTouchDevice){
+    // di HP: tombol berpindah acak & tidak boleh bisa "ditekan" sungguhan
+    answerZone.classList.add("roaming");
+    btnNo.classList.add("roam-mode");
+    placeNoRandomly();
+    noRoamInterval = setInterval(placeNoRandomly, 1600);
+
+    // begitu jari menyentuh tombol, langsung pindahkan sebelum sempat "tertekan"
+    btnNo.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      placeNoRandomly();
+      triggerNoAlert();
+    }, { passive: false });
+  } else {
+    // di desktop: tombol kabur ketika kursor mendekat
+    document.addEventListener("mousemove", dodgeIfClose);
+  }
+
+  // klik tetap ditangani untuk kasus "ditekan dengan cara apapun" (keyboard/tap-through)
+  btnNo.addEventListener("click", (e) => {
+    e.preventDefault();
+    triggerNoAlert();
+  });
+}
+
+function placeNoRandomly(){
+  const zoneRect = answerZone.getBoundingClientRect();
+  const btnW = btnNo.offsetWidth || 120;
+  const btnH = btnNo.offsetHeight || 54;
+  const maxX = Math.max(zoneRect.width - btnW, 10);
+  const maxY = Math.max(zoneRect.height - btnH, 10);
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+  btnNo.style.left = x + "px";
+  btnNo.style.top = y + "px";
+}
+
+function dodgeIfClose(e){
+  if (!btnNo.classList.contains("escaping")){
+    // pertama kali harus dikunci ke posisi absolute relatif ke answerZone
+    const rect = btnNo.getBoundingClientRect();
+    const zoneRect = answerZone.getBoundingClientRect();
+    btnNo.style.left = (rect.left - zoneRect.left) + "px";
+    btnNo.style.top = (rect.top - zoneRect.top) + "px";
+    btnNo.classList.add("escaping");
+  }
+
+  const rect = btnNo.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
+  const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+
+  if (dist < 90){
+    const zoneRect = answerZone.getBoundingClientRect();
+    const btnW = rect.width, btnH = rect.height;
+    const maxX = Math.max(zoneRect.width - btnW, 10);
+    const maxY = Math.max(zoneRect.height - btnH, 10);
+    let newX, newY, tries = 0;
+    do {
+      newX = Math.random() * maxX;
+      newY = Math.random() * maxY;
+      tries++;
+    } while (
+      Math.hypot((newX + btnW/2) - (cx - zoneRect.left), (newY + btnH/2) - (cy - zoneRect.top)) < 120 &&
+      tries < 8
+    );
+    btnNo.style.left = newX + "px";
+    btnNo.style.top = newY + "px";
+  }
+}
+
+function triggerNoAlert(){
+  openOverlay("overlayNo");
+}
+$("btnNoOk").addEventListener("click", () => {
+  closeOverlay("overlayNo");
+  if (isTouchDevice) placeNoRandomly();
+});
+
+/* Tombol "Iya" → munculkan popup konfirmasi dulu */
+btnYes.addEventListener("click", () => {
+  openOverlay("overlayConfirm");
+});
+
+function proceedAfterYes(){
+  closeOverlay("overlayConfirm");
+  if (noRoamInterval) clearInterval(noRoamInterval);
+  document.removeEventListener("mousemove", dodgeIfClose);
+
+  // getar kecil di HP
+  if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+
+  showScene("scene-loading");
+  runLoading();
+}
+$("btnReallyYes").addEventListener("click", proceedAfterYes);
+$("btnReallySure").addEventListener("click", proceedAfterYes);
+
+/* =========================================================
+   11) SCENE 4 — LOADING (progress hati + teks berganti)
+   ========================================================= */
+async function runLoading(){
+  const fill = $("heartFill");
+  const textEl = $("loadingText");
+  const totalSteps = LOADING_STEPS.length;
+
+  for (let i = 0; i < totalSteps; i++){
+    textEl.style.opacity = 0;
+    await wait(120);
+    textEl.textContent = LOADING_STEPS[i];
+    textEl.style.transition = "opacity .25s ease";
+    textEl.style.opacity = 1;
+
+    const pct = ((i + 1) / totalSteps) * 100;
+    // isi hati dari bawah ke atas sesuai progress
+    fill.style.transition = "clip-path .6s ease";
+    fill.style.clipPath = `polygon(0 ${100-pct}%, 100% ${100-pct}%, 100% 100%, 0% 100%)`;
+
+    await wait(950);
+  }
+
+  await wait(400);
+  showScene("scene-result");
+  runResult();
+}
+
+/* =========================================================
+   12) SCENE 5 — RESULT (confetti, balon, countdown, redirect)
+   ========================================================= */
+function spawnBalloons(){
+  const container = $("balloons");
+  container.innerHTML = "";
+  const colors = ["#FF6FA5", "#FFB6D0", "#FFFFFF", "#FFD6E7", "#E85386"];
+  for (let i = 0; i < 12; i++){
+    const b = document.createElement("div");
+    b.className = "balloon";
+    b.style.left = (Math.random()*90) + "%";
+    b.style.background = colors[Math.floor(Math.random()*colors.length)];
+    b.style.setProperty("--drift", (Math.random()*80 - 40) + "px");
+    const duration = 5 + Math.random()*4;
+    b.style.animationDuration = duration + "s";
+    b.style.animationDelay = (Math.random()*1.5) + "s";
+    container.appendChild(b);
+  }
+}
+
+/* Confetti sederhana pakai canvas, tanpa library eksternal */
+function runConfetti(){
+  const canvas = $("confettiCanvas");
+  const ctx = canvas.getContext("2d");
+  function resize(){
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  const colors = ["#FF6FA5", "#FFD6E7", "#FFFFFF", "#E85386", "#FFB6D0"];
+  const pieces = Array.from({ length: 90 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height,
+    size: 5 + Math.random()*6,
+    speed: 1.5 + Math.random()*2.5,
+    drift: Math.random()*2 - 1,
+    rotation: Math.random()*360,
+    rotSpeed: Math.random()*6 - 3,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    shape: Math.random() > 0.5 ? "rect" : "circle"
+  }));
+
+  let running = true;
+  function frame(){
+    if (!running) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.y += p.speed;
+      p.x += p.drift;
+      p.rotation += p.rotSpeed;
+      if (p.y > canvas.height + 20){
+        p.y = -20;
+        p.x = Math.random() * canvas.width;
+      }
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI/180);
+      ctx.fillStyle = p.color;
+      if (p.shape === "rect"){
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // hentikan confetti setelah beberapa saat biar tidak mengganggu saat sudah lama di halaman hasil
+  setTimeout(() => { running = false; }, 9000);
+}
+
+function runResult(){
+  runConfetti();
+  spawnBalloons();
+  startCountdownAndRedirect();
+}
+
+function startCountdownAndRedirect(){
+  const el = $("countdown");
+  let n = 3;
+  el.textContent = n;
+
+  const timer = setInterval(() => {
+    n--;
+    if (n > 0){
+      el.textContent = n;
+      el.style.animation = "none";
+      void el.offsetWidth; // reflow supaya animasi bisa restart
+      el.style.animation = "countPulse .5s ease both";
+    } else {
+      clearInterval(timer);
+      redirectToWhatsApp();
+    }
+  }, 1000);
+}
+
+function redirectToWhatsApp(){
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+  window.location.href = url;
+}
+
+
+  </script>
+</body>
+</html>
