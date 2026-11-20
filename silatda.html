@@ -222,12 +222,44 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:13px;font-weight:600;opacity:0;visibility:hidden;transition:.3s ease;z-index:70;max-width:90%;text-align:center}
 .toast.show{opacity:1;visibility:visible;transform:translateX(-50%)}
 @media(max-width:680px){.ix-grid{grid-template-columns:1fr}.countdown{grid-template-columns:repeat(2,1fr)}.ix-card{padding:20px}}
+
+/* ===== Ciri khas tiap bab ===== */
+.bab-sec{position:relative;overflow:hidden;--ch:var(--blue)}
+.bab-sec::before{content:attr(data-bab);position:absolute;right:2%;top:12px;font-size:clamp(120px,18vw,240px);font-weight:800;letter-spacing:-8px;line-height:1;color:var(--ch);opacity:.06;pointer-events:none;user-select:none}
+.bab-sec>.wrap{position:relative;z-index:1}
+.bab-tag,.bab-tag svg{color:var(--ch)}
+#tentang{--ch:#2447f8}
+#tentang .metric{border-left-color:var(--ch)}
+#tentang .visual{background:linear-gradient(145deg,#e6ecff,#dff6e8)}
+#acara{--ch:#11875b}
+#acara .eventpanel{border-left:6px solid var(--ch)}
+#acara .eventcard:first-child{background:#e2f6ec}
+#tema{--ch:#7c3aed}
+#tujuan{--ch:#4b9415}
+#tujuan .why{border-top:3px solid var(--ch)}
+#interaktif{--ch:#2447f8;background-color:#fbfcff;background-image:radial-gradient(#2447f81c 1px,transparent 1px);background-size:22px 22px}
+#kuesioner{--ch:#8a4dd7}
+#kuesioner .questionnaire{border-top:4px solid var(--ch)}
+#komitmen{--ch:#0e7490;background:linear-gradient(180deg,#fff 0%,#f0fbfc 100%)}
+#komitmen .pledge-card{box-shadow:0 20px 40px #0e749030}
+.closing{background:linear-gradient(180deg,#fff,#f3f6ff)}
+.closing-tag{color:var(--green)}
+
+/* ===== Urutan & warna latar tiap bab ===== */
+#tentang{background:#eef4ff}
+#acara{background:#eafaf2}
+#tujuan{background:#f4fbe6}
+#tema{background:#f5efff}
+#interaktif{--ch:#0e7490;background-color:#e9fbfb;background-image:radial-gradient(#0e74902a 1px,transparent 1px);background-size:22px 22px}
+#kuesioner{background:#fdf0f7;--ch:#b5306f}
+#komitmen{background:#fff4ec;--ch:#c2410c}
+.closing{background:#fff}
 </style>
 </head>
 <body>
 <nav><div class="wrap navin">
 <a href="#home" class="brand">FARIS <span>SRAGEN</span></a>
-<div class="links" id="links"><a href="#home">Beranda</a><a href="#tentang">Tentang</a><a href="#acara">Informasi</a><a href="#tema">Tema</a><a href="#tujuan">Tujuan</a><a href="#interaktif">Persiapan</a></div>
+<div class="links" id="links"><a href="#home">Beranda</a><a href="#tentang">Tentang</a><a href="#acara">Informasi</a><a href="#tujuan">Tujuan</a><a href="#tema">Tema</a><a href="#interaktif">Persiapan</a></div>
 <a href="#acara" class="btn navcta">Informasi Acara <i data-lucide="arrow-up-right"></i></a><button class="menu" id="menu" aria-label="Menu"><i data-lucide="menu"></i></button>
 </div></nav>
 <main>
@@ -244,23 +276,33 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 <div class="infocard"><div class="icobox"><i data-lucide="clock-3"></i></div><div><h3>08.00 WIB – Selesai</h3><p>Mulai kegiatan pada pukul 08.00 WIB.</p></div></div>
 <div class="infocard"><div class="icobox"><i data-lucide="map-pin"></i></div><div><h3>Aula Sukowati</h3><p>Kompleks IKS Pemda Sragen.</p></div></div>
 </div>
-<section id="tentang"><div class="wrap aboutgrid">
+<section id="tentang" class="bab-sec" data-bab="01"><div class="wrap aboutgrid">
 <div class="visual reveal"><div class="stack"><div><i data-lucide="book-open"></i></div><div><i data-lucide="hand-heart"></i></div><div><i data-lucide="sprout"></i></div></div><div class="caption">Ilmu • Iman • Aksi</div></div>
-<div class="reveal"><div class="tag"><i data-lucide="info"></i> Tentang Kegiatan</div><h2 class="title">Perjalanan untuk bertumbuh dan memberi arti.</h2>
-<p class="copy">Bukan sekadar perjalanan menuju sebuah pertemuan, tetapi perjalanan untuk bertumbuh, mempererat ukhuwah, memperkuat ibadah, dan membangun generasi muda Islam yang lebih berdaya.</p>
-<p class="copy">Forum Komunikasi Rohis Sragen (FARIS) mengajak seluruh Pembina Rohis dan Pengurus Rohis Sekolah se-Kabupaten Sragen untuk hadir dalam <b>Audiensi Bupati & Silaturahmi Daerah (SILATDA) ROHIS II SRAGEN 2026</b>.</p>
+<div class="reveal"><div class="tag bab-tag"><i data-lucide="info"></i> BAB 01 · Tentang Kegiatan</div><h2 class="title">Apa itu Silatda Rohis II?</h2>
+<p class="copy">Silatda Rohis II adalah pertemuan antarrohis se-Kabupaten Sragen untuk mempererat ukhuwah, memperkuat ibadah, dan membangun generasi muda Islam yang lebih berdaya.</p>
+<p class="copy">Forum Komunikasi Rohis Sragen (FARIS) mengajak Pembina dan Pengurus Rohis sekolah se-Kabupaten Sragen untuk hadir dalam <b>Audiensi Bupati & Silaturahmi Daerah (SILATDA) ROHIS II SRAGEN 2026</b>, sebuah ruang bertemu langsung dengan Bupati dan sesama rohis.</p>
 <div class="metrics"><div class="metric"><b>10</b><small>Delegasi / sekolah</small></div><div class="metric"><b>08.00</b><small>WIB mulai</small></div><div class="metric"><b>2026</b><small>Tahun kegiatan</small></div></div></div>
 </div></section>
-<section id="acara"><div class="wrap eventpanel reveal"><div class="tag"><i data-lucide="calendar-check"></i> Catat Waktunya</div><h2 class="title">Informasi kegiatan.</h2><p class="copy" style="margin-bottom:24px">Pastikan informasi berikut tersimpan dan koordinasikan kehadiran delegasi sekolah.</p>
+<section id="acara" class="bab-sec" data-bab="02"><div class="wrap eventpanel reveal"><div class="tag bab-tag"><i data-lucide="calendar-check"></i> BAB 02 · Catat Waktunya</div><h2 class="title">Kapan, di mana, dan siapa yang hadir?</h2><p class="copy" style="margin-bottom:24px">Simpan informasi berikut, lalu koordinasikan jumlah delegasi dari sekolahmu.</p>
 <div class="eventgrid">
 <div class="eventcard"><div class="headicon"><i data-lucide="calendar"></i></div><h3>Hari & Tanggal</h3><p>Silatda Rohis II Sragen 2026 dilaksanakan pada:</p><div class="steps"><div class="step">Kamis<span><small>Hari pelaksanaan</small></span></div><div class="step">10 Desember 2026<span><small>Tanggal acara</small></span></div></div></div>
 <div class="eventcard"><div class="headicon"><i data-lucide="map-pin"></i></div><h3>Waktu & Tempat</h3><p>Pelaksanaan kegiatan berlangsung pada:</p><div class="steps"><div class="step">08.00 WIB – Selesai<span><small>Waktu kegiatan</small></span></div><div class="step">Aula Sukowati<span><small>Kompleks IKS Pemda Sragen</small></span></div></div></div>
 </div>
 <div style="margin-top:18px;padding:18px;border-radius:18px;background:#eaf8df;display:flex;gap:14px;align-items:flex-start"><div style="color:#438b1c"><i data-lucide="users-round"></i></div><div><b>Ketentuan perwakilan</b><p style="margin:6px 0 0;color:#586b4d;font-size:13px;line-height:1.7">Setiap sekolah mengirimkan <b>10 orang perwakilan</b>.</p></div></div>
 </div></section>
-<section id="interaktif">
+<section id="tujuan" class="bab-sec" data-bab="03"><div class="wrap"><div class="tag bab-tag"><i data-lucide="target"></i> BAB 03 · Tujuan Kegiatan</div><h2 class="title">Mengapa kamu perlu hadir?</h2><p class="copy" style="max-width:730px">Silatda menjadi ruang untuk saling belajar antarrohis, memperkuat kerja sama dengan pemerintah daerah, dan menyiapkan pelajar untuk berdakwah serta berkontribusi di masyarakat.</p>
+<div class="whygrid reveal">
+<div class="why"><div class="icobox"><i data-lucide="heart-handshake"></i></div><h3>Mempererat Ukhuwah</h3><p>Mempererat ukhuwah dan solidaritas antarrohis se-Kabupaten Sragen.</p></div>
+<div class="why"><div class="icobox"><i data-lucide="landmark"></i></div><h3>Sinergi dengan Pemerintah</h3><p>Membangun komunikasi dan sinergi antara pelajar, pembina, serta pemerintah daerah.</p></div>
+<div class="why"><div class="icobox"><i data-lucide="repeat"></i></div><h3>Upgrade Kebiasaan</h3><p>Meningkatkan kualitas kebiasaan, ibadah, dan kepercayaan diri sebagai muslim muda.</p></div>
+<div class="why"><div class="icobox"><i data-lucide="megaphone"></i></div><h3>Semangat Berdakwah</h3><p>Menumbuhkan semangat berorganisasi, berdakwah, dan berkontribusi bagi masyarakat.</p></div>
+<div class="why"><div class="icobox"><i data-lucide="book-marked"></i></div><h3>Ilmu & Iman</h3><p>Mendorong generasi muda Islam yang berilmu, beriman, dan berakhlak.</p></div>
+<div class="why"><div class="icobox"><i data-lucide="zap"></i></div><h3>Aksi Nyata</h3><p>Mewujudkan kontribusi yang nyata, relevan, dan penuh kebermanfaatan.</p></div>
+</div></div></section>
+<section id="tema" class="bab-sec" data-bab="04"><div class="wrap"><div class="themebox reveal"><div class="tag"><i data-lucide="sparkles"></i> BAB 04 · Tema Silatda II Rohis 2026</div><h2>“Upgrade Habits, Upgrade Worship, Upgrade Self Esteem: Anak Muda Menghidupkan Zamannya Menjadi Muslim Muda Pemberi Kontribusi dengan Ilmu, Iman, dan Aksi.”</h2><p>Sebab kapasitas kita dalam membantu masa depan tidak terlepas dari kapasitas kita dalam mengembangkan diri. Mulailah dari hal-hal yang berada dalam kendali kita hari ini.</p></div></div></section>
+<section id="interaktif" class="bab-sec" data-bab="05">
 <div class="wrap reveal">
-<div class="tag"><i data-lucide="sparkles"></i> Persiapan Bersama</div>
+<div class="tag bab-tag"><i data-lucide="sparkles"></i> BAB 05 · Persiapan Bersama</div>
 <h2 class="title">Siap-siap bareng FARIS.</h2>
 <p class="copy" style="max-width:730px">Hitung mundur, checklist, tanya jawab, dan kuis singkat supaya setiap perwakilan siap sebelum hari H.</p>
 <div class="ix-grid">
@@ -317,23 +359,11 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 </div>
 </div>
 </section>
-<section id="tema"><div class="wrap"><div class="themebox reveal"><div class="tag"><i data-lucide="sparkles"></i> Tema Silatda II Rohis 2026</div><h2>“Upgrade Habits, Upgrade Worship, Upgrade Self Esteem: Anak Muda Menghidupkan Zamannya Menjadi Muslim Muda Pemberi Kontribusi dengan Ilmu, Iman, dan Aksi.”</h2><p>Sebab kapasitas kita dalam membantu masa depan tidak terlepas dari kapasitas kita dalam mengembangkan diri. Mulailah dari hal-hal yang berada dalam kendali kita hari ini.</p></div></div></section>
-<section id="tujuan"><div class="wrap"><div class="tag"><i data-lucide="target"></i> Mengapa harus hadir?</div><h2 class="title">Setiap pertemuan punya cerita. Setiap proses punya arti.</h2><p class="copy" style="max-width:730px">Melalui kegiatan ini, mari bersama-sama menghadirkan ruang yang mendukung pertumbuhan diri, organisasi, dan dakwah pelajar.</p>
-<div class="whygrid reveal">
-<div class="why"><div class="icobox"><i data-lucide="heart-handshake"></i></div><h3>Mempererat Ukhuwah</h3><p>Mempererat ukhuwah dan solidaritas antarrohis se-Kabupaten Sragen.</p></div>
-<div class="why"><div class="icobox"><i data-lucide="landmark"></i></div><h3>Sinergi dengan Pemerintah</h3><p>Membangun komunikasi dan sinergi antara pelajar, pembina, serta pemerintah daerah.</p></div>
-<div class="why"><div class="icobox"><i data-lucide="repeat"></i></div><h3>Upgrade Kebiasaan</h3><p>Meningkatkan kualitas kebiasaan, ibadah, dan kepercayaan diri sebagai muslim muda.</p></div>
-<div class="why"><div class="icobox"><i data-lucide="megaphone"></i></div><h3>Semangat Berdakwah</h3><p>Menumbuhkan semangat berorganisasi, berdakwah, dan berkontribusi bagi masyarakat.</p></div>
-<div class="why"><div class="icobox"><i data-lucide="book-marked"></i></div><h3>Ilmu & Iman</h3><p>Mendorong generasi muda Islam yang berilmu, beriman, dan berakhlak.</p></div>
-<div class="why"><div class="icobox"><i data-lucide="zap"></i></div><h3>Aksi Nyata</h3><p>Mewujudkan kontribusi yang nyata, relevan, dan penuh kebermanfaatan.</p></div>
-</div></div></section>
-
-
-<section id="kuesioner">
+<section id="kuesioner" class="bab-sec" data-bab="06">
   <div class="wrap">
-    <div class="tag"><i data-lucide="clipboard-list"></i> Ruang Refleksi & Aspirasi</div>
-    <h2 class="title">Kuesioner Peserta Rohis</h2>
-    <p class="copy" style="max-width:760px">Jawab satu pertanyaan dalam satu langkah. Semua pertanyaan wajib diisi agar jawabanmu dapat dikirim lengkap kepada panitia.</p>
+    <div class="tag bab-tag"><i data-lucide="clipboard-list"></i> BAB 06 · Ruang Refleksi & Aspirasi</div>
+    <h2 class="title">Ceritakan dirimu dalam 13 pertanyaan</h2>
+    <p class="copy" style="max-width:760px">Jawab satu pertanyaan per langkah. Semua pertanyaan wajib diisi. Setelah selesai, kirim lewat WhatsApp ke panitia atau simpan sebagai PDF.</p>
     <div class="questionnaire reveal show" id="questionnaireApp">
       <div class="draft-note" id="draftNote"><span>Kami menemukan draf jawabanmu sebelumnya.</span><button type="button" class="btn light" id="draftClear"><i data-lucide="trash-2"></i> Hapus draf</button></div>
       <div class="wizard-top">
@@ -435,10 +465,9 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
     </div>
   </div>
 </section>
-
-<section id="komitmen">
+<section id="komitmen" class="bab-sec" data-bab="07">
 <div class="wrap reveal">
-<div class="tag"><i data-lucide="pen-line"></i> Komitmen Saya</div>
+<div class="tag bab-tag"><i data-lucide="pen-line"></i> BAB 07 · Komitmen Saya</div>
 <h2 class="title">Tulis janjimu, bawa pulang kartunya.</h2>
 <p class="copy" style="max-width:730px">Pilih sampai 3 kebiasaan yang ingin kamu upgrade, tulis namamu, lalu buat kartu komitmen untuk disimpan atau dibagikan.</p>
 <div class="ix-grid">
@@ -462,9 +491,9 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 </div>
 </section>
 <div class="wrap reveal"><div class="cta"><div><div class="tag" style="color:#d9e2ff"><i data-lucide="leaf"></i> Perjalanan Bersamamu</div><h2>Jangan hanya menjadi penonton perubahan zaman.</h2><p>Jadilah generasi yang mampu menghidupkan zaman dengan ilmu, iman, dan aksi!</p></div><a href="#acara" class="btn lime">Sampai Bertemu <i data-lucide="arrow-up-right"></i></a></div></div>
-<section><div class="wrap" style="text-align:center"><div class="tag"><i data-lucide="hand-heart"></i> Penutup</div><h2 class="title">Upgrade Habits. Upgrade Worship.<br>Upgrade Self Esteem.</h2><p class="copy" style="max-width:730px;margin:0 auto">Mari melangkah bersama, menguatkan ukhuwah, meningkatkan kualitas diri, dan menghadirkan kebermanfaatan yang lebih luas.</p><div style="margin-top:24px;font-weight:800;color:var(--green)">Bersama FARIS, Rohis Bersinergi, Pelajar Menginspirasi!</div></div></section>
+<section class="closing"><div class="wrap" style="text-align:center"><div class="tag closing-tag"><i data-lucide="hand-heart"></i> Penutup</div><h2 class="title">Upgrade Habits. Upgrade Worship.<br>Upgrade Self Esteem.</h2><p class="copy" style="max-width:730px;margin:0 auto">Mari melangkah bersama, menguatkan ukhuwah, meningkatkan kualitas diri, dan menghadirkan kebermanfaatan yang lebih luas.</p><div style="margin-top:24px;font-weight:800;color:var(--green)">Bersama FARIS, Rohis Bersinergi, Pelajar Menginspirasi!</div></div></section>
 </main>
-<footer><div class="wrap"><div class="footgrid"><div><a class="brand" href="#home">FARIS <span>SRAGEN</span></a><p>Forum Komunikasi Rohis Sragen.<br>Rohis Bersinergi, Pelajar Menginspirasi!</p></div><div><h4>Jelajahi</h4><p><a href="#tentang">Tentang kegiatan</a><br><a href="#acara">Informasi acara</a><br><a href="#tema">Tema</a><br><a href="#tujuan">Tujuan kegiatan</a></p></div><div><h4>Media Sosial</h4><p><a href="https://instagram.com/faris_sragen" target="_blank" rel="noopener">@faris_sragen</a><br>#FARISSragen<br>#SilatdaRohisII<br>#RohisSragen<br>#AudiensiBupati</p></div></div><div class="copyright">© <span id="year"></span> Teajuskatess id. All rights reserved.</div></div></footer>
+<footer><div class="wrap"><div class="footgrid"><div><a class="brand" href="#home">FARIS <span>SRAGEN</span></a><p>Forum Komunikasi Rohis Sragen.<br>Rohis Bersinergi, Pelajar Menginspirasi!</p></div><div><h4>Jelajahi</h4><p><a href="#tentang">Tentang kegiatan</a><br><a href="#acara">Informasi acara</a><br><a href="#tujuan">Tujuan kegiatan</a><br><a href="#tema">Tema</a></p></div><div><h4>Media Sosial</h4><p><a href="https://instagram.com/faris_sragen" target="_blank" rel="noopener">@faris_sragen</a><br>#FARISSragen<br>#SilatdaRohisII<br>#RohisSragen<br>#AudiensiBupati</p></div></div><div class="copyright">© <span id="year"></span> Teajuskatess.id . All rights reserved.</div></div></footer>
 <script>
 const menuBtn=document.getElementById('menu'),links=document.getElementById('links');menuBtn.addEventListener('click',()=>links.classList.toggle('open'));links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
 document.getElementById('year').textContent=new Date().getFullYear();
