@@ -155,12 +155,79 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 @media(max-width:600px){.wizard-right{width:100%;margin-left:0}.wizard-right .btn{flex:1}.wizard-actions #wizardBack{order:2;width:100%}}
 
 [hidden]{display:none!important}
+
+/* ===== Fitur interaktif tambahan ===== */
+.ix-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.ix-card{border:1px solid var(--line);border-radius:24px;padding:26px;background:#fff;transition:box-shadow .3s ease,transform .3s ease}
+.ix-card:hover{box-shadow:0 14px 34px #10204010}
+.ix-card h3{font-size:17px;margin:12px 0 10px;letter-spacing:-.3px;line-height:1.3}
+.ix-full{grid-column:1/-1}
+.ix-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.ix-btn-row .btn:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+.ix-meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;margin:4px 0 8px}
+.ix-meta strong{color:var(--blue)}
+.bar{height:8px;background:#e7ecf7;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .45s cubic-bezier(.2,.8,.2,1);border-radius:99px}
+.bar.green span{background:linear-gradient(90deg,var(--green),var(--lime))}
+.ix-input{width:100%;border:1px solid #dfe6f1;border-radius:13px;padding:13px 14px;font:500 13px "Plus Jakarta Sans",sans-serif;color:var(--ink);background:#fff;outline:none;margin-bottom:14px}
+.ix-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2447f817}
+/* countdown */
+.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cd-box{background:linear-gradient(145deg,#eef2ff,#f3eaff);border-radius:18px;padding:16px 8px;text-align:center}
+.cd-box b{display:block;font-size:clamp(22px,3vw,34px);letter-spacing:-1px;color:var(--blue);font-variant-numeric:tabular-nums}
+.cd-box small{font-size:11px;color:var(--muted);font-weight:600}
+.cd-done{display:none;margin:16px 0 0;font-weight:800;color:var(--green);font-size:14px}
+/* checklist */
+.check-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.check-list label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:14px;cursor:pointer;font-size:13px;font-weight:600;line-height:1.5;transition:.2s}
+.check-list label:hover{border-color:#cfd9ff;background:#fafbff}
+.check-list input{margin-top:2px;width:18px;height:18px;accent-color:var(--blue);flex-shrink:0;cursor:pointer}
+.check-list input:checked+span{text-decoration:line-through;color:var(--muted)}
+/* faq */
+.faq{border:1px solid var(--line);border-radius:16px;margin-bottom:8px;overflow:hidden;transition:border-color .25s}
+.faq.open{border-color:#cfd9ff}
+.faq button{width:100%;text-align:left;background:#fff;border:0;padding:15px 16px;font:700 13px "Plus Jakarta Sans",sans-serif;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.faq button svg{transition:transform .3s ease;flex-shrink:0;color:var(--blue);width:18px;height:18px}
+.faq button[aria-expanded="true"] svg{transform:rotate(180deg)}
+.faq .ans{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.faq .ans>div{overflow:hidden}
+.faq .ans p{margin:0;padding:0 16px;font-size:13px;color:var(--muted);line-height:1.7}
+.faq.open .ans{grid-template-rows:1fr}
+.faq.open .ans p{padding:0 16px 16px}
+/* kuis */
+.quiz-q{display:none}
+.quiz-q.active{display:block;animation:itemIn .4s cubic-bezier(.2,.8,.2,1) both}
+.quiz-q h4{font-size:15px;margin:0 0 14px;line-height:1.45}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 15px;margin-bottom:8px;font:600 13px "Plus Jakarta Sans",sans-serif;color:var(--ink);cursor:pointer;transition:.2s}
+.opt:hover{border-color:var(--blue);background:#f5f8ff;transform:translateX(4px)}
+.quiz-result{display:none;text-align:center;padding:14px 0 4px;animation:itemIn .5s cubic-bezier(.2,.8,.2,1) both}
+.quiz-result .big{font-size:46px;font-weight:800;color:var(--blue);letter-spacing:-2px}
+.quiz-result h3{margin:6px 0}
+.quiz-result p{font-size:13px;color:var(--muted);line-height:1.7;max-width:520px;margin:0 auto}
+.quiz-result .ix-btn-row{justify-content:center}
+/* komitmen */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font:600 12px "Plus Jakarta Sans",sans-serif;cursor:pointer;color:var(--ink);transition:.2s}
+.chip:hover{border-color:var(--blue)}
+.chip[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff;transform:scale(1.04)}
+.pledge-card{border-radius:22px;background:linear-gradient(130deg,#2447f8,#7c3aed);color:#fff;padding:26px;min-height:200px;position:relative;overflow:hidden}
+.pledge-card:after{content:"";position:absolute;right:-40px;bottom:-40px;width:150px;height:150px;border-radius:50%;background:#ffffff1a}
+.pledge-card small{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;opacity:.85;font-weight:700;position:relative;z-index:1}
+.pledge-card p{font-size:16px;font-weight:700;line-height:1.6;margin:12px 0 0;position:relative;z-index:1;white-space:pre-line}
+/* catatan draf */
+.draft-note{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#eaf8df;border-radius:14px;padding:12px 14px;font-size:12px;color:#3f6b17;margin-bottom:18px;font-weight:600}
+.draft-note.show{display:flex;animation:itemIn .4s ease both}
+.draft-note .btn{padding:8px 13px;font-size:12px}
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:13px;font-weight:600;opacity:0;visibility:hidden;transition:.3s ease;z-index:70;max-width:90%;text-align:center}
+.toast.show{opacity:1;visibility:visible;transform:translateX(-50%)}
+@media(max-width:680px){.ix-grid{grid-template-columns:1fr}.countdown{grid-template-columns:repeat(2,1fr)}.ix-card{padding:20px}}
 </style>
 </head>
 <body>
 <nav><div class="wrap navin">
 <a href="#home" class="brand">FARIS <span>SRAGEN</span></a>
-<div class="links" id="links"><a href="#home">Beranda</a><a href="#tentang">Tentang</a><a href="#acara">Informasi</a><a href="#tema">Tema</a><a href="#tujuan">Tujuan</a></div>
+<div class="links" id="links"><a href="#home">Beranda</a><a href="#tentang">Tentang</a><a href="#acara">Informasi</a><a href="#tema">Tema</a><a href="#tujuan">Tujuan</a><a href="#interaktif">Persiapan</a></div>
 <a href="#acara" class="btn navcta">Informasi Acara <i data-lucide="arrow-up-right"></i></a><button class="menu" id="menu" aria-label="Menu"><i data-lucide="menu"></i></button>
 </div></nav>
 <main>
@@ -191,6 +258,65 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 </div>
 <div style="margin-top:18px;padding:18px;border-radius:18px;background:#eaf8df;display:flex;gap:14px;align-items:flex-start"><div style="color:#438b1c"><i data-lucide="users-round"></i></div><div><b>Ketentuan perwakilan</b><p style="margin:6px 0 0;color:#586b4d;font-size:13px;line-height:1.7">Setiap sekolah mengirimkan <b>10 orang perwakilan</b>.</p></div></div>
 </div></section>
+<section id="interaktif">
+<div class="wrap reveal">
+<div class="tag"><i data-lucide="sparkles"></i> Persiapan Bersama</div>
+<h2 class="title">Siap-siap bareng FARIS.</h2>
+<p class="copy" style="max-width:730px">Hitung mundur, checklist, tanya jawab, dan kuis singkat supaya setiap perwakilan siap sebelum hari H.</p>
+<div class="ix-grid">
+
+<div class="ix-card ix-full">
+<div class="tag"><i data-lucide="timer"></i> Hitung Mundur</div>
+<h3>Menuju Kamis, 10 Desember 2026 · 08.00 WIB</h3>
+<div class="countdown">
+<div class="cd-box"><b id="cdD">--</b><small>Hari</small></div>
+<div class="cd-box"><b id="cdH">--</b><small>Jam</small></div>
+<div class="cd-box"><b id="cdM">--</b><small>Menit</small></div>
+<div class="cd-box"><b id="cdS">--</b><small>Detik</small></div>
+</div>
+<p class="cd-done" id="cdDone">Hari ini Silatda! Sampai jumpa di Aula Sukowati.</p>
+<div class="ix-btn-row">
+<button type="button" class="btn" id="addCal"><i data-lucide="calendar-plus"></i> Simpan ke Kalender</button>
+<a class="btn light" href="https://www.google.com/maps/search/?api=1&amp;query=Aula+Sukowati+IKS+Pemda+Sragen" target="_blank" rel="noopener"><i data-lucide="map-pin"></i> Lihat Lokasi</a>
+</div>
+</div>
+
+<div class="ix-card">
+<div class="tag"><i data-lucide="list-checks"></i> Checklist Perwakilan</div>
+<h3>Persiapan sekolahmu</h3>
+<div class="ix-meta"><span>Progres</span><strong id="checkPct">0%</strong></div>
+<div class="bar green"><span id="checkBar"></span></div>
+<ul class="check-list" id="checkList">
+<li><label><input type="checkbox" data-key="c1"><span>Konfirmasi kehadiran ke panitia</span></label></li>
+<li><label><input type="checkbox" data-key="c2"><span>Daftar 10 nama perwakilan sekolah</span></label></li>
+<li><label><input type="checkbox" data-key="c3"><span>Izin dari sekolah sudah beres</span></label></li>
+<li><label><input type="checkbox" data-key="c4"><span>Kuesioner peserta sudah diisi</span></label></li>
+<li><label><input type="checkbox" data-key="c5"><span>Lokasi Aula Sukowati sudah diketahui</span></label></li>
+<li><label><input type="checkbox" data-key="c6"><span>Rencana tiba sebelum pukul 08.00 WIB</span></label></li>
+</ul>
+</div>
+
+<div class="ix-card">
+<div class="tag"><i data-lucide="circle-help"></i> Tanya Jawab</div>
+<h3>Pertanyaan yang sering ditanyakan</h3>
+<div class="faq"><button type="button" aria-expanded="false">Siapa saja yang bisa hadir?<i data-lucide="chevron-down"></i></button><div class="ans"><div><p>Pembina Rohis dan pengurus Rohis sekolah se-Kabupaten Sragen. Setiap sekolah mengirimkan 10 orang perwakilan.</p></div></div></div>
+<div class="faq"><button type="button" aria-expanded="false">Kapan dan di mana acaranya?<i data-lucide="chevron-down"></i></button><div class="ans"><div><p>Kamis, 10 Desember 2026, mulai pukul 08.00 WIB di Aula Sukowati, Kompleks IKS Pemda Sragen.</p></div></div></div>
+<div class="faq"><button type="button" aria-expanded="false">Apakah kuesioner wajib diisi?<i data-lucide="chevron-down"></i></button><div class="ans"><div><p>Semua pertanyaan di kuesioner wajib diisi agar jawabanmu lengkap. Kamu bisa menyimpannya sebagai PDF atau mengirimnya lewat WhatsApp ke panitia.</p></div></div></div>
+<div class="faq"><button type="button" aria-expanded="false">Apakah jawabanku tersimpan kalau halaman ditutup?<i data-lucide="chevron-down"></i></button><div class="ans"><div><p>Ya. Jawaban disimpan otomatis di perangkat ini saat kamu mengisi. Kalau ingin mulai dari awal, tekan tombol Hapus draf.</p></div></div></div>
+<div class="faq"><button type="button" aria-expanded="false">Ada pertanyaan lain?<i data-lucide="chevron-down"></i></button><div class="ans"><div><p>Hubungi panitia melalui nomor WhatsApp yang tersedia di halaman kuesioner.</p></div></div></div>
+</div>
+
+<div class="ix-card ix-full">
+<div class="tag"><i data-lucide="gauge"></i> Kuis Singkat</div>
+<h3>Seberapa siap Upgrade Habits kamu?</h3>
+<p class="copy" style="font-size:13px;margin:0 0 18px">Lima pertanyaan, sekitar satu menit. Tidak ada jawaban salah, ini hanya cermin untuk refleksi.</p>
+<div id="quizBox"></div>
+<div class="quiz-result" id="quizResult"></div>
+</div>
+
+</div>
+</div>
+</section>
 <section id="tema"><div class="wrap"><div class="themebox reveal"><div class="tag"><i data-lucide="sparkles"></i> Tema Silatda II Rohis 2026</div><h2>“Upgrade Habits, Upgrade Worship, Upgrade Self Esteem: Anak Muda Menghidupkan Zamannya Menjadi Muslim Muda Pemberi Kontribusi dengan Ilmu, Iman, dan Aksi.”</h2><p>Sebab kapasitas kita dalam membantu masa depan tidak terlepas dari kapasitas kita dalam mengembangkan diri. Mulailah dari hal-hal yang berada dalam kendali kita hari ini.</p></div></div></section>
 <section id="tujuan"><div class="wrap"><div class="tag"><i data-lucide="target"></i> Mengapa harus hadir?</div><h2 class="title">Setiap pertemuan punya cerita. Setiap proses punya arti.</h2><p class="copy" style="max-width:730px">Melalui kegiatan ini, mari bersama-sama menghadirkan ruang yang mendukung pertumbuhan diri, organisasi, dan dakwah pelajar.</p>
 <div class="whygrid reveal">
@@ -209,6 +335,7 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
     <h2 class="title">Kuesioner Peserta Rohis</h2>
     <p class="copy" style="max-width:760px">Jawab satu pertanyaan dalam satu langkah. Semua pertanyaan wajib diisi agar jawabanmu dapat dikirim lengkap kepada panitia.</p>
     <div class="questionnaire reveal show" id="questionnaireApp">
+      <div class="draft-note" id="draftNote"><span>Kami menemukan draf jawabanmu sebelumnya.</span><button type="button" class="btn light" id="draftClear"><i data-lucide="trash-2"></i> Hapus draf</button></div>
       <div class="wizard-top">
         <div class="wizard-meta"><span id="stepCounter">Pertanyaan 1 dari 13</span><strong id="stepPercent">8%</strong></div>
         <div class="wizard-track"><span id="wizardProgress"></span></div>
@@ -309,10 +436,35 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
   </div>
 </section>
 
+<section id="komitmen">
+<div class="wrap reveal">
+<div class="tag"><i data-lucide="pen-line"></i> Komitmen Saya</div>
+<h2 class="title">Tulis janjimu, bawa pulang kartunya.</h2>
+<p class="copy" style="max-width:730px">Pilih sampai 3 kebiasaan yang ingin kamu upgrade, tulis namamu, lalu buat kartu komitmen untuk disimpan atau dibagikan.</p>
+<div class="ix-grid">
+<div class="ix-card">
+<div class="tag"><i data-lucide="target"></i> Pilih Kebiasaan</div>
+<h3>Apa yang ingin kamu upgrade?</h3>
+<div class="chips" id="habitChips"></div>
+<input class="ix-input" id="pledgeName" maxlength="30" placeholder="Tulis namamu (opsional)">
+<div class="ix-btn-row"><button type="button" class="btn" id="pledgeMake"><i data-lucide="wand-sparkles"></i> Buat Kartu</button></div>
+</div>
+<div class="ix-card">
+<div class="tag"><i data-lucide="id-card"></i> Kartu Komitmen</div>
+<h3>Pratinjau kartumu</h3>
+<div class="pledge-card"><small>Upgrade Habits · Silatda Rohis II</small><p id="pledgeOut">Pilih kebiasaanmu, lalu tekan Buat Kartu.</p></div>
+<div class="ix-btn-row">
+<button type="button" class="btn light" id="pledgeDl" disabled><i data-lucide="download"></i> Unduh PNG</button>
+<button type="button" class="btn lime" id="pledgeShare" disabled><i data-lucide="share-2"></i> Bagikan</button>
+</div>
+</div>
+</div>
+</div>
+</section>
 <div class="wrap reveal"><div class="cta"><div><div class="tag" style="color:#d9e2ff"><i data-lucide="leaf"></i> Perjalanan Bersamamu</div><h2>Jangan hanya menjadi penonton perubahan zaman.</h2><p>Jadilah generasi yang mampu menghidupkan zaman dengan ilmu, iman, dan aksi!</p></div><a href="#acara" class="btn lime">Sampai Bertemu <i data-lucide="arrow-up-right"></i></a></div></div>
 <section><div class="wrap" style="text-align:center"><div class="tag"><i data-lucide="hand-heart"></i> Penutup</div><h2 class="title">Upgrade Habits. Upgrade Worship.<br>Upgrade Self Esteem.</h2><p class="copy" style="max-width:730px;margin:0 auto">Mari melangkah bersama, menguatkan ukhuwah, meningkatkan kualitas diri, dan menghadirkan kebermanfaatan yang lebih luas.</p><div style="margin-top:24px;font-weight:800;color:var(--green)">Bersama FARIS, Rohis Bersinergi, Pelajar Menginspirasi!</div></div></section>
 </main>
-<footer><div class="wrap"><div class="footgrid"><div><a class="brand" href="#home">FARIS <span>SRAGEN</span></a><p>Forum Komunikasi Rohis Sragen.<br>Rohis Bersinergi, Pelajar Menginspirasi!</p></div><div><h4>Jelajahi</h4><p><a href="#tentang">Tentang kegiatan</a><br><a href="#acara">Informasi acara</a><br><a href="#tema">Tema</a><br><a href="#tujuan">Tujuan kegiatan</a></p></div><div><h4>Media Sosial</h4><p><a href="https://instagram.com/faris_sragen" target="_blank" rel="noopener">@faris_sragen</a><br>#FARISSragen<br>#SilatdaRohisII<br>#RohisSragen<br>#AudiensiBupati</p></div></div><div class="copyright">© <span id="year"></span> Teajuskatess.id. All rights reserved.</div></div></footer>
+<footer><div class="wrap"><div class="footgrid"><div><a class="brand" href="#home">FARIS <span>SRAGEN</span></a><p>Forum Komunikasi Rohis Sragen.<br>Rohis Bersinergi, Pelajar Menginspirasi!</p></div><div><h4>Jelajahi</h4><p><a href="#tentang">Tentang kegiatan</a><br><a href="#acara">Informasi acara</a><br><a href="#tema">Tema</a><br><a href="#tujuan">Tujuan kegiatan</a></p></div><div><h4>Media Sosial</h4><p><a href="https://instagram.com/faris_sragen" target="_blank" rel="noopener">@faris_sragen</a><br>#FARISSragen<br>#SilatdaRohisII<br>#RohisSragen<br>#AudiensiBupati</p></div></div><div class="copyright">© <span id="year"></span> Teajuskatess id. All rights reserved.</div></div></footer>
 <script>
 const menuBtn=document.getElementById('menu'),links=document.getElementById('links');menuBtn.addEventListener('click',()=>links.classList.toggle('open'));links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
 document.getElementById('year').textContent=new Date().getFullYear();
@@ -678,5 +830,275 @@ document.getElementById("wizardPdf").addEventListener("click", () => {
   window.__action = "pdf";
   document.getElementById("rohisQuestionnaire").dispatchEvent(new Event("submit", {cancelable:true, bubbles:true}));
 });
+
+/* ===== Fitur interaktif tambahan ===== */
+(function(){
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
+  const store = {
+    get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
+    set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+    del(k){ try { localStorage.removeItem(k); } catch(e){} }
+  };
+  function toast(msg){
+    let t = $('#toast');
+    if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2500);
+  }
+  async function copyText(text){
+    try { await navigator.clipboard.writeText(text); toast('Teks berhasil disalin'); }
+    catch(e){ toast('Gagal menyalin, silakan salin manual'); }
+  }
+
+  /* 1. Hitung mundur */
+  const TARGET = new Date('2026-12-10T08:00:00+07:00');
+  const cd = { d:$('#cdD'), h:$('#cdH'), m:$('#cdM'), s:$('#cdS') };
+  function tickCountdown(){
+    const diff = TARGET - Date.now();
+    if(diff <= 0){
+      cd.d.textContent = '0'; cd.h.textContent = '00'; cd.m.textContent = '00'; cd.s.textContent = '00';
+      $('#cdDone').style.display = 'block';
+      return false;
+    }
+    const pad = n => String(n).padStart(2,'0');
+    const sec = Math.floor(diff/1000);
+    cd.d.textContent = Math.floor(sec/86400);
+    cd.h.textContent = pad(Math.floor((sec%86400)/3600));
+    cd.m.textContent = pad(Math.floor((sec%3600)/60));
+    cd.s.textContent = pad(sec%60);
+    return true;
+  }
+  if(cd.d && tickCountdown()){
+    const iv = setInterval(()=>{ if(!tickCountdown()) clearInterval(iv); }, 1000);
+  }
+
+  /* 2. Simpan ke kalender (.ics) */
+  const addCal = $('#addCal');
+  if(addCal) addCal.addEventListener('click', ()=>{
+    const fmt = d => d.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//FARIS Sragen//Silatda//ID','BEGIN:VEVENT',
+      'UID:silatda-rohis-ii-2026@faris-sragen','DTSTAMP:' + fmt(new Date()),
+      'DTSTART:' + fmt(TARGET),
+      'DTEND:' + fmt(new Date('2026-12-10T17:00:00+07:00')),
+      'SUMMARY:Silatda Rohis II Sragen 2026',
+      'LOCATION:Aula Sukowati, Kompleks IKS Pemda Sragen',
+      'DESCRIPTION:Audiensi Bupati dan Silaturahmi Daerah Rohis II Sragen 2026. Setiap sekolah mengirim 10 perwakilan.',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar;charset=utf-8'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'Silatda-Rohis-II-Sragen-2026.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    toast('File kalender diunduh, buka untuk menyimpan');
+  });
+
+  /* 3. Checklist persiapan (tersimpan di perangkat) */
+  const CHECK_KEY = 'silatda-checklist';
+  const boxes = $$('#checkList input');
+  const savedChecks = store.get(CHECK_KEY) || {};
+  function updateCheck(notify){
+    const done = boxes.filter(b=>b.checked).length;
+    const pct = Math.round(done / boxes.length * 100);
+    $('#checkPct').textContent = pct + '%';
+    $('#checkBar').style.width = pct + '%';
+    if(notify && pct === 100) toast('Checklist lengkap. Siap berangkat!');
+  }
+  boxes.forEach(b=>{
+    b.checked = !!savedChecks[b.dataset.key];
+    b.addEventListener('change', ()=>{
+      const s = {}; boxes.forEach(x => s[x.dataset.key] = x.checked);
+      store.set(CHECK_KEY, s);
+      updateCheck(true);
+    });
+  });
+  updateCheck(false);
+
+  /* 4. FAQ accordion */
+  $$('.faq button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const open = btn.closest('.faq').classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  /* 5. Kuis singkat */
+  const QUIZ = [
+    { q:'Seberapa sering kamu menjaga jam tidur dan bangun yang teratur?',
+      o:[['Hampir selalu',2],['Kadang-kadang',1],['Jarang',0]] },
+    { q:'Apakah kamu punya rutinitas ibadah harian yang kamu jaga?',
+      o:[['Ya, cukup konsisten',2],['Kadang-kadang',1],['Belum ada',0]] },
+    { q:'Seberapa sering kamu membaca atau mengkaji Al-Qur\'an dan ilmu agama?',
+      o:[['Hampir setiap hari',2],['Beberapa kali seminggu',1],['Jarang',0]] },
+    { q:'Bagaimana kamu memandang diri sendiri saat melakukan kesalahan?',
+      o:[['Menerima dan belajar darinya',2],['Kadang terlalu keras pada diri',1],['Sering menyalahkan diri',0]] },
+    { q:'Apakah kamu sudah punya satu target kontribusi untuk Rohis atau sekolah?',
+      o:[['Sudah',2],['Sedang memikirkannya',1],['Belum',0]] }
+  ];
+  const RESULTS = [
+    { min:0, max:3,  title:'Mulai dari yang kecil', text:'Tidak apa-apa. Pilih satu kebiasaan kecil hari ini dan jaga selama seminggu.' },
+    { min:4, max:7,  title:'Sedang berkembang',     text:'Fondasimu sudah ada. Fokus konsisten pada satu atau dua kebiasaan yang paling ingin kamu perbaiki.' },
+    { min:8, max:10, title:'Sudah melaju',          text:'Keren! Sekarang saatnya membagikan kebiasaanmu dan mengajak teman sekolah ikut berkembang.' }
+  ];
+  const quizBox = $('#quizBox'), quizRes = $('#quizResult');
+  let qi = 0, qTotal = 0;
+  function renderQ(){
+    quizBox.innerHTML = '';
+    const item = QUIZ[qi];
+    const wrap = document.createElement('div');
+    wrap.className = 'quiz-q active';
+    const meta = document.createElement('div');
+    meta.className = 'ix-meta';
+    meta.innerHTML = '<span>Pertanyaan ' + (qi+1) + ' dari ' + QUIZ.length + '</span><strong>' + Math.round(qi/QUIZ.length*100) + '%</strong>';
+    const bar = document.createElement('div'); bar.className = 'bar';
+    const fill = document.createElement('span'); bar.appendChild(fill);
+    const h = document.createElement('h4'); h.textContent = item.q;
+    wrap.append(meta, bar, h);
+    item.o.forEach(([label, score])=>{
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.textContent = label;
+      b.addEventListener('click', ()=>{
+        qTotal += score; qi++;
+        if(qi < QUIZ.length) renderQ(); else showResult();
+      });
+      wrap.appendChild(b);
+    });
+    quizBox.appendChild(wrap);
+    requestAnimationFrame(()=>{ fill.style.width = (qi/QUIZ.length*100) + '%'; });
+  }
+  function showResult(){
+    quizBox.innerHTML = '';
+    const r = RESULTS.find(x => qTotal >= x.min && qTotal <= x.max) || RESULTS[0];
+    quizRes.innerHTML = '';
+    const big = document.createElement('div'); big.className = 'big'; big.textContent = qTotal + ' / ' + (QUIZ.length*2);
+    const t = document.createElement('h3'); t.textContent = r.title;
+    const p = document.createElement('p'); p.textContent = r.text;
+    const row = document.createElement('div'); row.className = 'ix-btn-row';
+    const shareBtn = document.createElement('button');
+    shareBtn.type='button'; shareBtn.className='btn';
+    shareBtn.textContent = 'Bagikan hasil';
+    shareBtn.addEventListener('click', ()=>{
+      const msg = 'Skor kesiapan Upgrade Habits-ku: ' + qTotal + '/' + (QUIZ.length*2) + ' (' + r.title + '). Coba kuisnya di halaman Silatda Rohis II Sragen!';
+      if(navigator.share){ navigator.share({ text: msg }).catch(()=>{}); }
+      else copyText(msg);
+    });
+    const retry = document.createElement('button');
+    retry.type='button'; retry.className='btn light'; retry.textContent = 'Ulangi kuis';
+    retry.addEventListener('click', ()=>{ qi=0; qTotal=0; quizRes.style.display='none'; renderQ(); });
+    row.append(shareBtn, retry);
+    quizRes.append(big, t, p, row);
+    quizRes.style.display = 'block';
+  }
+  if(quizBox) renderQ();
+
+  /* 6. Generator kartu komitmen */
+  const HABITS = ['Shalat tepat waktu','Tilawah harian','Bangun subuh','Olahraga ringan','Membaca buku','Berbuat baik ke teman','Menjaga lisan','Menulis jurnal syukur'];
+  const picked = new Set();
+  let lastPledge = null, lastCanvas = null;
+  const chipBox = $('#habitChips');
+  if(chipBox) HABITS.forEach(h=>{
+    const c = document.createElement('button');
+    c.type='button'; c.className='chip'; c.textContent = h; c.setAttribute('aria-pressed','false');
+    c.addEventListener('click', ()=>{
+      if(picked.has(h)) picked.delete(h);
+      else {
+        if(picked.size >= 3){ toast('Pilih maksimal 3 kebiasaan'); return; }
+        picked.add(h);
+      }
+      c.setAttribute('aria-pressed', String(picked.has(h)));
+    });
+    chipBox.appendChild(c);
+  });
+  function buildPledge(){
+    const name = $('#pledgeName').value.trim();
+    const lead = (name ? name + ' berkomitmen' : 'Aku berkomitmen') + ' untuk upgrade diri:';
+    return lead + '\n' + [...picked].map(x => '• ' + x).join('\n');
+  }
+  function wrapLines(x, text, maxW){
+    const out = [];
+    text.split('\n').forEach(par=>{
+      let row = '';
+      par.split(' ').forEach(w=>{
+        const test = row ? row + ' ' + w : w;
+        if(x.measureText(test).width > maxW && row){ out.push(row); row = w; }
+        else row = test;
+      });
+      out.push(row);
+    });
+    return out;
+  }
+  function drawCard(text){
+    const S = 1080, c = document.createElement('canvas'); c.width = S; c.height = S;
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0,0,S,S); g.addColorStop(0,'#2447f8'); g.addColorStop(1,'#7c3aed');
+    x.fillStyle = g; x.fillRect(0,0,S,S);
+    x.fillStyle = 'rgba(255,255,255,.12)'; x.beginPath(); x.arc(S-110,130,260,0,Math.PI*2); x.fill();
+    x.fillStyle = '#ffffff'; x.font = '700 34px "Plus Jakarta Sans", Arial, sans-serif';
+    x.fillText('UPGRADE HABITS · SILATDA ROHIS II SRAGEN', 90, 150);
+    x.font = '800 54px "Plus Jakarta Sans", Arial, sans-serif';
+    const lines = wrapLines(x, text, S - 180);
+    let y = 330;
+    lines.forEach(ln => { x.fillText(ln, 90, y); y += 80; });
+    x.font = '600 32px "Plus Jakarta Sans", Arial, sans-serif';
+    x.globalAlpha = .85; x.fillText('FARIS Sragen · Kamis, 10 Desember 2026', 90, S - 100); x.globalAlpha = 1;
+    return c;
+  }
+  const makeBtn = $('#pledgeMake'), dlBtn = $('#pledgeDl'), shBtn = $('#pledgeShare'), outEl = $('#pledgeOut');
+  if(makeBtn) makeBtn.addEventListener('click', ()=>{
+    if(!picked.size){ toast('Pilih minimal 1 kebiasaan dulu'); return; }
+    lastPledge = buildPledge();
+    outEl.textContent = lastPledge;
+    lastCanvas = drawCard(lastPledge);
+    dlBtn.disabled = false; shBtn.disabled = false;
+    toast('Kartu komitmenmu sudah siap');
+  });
+  if(dlBtn) dlBtn.addEventListener('click', ()=>{
+    if(!lastCanvas) return;
+    lastCanvas.toBlob(b=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = 'komitmen-silatda.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+    }, 'image/png');
+  });
+  if(shBtn) shBtn.addEventListener('click', ()=>{
+    if(!lastCanvas) return;
+    lastCanvas.toBlob(async b=>{
+      const file = new File([b], 'komitmen-silatda.png', {type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try { await navigator.share({ files:[file], title:'Komitmen Silatda', text: lastPledge }); }
+        catch(e){ /* dibatalkan pengguna */ }
+      } else {
+        copyText(lastPledge);
+      }
+    }, 'image/png');
+  });
+
+  /* 7. Simpan draf kuesioner otomatis */
+  const form = $('#rohisQuestionnaire');
+  const DRAFT_KEY = 'silatda-draft';
+  const draftNote = $('#draftNote');
+  if(form){
+    const old = store.get(DRAFT_KEY);
+    if(old && Object.values(old).some(v => String(v).trim())){
+      Object.entries(old).forEach(([k,v])=>{ const el = form.elements[k]; if(el) el.value = v; });
+      draftNote.classList.add('show');
+    }
+    form.addEventListener('input', ()=>{
+      const data = {};
+      Array.from(form.elements).forEach(el=>{ if(el.name) data[el.name] = el.value; });
+      store.set(DRAFT_KEY, data);
+    });
+    const clr = $('#draftClear');
+    if(clr) clr.addEventListener('click', ()=>{
+      store.del(DRAFT_KEY);
+      form.reset();
+      draftNote.classList.remove('show');
+      toast('Draf dihapus');
+    });
+  }
+})();
 </script>
 </body></html>
