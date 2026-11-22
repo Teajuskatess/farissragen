@@ -218,6 +218,65 @@ footer a{transition:color .2s,padding-left .2s}footer a:hover{color:#fff;padding
 .draft-note{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#eaf8df;border-radius:14px;padding:12px 14px;font-size:12px;color:#3f6b17;margin-bottom:18px;font-weight:600}
 .draft-note.show{display:flex;animation:itemIn .4s ease both}
 .draft-note .btn{padding:8px 13px;font-size:12px}
+/* Loader pembuka */
+.intro-load{position:fixed;inset:0;z-index:10000;background:linear-gradient(145deg,#2447f8,#7c3aed);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;transition:opacity .5s ease,visibility .5s;padding:24px;text-align:center}
+.intro-load.hide{opacity:0;visibility:hidden}
+.intro-stage{position:relative;width:170px;height:170px;display:grid;place-items:center;margin-bottom:6px}
+.intro-core{width:70px;height:70px;border-radius:24px;background:#fff;color:var(--blue);display:grid;place-items:center;box-shadow:0 14px 45px #05104a55;animation:introPulse 1.8s ease-in-out infinite}
+.intro-core svg{width:32px;height:32px}
+.intro-ring{position:absolute;inset:0;border:1px dashed #ffffff4d;border-radius:50%}
+.intro-orb{position:absolute;inset:0;animation:introSpin 6s linear infinite;animation-delay:var(--d,0s)}
+.intro-ic{position:absolute;top:-6px;left:50%;margin-left:-22px;width:44px;height:44px;border-radius:15px;background:#fff;color:var(--blue);display:grid;place-items:center;box-shadow:0 10px 24px #05104a40;animation:introSpinBack 6s linear infinite;animation-delay:var(--d,0s)}
+.intro-ic:nth-child(even){color:#4b9415}
+.intro-ic svg{width:21px;height:21px}
+.intro-bar{width:170px;height:4px;background:#ffffff33;border-radius:99px;overflow:hidden;margin-top:6px}
+.intro-bar i{display:block;height:100%;width:40%;border-radius:99px;background:linear-gradient(90deg,var(--lime),#ffffff);animation:introBar 1.4s ease-in-out infinite}
+.intro-load strong{font-size:18px;letter-spacing:-.3px;margin-top:10px}
+.intro-load span{font-size:12px;opacity:.85}
+@keyframes introSpin{to{transform:rotate(360deg)}}
+@keyframes introSpinBack{to{transform:rotate(-360deg)}}
+@keyframes introPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes introBar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion:reduce){.intro-orb,.intro-ic,.intro-core,.intro-bar i{animation-duration:12s}}
+
+/* Popup donasi */
+.donasi-ov{position:fixed;inset:0;z-index:9990;background:#10172bd9;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s,backdrop-filter .5s ease,-webkit-backdrop-filter .5s ease}
+.donasi-ov.show{opacity:1;visibility:visible;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.donasi-card{position:relative;width:min(420px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:28px;padding:28px 24px 24px;box-shadow:0 30px 90px #05104a55,0 0 0 1px #ffffff14;transform:translateY(40px) scale(.9);opacity:0;transition:transform .5s cubic-bezier(.34,1.46,.64,1),opacity .35s ease}
+.donasi-ov.show .donasi-card{transform:none;opacity:1}
+.donasi-ov.show .donasi-card>*{animation:donasiIn .6s cubic-bezier(.2,.8,.2,1) backwards}
+.donasi-ov.show .donasi-card>*:nth-child(1){animation-delay:.12s}
+.donasi-ov.show .donasi-card>*:nth-child(2){animation-delay:.18s}
+.donasi-ov.show .donasi-card>*:nth-child(3){animation-delay:.24s}
+.donasi-ov.show .donasi-card>*:nth-child(4){animation-delay:.3s}
+.donasi-ov.show .donasi-card>*:nth-child(5){animation-delay:.36s}
+.donasi-ov.show .donasi-card>*:nth-child(6){animation-delay:.42s}
+.donasi-ov.show .donasi-card>*:nth-child(7){animation-delay:.48s}
+@keyframes donasiIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.donasi-bank{position:relative;overflow:hidden}
+.donasi-bank::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,#ffffff3a,transparent);transform:skewX(-20deg);animation:donasiShine 3.2s ease-in-out 1s infinite}
+@keyframes donasiShine{0%{left:-60%}60%,100%{left:130%}}
+.donasi-x{transition:transform .3s ease,background .3s ease}
+.donasi-x:hover{transform:rotate(90deg);background:#e8edf5}
+.donasi-list a{transition:transform .25s ease,border-color .2s ease,color .2s ease,box-shadow .25s ease}
+.donasi-list a:hover{transform:translateY(-2px);box-shadow:0 10px 22px #2447f81a}
+.donasi-list a:active{transform:scale(.98)}
+.donasi-x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;border:0;background:var(--bg);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+.donasi-x svg{width:18px;height:18px}
+.donasi-card h3{margin:12px 0 6px;font-size:20px;letter-spacing:-.5px;line-height:1.25}
+.donasi-sub{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 18px}
+.donasi-bank{background:linear-gradient(120deg,#2447f8,#7744e9);color:#fff;border-radius:18px;padding:18px}
+.donasi-bank small{font-size:11px;opacity:.85;font-weight:600}
+.donasi-bank b{display:block;font-size:22px;letter-spacing:1px;margin:4px 0 12px}
+.donasi-copy{width:100%;background:var(--lime);color:#14213d;border:0;cursor:pointer}
+.donasi-copy svg{width:16px;height:16px}
+.donasi-konf{font-size:12px;font-weight:700;margin:20px 0 8px}
+.donasi-list a{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-size:13px;font-weight:700;transition:.2s}
+.donasi-list a:hover{border-color:var(--blue);color:var(--blue)}
+.donasi-list small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:2px}
+.donasi-list svg{width:18px;height:18px;color:var(--green)}
+.donasi-doa{margin:16px 0 0;font-size:12px;color:var(--muted);line-height:1.7;text-align:center;border-top:1px dashed var(--line);padding-top:14px}
+
 /* toast */
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:13px;font-weight:600;opacity:0;visibility:hidden;transition:.3s ease;z-index:70;max-width:90%;text-align:center}
 .toast.show{opacity:1;visibility:visible;transform:translateX(-50%)}
@@ -1128,6 +1187,108 @@ document.getElementById("wizardPdf").addEventListener("click", () => {
       toast('Draf dihapus');
     });
   }
+})();
+</script>
+<div class="intro-load" id="introLoad" aria-live="polite" role="status">
+  <div class="intro-stage">
+    <div class="intro-ring"></div>
+    <div class="intro-orb" style="--d:0s"><div class="intro-ic"><i data-lucide="landmark"></i></div></div>
+    <div class="intro-orb" style="--d:-1.5s"><div class="intro-ic"><i data-lucide="users-round"></i></div></div>
+    <div class="intro-orb" style="--d:-3s"><div class="intro-ic"><i data-lucide="heart-handshake"></i></div></div>
+    <div class="intro-orb" style="--d:-4.5s"><div class="intro-ic"><i data-lucide="calendar-days"></i></div></div>
+    <div class="intro-core"><i data-lucide="leaf"></i></div>
+  </div>
+  <strong>FARIS SRAGEN</strong>
+  <span>Menyiapkan Silatda Rohis II...</span>
+</div>
+
+<div class="donasi-ov" id="donasiOv" role="dialog" aria-modal="true" aria-labelledby="donasiTitle" aria-hidden="true">
+  <div class="donasi-card">
+    <button class="donasi-x" id="donasiClose" type="button" aria-label="Tutup"><i data-lucide="x"></i></button>
+    <div class="tag"><i data-lucide="heart-handshake"></i> Open Donasi</div>
+    <h3 id="donasiTitle">Dukung Silatda Rohis II Sragen</h3>
+    <p class="donasi-sub">Setiap dukungan membantu terselenggaranya kegiatan ini.</p>
+
+    <div class="donasi-bank">
+      <small>Bank BSI · a.n. Aritona</small>
+      <b id="rekNo">7165768919</b>
+      <button class="btn donasi-copy" id="rekCopy" type="button"><i data-lucide="copy"></i> <span id="rekLbl">Salin No. Rekening</span></button>
+    </div>
+
+    <p class="donasi-konf">Konfirmasi donasi via WhatsApp:</p>
+    <div class="donasi-list">
+      <a href="https://wa.me/6281282558383" target="_blank" rel="noopener"><span>1. Aritona<small>+62 812-8255-5383</small></span><i data-lucide="message-circle"></i></a>
+      <a href="https://wa.me/6282135801490" target="_blank" rel="noopener"><span>2. Ashfa<small>+62 821-3580-1490</small></span><i data-lucide="message-circle"></i></a>
+    </div>
+
+    <p class="donasi-doa">Jazakumullahu khairan katsiran atas setiap dukungan, doa, dan kontribusi yang diberikan.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const intro = document.getElementById('introLoad');
+  const ov = document.getElementById('donasiOv');
+  const closeBtn = document.getElementById('donasiClose');
+  const copyBtn = document.getElementById('rekCopy');
+  const lbl = document.getElementById('rekLbl');
+  const MIN_LOAD = 1800;
+  const POPUP_DELAY = 900; // jeda (ms) antara loader hilang dan popup muncul
+  const t0 = Date.now();
+
+  function icons(){ if(window.lucide) lucide.createIcons(); }
+  icons();
+  function openDonasi(){
+    icons();
+    ov.classList.add('show');
+    ov.setAttribute('aria-hidden','false');
+    closeBtn.focus();
+  }
+  function closeDonasi(){
+    ov.classList.remove('show');
+    ov.setAttribute('aria-hidden','true');
+  }
+  function finishLoading(){
+    const wait = Math.max(0, MIN_LOAD - (Date.now() - t0));
+    setTimeout(()=>{
+      intro.classList.add('hide');
+      setTimeout(openDonasi, POPUP_DELAY);
+    }, wait);
+  }
+  if(document.readyState === 'complete') finishLoading();
+  else window.addEventListener('load', finishLoading);
+
+  closeBtn.addEventListener('click', closeDonasi);
+  ov.addEventListener('click', e => { if(e.target === ov) closeDonasi(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && ov.classList.contains('show')) closeDonasi(); });
+
+  function fallbackCopy(text){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '-9999px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  copyBtn.addEventListener('click', async ()=>{
+    const no = document.getElementById('rekNo').textContent.trim();
+    let ok = false;
+    if(navigator.clipboard && window.isSecureContext){
+      try { await navigator.clipboard.writeText(no); ok = true; } catch(e){ ok = false; }
+    }
+    if(!ok) ok = fallbackCopy(no);
+    lbl.textContent = ok ? 'Nomor rekening tersalin' : 'Gagal menyalin, salin manual: ' + no;
+    setTimeout(()=>{ lbl.textContent = 'Salin No. Rekening'; }, 2500);
+  });
 })();
 </script>
 </body></html>
